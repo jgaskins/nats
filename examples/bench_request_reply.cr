@@ -11,19 +11,25 @@ end
 count = 0i64
 total = 0i64
 start = Time.monotonic
-loop do
-  nats.request "foo", "bar", timeout: 2.seconds
-  total += 1i64
-  count += 1i64
+200.times do
+  spawn do
+    loop do
+      nats.request "foo", "bar", timeout: 2.seconds
+      total += 1i64
+      count += 1i64
 
-  if count >= 1000
-    pp outgoing_msg_per_sec: (count // (Time.monotonic - start).total_seconds).format
-    Fiber.yield
-    count = 0i64
-    start = Time.monotonic
+      if count >= 100_000
+        pp outgoing_msg_per_sec: (count // (Time.monotonic - start).total_seconds).format
+        count = 0i64
+        start = Time.monotonic
+        Fiber.yield
+      end
+    rescue ex
+      pp ex
+      pp total: total
+      break
+    end
   end
-rescue ex
-  pp ex
-  pp total: total
-  break
 end
+
+sleep
