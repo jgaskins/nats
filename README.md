@@ -77,8 +77,8 @@ require "nats"
 
 nats = NATS::Client.new(URI.parse(ENV["NATS_URL"]))
 
-# We can also publish a message with a given subject. In this exampe, we'll
-# publish
+# We can publish a message with a given subject. In this example, we'll
+# publish a message saying Jolene has registered.
 nats.publish "customers.registration", UserRegisteredEvent.new(
   id: UUID.random,
   name: "Jolene",
