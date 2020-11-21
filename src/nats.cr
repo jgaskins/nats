@@ -2,6 +2,7 @@ require "uri"
 require "json"
 require "socket"
 require "uuid"
+require "openssl"
 
 # TODO: Write documentation for `NATS`
 module NATS
@@ -18,27 +19,80 @@ module NATS
     end
   end
 
+  class UnknownCommand < Error
+  end
+
   class Client
     alias Data = String | Bytes
 
     BUFFER_SIZE = 1 << 15
-    MAX_PUBLISH_SIZE = 1_000_000
+    MEGABYTE = 1 << 20
+    MAX_PUBLISH_SIZE = 1 * MEGABYTE
 
+    enum State
+      Connecting
+      Connected
+      Disconnected
+      Reconnecting
+      Closed
+    end
+
+    @socket : TCPSocket | OpenSSL::SSL::Socket::Client
     @current_sid = Atomic(Int64).new(0_i64)
     @subscriptions = {} of Int64 => Subscription
     @out = Mutex.new
-    @pings = Atomic(Int32).new(0)
+    @ping_count = Atomic(Int32).new(0)
+    @pings = Channel(Channel(Nil)).new(3) # For flushing the connection
+    @disconnect_buffer = IO::Memory.new(capacity: 8 * MEGABYTE)
+    @inbox_prefix = "_INBOX.#{Random::Secure.hex}"
+    @inbox_handlers = {} of String => Proc(Message, Nil)
+    getter state : State = :connecting
     getter? data_waiting = false
 
-    def initialize(@uri = URI.parse("nats:///"))
-      s = @socket = TCPSocket.new(
+    def self.new(uri : URI, ping_interval = 2.minutes, max_pings_out = 2)
+      new([uri], ping_interval: ping_interval, max_pings_out: max_pings_out)
+    end
+
+    def initialize(
+      @servers = [URI.parse("nats:///")],
+      @ping_interval : Time::Span = 2.minutes,
+      @max_pings_out = 2,
+    )
+      uri = @servers.sample
+
+      case uri.scheme
+      when "nats"
+        tls = false
+      when "tls"
+        tls = true
+      else
+        raise Error.new("Unknown URI scheme #{uri.scheme.inspect}, must be tls or nats")
+      end
+      default_port = tls ? 4443 : 4222
+      s = TCPSocket.new(
         uri.host.presence || "localhost",
-        uri.port || 4222,
+        uri.port || default_port,
       )
       s.tcp_nodelay = true
       s.sync = false
       s.read_buffering = true
       s.buffer_size = BUFFER_SIZE
+
+      s.gets # server info
+
+      if tls
+        context = OpenSSL::SSL::Context::Client.new
+        context.add_options(
+          OpenSSL::SSL::Options::ALL |       # various workarounds
+          OpenSSL::SSL::Options::NO_SSL_V2 | # disable overly deprecated SSLv2
+          OpenSSL::SSL::Options::NO_SSL_V3   # disable deprecated SSLv3
+        )
+        s = OpenSSL::SSL::Socket::Client.new(s, context)
+        s.sync = false
+        s.read_buffering = true
+      end
+
+      @socket = s
 
       @socket << "CONNECT "
       {
@@ -47,41 +101,47 @@ module NATS
         lang: "Crystal",
         version: VERSION,
         protocol: 1,
-        # name: ???,
-        # user: ???,
-        # pass: ???,
+        name: uri.path.sub(%r{\A/}, "").presence,
+        user: uri.user,
+        pass: uri.password,
       }.to_json @socket
       @socket << "\r\n"
       ping
       @socket.flush
-      @socket.gets # server info
       @socket.gets # pong
-      @inbox_prefix = "_INBOX.#{Random::Secure.hex}"
-      @inbox_handlers = {} of String => Proc(Message, Nil)
+      @pings.receive
       subscribe "#{@inbox_prefix}.*" do |msg|
         if handler = @inbox_handlers[msg.subject]?
           handler.call msg
         end
       end
 
-      spawn begin_pings
-      spawn begin_outbound
-      spawn begin_inbound
+      if @state.reconnecting?
+        IO.copy @disconnect_buffer, @socket
+      else
+        spawn begin_pings
+        spawn begin_outbound
+        spawn begin_inbound
+      end
+
+      @state = :connected
+
+      ##### ALL SOCKET READS SHOULD BE DONE IN #begin_inbound PAST THIS POINT
+      ##### NO DIRECT SOCKET READS PAST THIS POINT
     end
 
     def subscribe(subject : String, queue_group : String? = nil, &block : Message, Subscription ->) : Subscription
       sid = @current_sid.add 1
 
-      @out.synchronize do
+      write do
         @socket << "SUB " << subject << ' '
         if queue_group
           @socket << queue_group << ' '
         end
         @socket << sid << "\r\n"
-        @data_waiting = true
       end
 
-      @subscriptions[sid] = Subscription.new(subject, sid, &block)
+      @subscriptions[sid] = Subscription.new(subject, sid, &block).tap(&.start)
     end
 
     def unsubscribe(subscription : Subscription) : Nil
@@ -93,19 +153,17 @@ module NATS
     end
 
     def unsubscribe(sid : Int) : Nil
-      @out.synchronize do
-        @socket << "UNSUB " << sid << "\r\n"
-        @subscriptions.delete sid
-        @data_waiting = true
+      write { @socket << "UNSUB " << sid << "\r\n" }
+    ensure
+      if subscription = @subscriptions.delete sid
+        subscription.close
       end
     end
 
     def unsubscribe(sid : Int, max_messages : Int) : Nil
-      @out.synchronize do
-        @socket << "UNSUB " << sid << ' ' << max_messages << "\r\n"
-        @subscriptions[sid].unsubscribe_after messages: max_messages
-        @data_waiting = true
-      end
+      write { @socket << "UNSUB " << sid << ' ' << max_messages << "\r\n" }
+    ensure
+      @subscriptions[sid].unsubscribe_after messages: max_messages
     end
 
     def request(subject : String, message : Data, timeout : Time::Span) : Message?
@@ -157,7 +215,7 @@ module NATS
         raise Error.new("Attempted to publish message of size #{message.bytesize}. Cannot publish messages larger than #{MAX_PUBLISH_SIZE}.")
       end
 
-      @out.synchronize do
+      write do
         @socket << "PUB " << subject
         if reply_to
           @socket << ' ' << reply_to
@@ -165,29 +223,39 @@ module NATS
         @socket << ' ' << message.bytesize << "\r\n"
         @socket.write message.to_slice
         @socket << "\r\n"
-        @data_waiting = true
       end
     end
 
-    def ping
-      @out.synchronize do
+    def flush(timeout = 2.seconds)
+      channel = Channel(Nil).new(1)
+      ping channel
+      @socket.flush
+
+      Fiber.yield
+
+      select
+      when channel.receive
+      when timeout(timeout)
+        raise Error.new("Flush did not complete within duration: #{timeout}")
+      end
+    end
+
+    def ping(channel = Channel(Nil).new(1))
+      write do
         @socket << "PING\r\n"
-        @pings.add 1
-        @data_waiting = true
+        @ping_count.add 1
+        @pings.send channel
       end
     end
 
     def pong
-      @out.synchronize do
-        @socket << "PONG\r\n"
-        @data_waiting = true
-      end
+      write { @socket << "PONG\r\n" }
     end
 
     private def begin_pings
       loop do
-        sleep 5.seconds
-        return if @socket.closed?
+        sleep @ping_interval
+        return if @state.closed?
         ping
       end
     end
@@ -197,7 +265,7 @@ module NATS
     private def begin_outbound
       loop do
         sleep @outbound_interval
-        return if @socket.closed?
+        return if @state.closed?
 
         if data_waiting?
           @out.synchronize do
@@ -209,8 +277,7 @@ module NATS
           @outbound_interval = {@outbound_interval * 2, MAX_OUTBOUND_INTERVAL}.min
         end
       rescue ex
-        pp data_waiting: data_waiting?, outbound_interval: @outbound_interval
-        pp outbound: ex
+        @on_error.call ex
       end
     end
 
@@ -240,37 +307,67 @@ module NATS
           @socket.skip 2 # CRLF
 
           if subscription = @subscriptions[sid]?
-            subscription.call Message.new(subject, body, reply_to: reply_to)
+            subscription.send Message.new(subject, body, reply_to: reply_to) do |ex|
+              @on_error.call ex
+            end
             if (messages_remaining = subscription.messages_remaining) && messages_remaining <= 0
               @subscriptions.delete sid
+              subscription.close
             end
           end
         when "PING"
           pong
         when "PONG"
-          @pings.sub 1
+          if @ping_count.sub(1) >= 0
+            select
+            when ping = @pings.receive
+              ping.send nil
+            else
+            end
+          else
+            raise Error.new("Received PONG without sending a PING")
+          end
         when .starts_with? "-ERR"
-          on_error line
+          @on_error.call Error.new(line)
         else
-          puts "NO IDEA: #{line.inspect}"
+          @on_error.call UnknownCommand.new(line)
         end
       end
     rescue ex : IO::Error
-      pp ex
-      close
+      unless @state.closed?
+        @on_error.call ex
+      end
     end
 
     def close
+      flush
       @socket.close
+      @state = :closed
     rescue IO::Error
     end
 
-    @on_error = ->(error : Error) {}
-    def on_error(&@on_error : Error ->) : Nil
+    @on_error = ->(error : Exception) {}
+    def on_error(&@on_error : Exception ->) : Nil
     end
 
-    private def on_error(line : String)
-      @on_error.call Error.new(line)
+    private def write : Nil
+      @out.synchronize do
+        yield
+        @data_waiting = true
+      end
+    rescue IO::Error
+      @state = :disconnected
+      reconnect!
+    end
+
+    private def reconnect!
+      return unless @state.disconnected?
+      @state = :reconnecting
+      initialize(
+        servers: @servers,
+        ping_interval: @ping_interval,
+        max_pings_out: @max_pings_out,
+      )
     end
   end
 
@@ -288,18 +385,46 @@ module NATS
   end
 
   class Subscription
+    alias MessageChannel = Channel({Message, Proc(Exception, Nil)})
+
     getter subject : String
     getter sid : Int64
     getter messages_remaining : Int32?
+    private getter message_channel : MessageChannel
 
-    def initialize(@subject, @sid, &@block : Message, Subscription ->)
+    def initialize(@subject, @sid, max_in_flight = 10, &@block : Message, Subscription ->)
+      @message_channel = MessageChannel.new(max_in_flight)
     end
 
     def unsubscribe_after(messages @messages_remaining : Int32)
     end
 
-    def call(message)
+    def start
+      spawn do
+        remaining = @messages_remaining
+        while remaining.nil? || remaining > 0
+          message, on_error = message_channel.receive
+
+          call message, on_error
+
+          remaining = @messages_remaining
+        end
+      rescue ex
+      end
+    end
+
+    def close
+      @message_channel.close
+    end
+
+    def send(message, &on_error : Exception ->) : Nil
+      message_channel.send({message, on_error})
+    end
+
+    private def call(message, on_error : Exception ->) : Nil
       @block.call message, self
+    rescue ex
+      on_error.call ex
     ensure
       if remaining = @messages_remaining
         @messages_remaining = remaining - 1
