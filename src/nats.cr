@@ -10,6 +10,14 @@ module NATS
   class Error < ::Exception
   end
 
+  class NotAReply < Error
+    getter nats_message : Message
+
+    def initialize(error_message, @nats_message : Message)
+      super error_message
+    end
+  end
+
   class Client
     alias Data = String | Bytes
 
@@ -139,6 +147,8 @@ module NATS
     def reply(msg : Message, body : Data) : Nil
       if subject = msg.reply_to
         publish subject, body
+      else
+        raise NotAReply.new("Cannot reply to a message that has no return address", msg)
       end
     end
 
