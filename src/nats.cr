@@ -172,7 +172,7 @@ module NATS
       key = "#{@inbox_prefix}.#{inbox}"
       @inbox_handlers[key] = ->(msg : Message) do
         channel.send msg
-        @inbox_handlers.delete msg.subject
+        @inbox_handlers.delete key
       end
       publish subject, message, reply_to: key
 
@@ -190,9 +190,9 @@ module NATS
       key = "#{@inbox_prefix}.#{inbox}"
       @inbox_handlers[key] = ->(msg : Message) do
         block.call msg
-        @inbox_handlers.delete msg.subject
+        @inbox_handlers.delete key
       end
-      publish subject, message, reply_to: inbox
+      publish subject, message, reply_to: key
 
       spawn remove_key(key, after: timeout)
     end
