@@ -102,13 +102,12 @@ module NATS
       when "tls"
         tls = true
       else
-        raise Error.new("Unknown URI scheme #{uri.scheme.inspect}, must be tls or nats")
+        raise Error.new("Unknown URI scheme #{uri.scheme.inspect}, must be tls:// or nats://")
       end
       default_port = tls ? 4443 : 4222
-      s = TCPSocket.new(
-        uri.host.presence || "localhost",
-        uri.port || default_port,
-      )
+      host = uri.host.presence || "localhost"
+      port = uri.port || default_port
+      s = TCPSocket.new(host, port)
       s.tcp_nodelay = true
       s.sync = false
       s.read_buffering = true
