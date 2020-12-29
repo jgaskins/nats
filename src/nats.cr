@@ -301,6 +301,10 @@ module NATS
       write { @socket << "PONG\r\n" }
     end
 
+    def jetstream
+      @jetstream ||= JetStream::Client.new(self)
+    end
+
     private def begin_pings
       loop do
         sleep @ping_interval
