@@ -3,6 +3,7 @@ require "json"
 require "socket"
 require "uuid"
 require "openssl"
+require "log"
 
 # TODO: Write documentation for `NATS`
 module NATS
@@ -19,8 +20,33 @@ module NATS
     end
   end
 
+  class ServerNotRespondingToPings < Error
+  end
+
   class UnknownCommand < Error
   end
+
+  struct ServerInfo
+    include JSON::Serializable
+
+    getter server_id : String
+    getter server_name : String
+    getter version : String
+    getter proto : Int32
+    getter host : String
+    getter port : Int32
+    getter? headers : Bool = false
+    getter? tls_required : Bool = false
+    getter max_payload : Int32
+    getter client_id : Int32
+    getter client_ip : String
+    getter? auth_required : Bool = false
+    getter nonce : String?
+    getter cluster : String?
+    getter connect_urls : Array(String) = [] of String
+  end
+
+  LOG = ::Log.for(self)
 
   class Client
     alias Data = String | Bytes
@@ -37,7 +63,7 @@ module NATS
       Closed
     end
 
-    @socket : TCPSocket | OpenSSL::SSL::Socket::Client
+    @socket : TCPSocket | OpenSSL::SSL::Socket::Client | IO::Memory
     @current_sid = Atomic(Int64).new(0_i64)
     @subscriptions = {} of Int64 => Subscription
     @out = Mutex.new
@@ -48,8 +74,13 @@ module NATS
     @inbox_handlers = {} of String => Proc(Message, Nil)
     getter state : State = :connecting
     getter? data_waiting = false
+    getter server_info : ServerInfo
 
-    def self.new(uri : URI, ping_interval = 2.minutes, max_pings_out = 2)
+    def self.new(
+      uri : URI,
+      ping_interval = 2.minutes,
+      max_pings_out = 2,
+    )
       new([uri], ping_interval: ping_interval, max_pings_out: max_pings_out)
     end
 
@@ -59,6 +90,11 @@ module NATS
       @max_pings_out = 2,
     )
       uri = @servers.sample
+      @ping_count = Atomic.new(0)
+      @pings = Channel(Channel(Nil)).new(3) # For flushing the connection
+      @inbox_prefix = "_INBOX.#{Random::Secure.hex}"
+      @inbox_handlers = {} of String => Proc(Message, Nil)
+      @current_sid = Atomic.new(0_i64)
 
       case uri.scheme
       when "nats"
@@ -78,9 +114,10 @@ module NATS
       s.read_buffering = true
       s.buffer_size = BUFFER_SIZE
 
-      s.gets # server info
+      s.skip 5 # "INFO "
+      @server_info = ServerInfo.from_json s.read_line
 
-      if tls
+      if tls || @server_info.tls_required?
         context = OpenSSL::SSL::Context::Client.new
         context.add_options(
           OpenSSL::SSL::Options::ALL |       # various workarounds
@@ -95,7 +132,7 @@ module NATS
       @socket = s
 
       @socket << "CONNECT "
-      {
+      connect = {
         verbose: false,
         pedantic: false,
         lang: "Crystal",
@@ -104,11 +141,13 @@ module NATS
         name: uri.path.sub(%r{\A/}, "").presence,
         user: uri.user,
         pass: uri.password,
-      }.to_json @socket
+      connect.to_json @socket
       @socket << "\r\n"
       ping
       @socket.flush
-      @socket.gets # pong
+      until (line = @socket.gets) == "PONG"
+        # Handle errors
+      end
       @pings.receive
       subscribe "#{@inbox_prefix}.*" do |msg|
         if handler = @inbox_handlers[msg.subject]?
@@ -117,7 +156,14 @@ module NATS
       end
 
       if @state.reconnecting?
+        subscriptions = @subscriptions
+        @subscriptions = {} of Int64 => Subscription
+        subscriptions.each_value do |subscription|
+          LOG.debug { "Resubscribing to subscription #{subscription.subject} on subscription id #{subscription.sid}..." }
+          subscribe subscription.subject, subscription.queue_group, &subscription.@block
+        end
         IO.copy @disconnect_buffer, @socket
+        @disconnect_buffer.clear
       else
         spawn begin_pings
         spawn begin_outbound
@@ -141,7 +187,11 @@ module NATS
         @socket << sid << "\r\n"
       end
 
-      @subscriptions[sid] = Subscription.new(subject, sid, &block).tap(&.start)
+      @subscriptions[sid] = Subscription.new(subject, sid, queue_group, &block).tap(&.start)
+    end
+
+    private def resubscribe(subscription : Subscription)
+      subscribe subscription.subject, subscription.queue_group, subscription.sid, &subscription.@block
     end
 
     def unsubscribe(subscription : Subscription) : Nil
@@ -166,7 +216,7 @@ module NATS
       @subscriptions[sid].unsubscribe_after messages: max_messages
     end
 
-    def request(subject : String, message : Data, timeout : Time::Span) : Message?
+    def request(subject : String, message : Data = "", timeout : Time::Span = 2.seconds) : Message?
       channel = Channel(Message).new(1)
       inbox = Random::Secure.hex(4)
       key = "#{@inbox_prefix}.#{inbox}"
@@ -256,6 +306,9 @@ module NATS
       loop do
         sleep @ping_interval
         return if @state.closed?
+        if @ping_count.get > @max_pings_out
+          handle_disconnect! ServerNotRespondingToPings.new("Ping threshold succeeded, reconnecting")
+        end
         ping
       end
     end
@@ -276,6 +329,8 @@ module NATS
         else
           @outbound_interval = {@outbound_interval * 2, MAX_OUTBOUND_INTERVAL}.min
         end
+      rescue ex : IO::Error
+        handle_disconnect! ex
       rescue ex
         @on_error.call ex
       end
@@ -332,14 +387,14 @@ module NATS
         else
           @on_error.call UnknownCommand.new(line)
         end
+        Fiber.yield
       end
     rescue ex : IO::Error
-      unless @state.closed?
-        @on_error.call ex
-      end
+      handle_disconnect! ex
     end
 
     def close
+      return if @state.closed?
       flush
       @socket.close
       @state = :closed
@@ -347,17 +402,45 @@ module NATS
     end
 
     @on_error = ->(error : Exception) {}
-    def on_error(&@on_error : Exception ->) : Nil
+    def on_error(&@on_error : Exception ->)
+      self
+    end
+
+    @on_disconnect = -> {}
+    def on_disconnect(&@on_disconnect)
+      self
+    end
+
+    @on_reconnect = -> {}
+    def on_reconnect(&@on_reconnect)
+      self
     end
 
     private def write : Nil
-      @out.synchronize do
-        yield
-        @data_waiting = true
+      loop do
+        @out.synchronize do
+          yield
+          @data_waiting = true
+        end
+        return
+      rescue ex : IO::Error
+        handle_disconnect! ex
       end
-    rescue IO::Error
-      @state = :disconnected
-      reconnect!
+    end
+
+    private def handle_disconnect!(ex)
+      LOG.debug { "handle_disconnect!" }
+      @out.synchronize do
+        unless @state.closed? || @state.connecting?
+          LOG.debug { "handle_disconnect! #{ex}, state: #{@state}" }
+          spawn @on_disconnect.call
+          @state = :disconnected
+          # Redirect all writes to the buffer until we reconnect to the server
+          @socket = @disconnect_buffer
+          spawn @on_error.call ex
+          spawn reconnect!
+        end
+      end
     end
 
     private def reconnect!
@@ -368,6 +451,7 @@ module NATS
         ping_interval: @ping_interval,
         max_pings_out: @max_pings_out,
       )
+      @on_reconnect.call
     end
   end
 
@@ -389,10 +473,11 @@ module NATS
 
     getter subject : String
     getter sid : Int64
+    getter queue_group : String?
     getter messages_remaining : Int32?
     private getter message_channel : MessageChannel
 
-    def initialize(@subject, @sid, max_in_flight = 10, &@block : Message, Subscription ->)
+    def initialize(@subject, @sid, @queue_group, max_in_flight : Int = 10, &@block : Message, Subscription ->)
       @message_channel = MessageChannel.new(max_in_flight)
     end
 
