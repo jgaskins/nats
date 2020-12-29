@@ -140,6 +140,7 @@ module NATS
         name: uri.path.sub(%r{\A/}, "").presence,
         user: uri.user,
         pass: uri.password,
+      }
       connect.to_json @socket
       @socket << "\r\n"
       ping
