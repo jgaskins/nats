@@ -145,7 +145,7 @@ module NATS
       ping
       @socket.flush
       until (line = @socket.gets) == "PONG"
-        # Handle errors
+        # TODO: Handle errors
       end
       @pings.receive
       subscribe "#{@inbox_prefix}.*" do |msg|
