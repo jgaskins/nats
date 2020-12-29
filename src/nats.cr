@@ -369,6 +369,8 @@ module NATS
               subscription.close
             end
           end
+        when "+OK"
+          # Cool, thanks
         when "PING"
           pong
         when "PONG"
