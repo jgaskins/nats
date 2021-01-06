@@ -175,7 +175,7 @@ module NATS
       connect = {
         verbose: false,
         pedantic: false,
-        lang: "Crystal",
+        lang: "crystal",
         version: VERSION,
         protocol: 1,
         name: uri.path.sub(%r{\A/}, "").presence,
