@@ -63,13 +63,14 @@ module NATS
       Closed
     end
 
-    @socket : TCPSocket | OpenSSL::SSL::Socket::Client | IO::Memory
+    @socket : TCPSocket | OpenSSL::SSL::Socket::Client
+    @io : IO
     @current_sid = Atomic(Int64).new(0_i64)
     @subscriptions = {} of Int64 => Subscription
-    @out = Mutex.new
+    @out = Mutex.new(protection: :reentrant)
     @ping_count = Atomic(Int32).new(0)
     @pings = Channel(Channel(Nil)).new(3) # For flushing the connection
-    @disconnect_buffer = IO::Memory.new(capacity: 8 * MEGABYTE)
+    @disconnect_buffer = IO::Memory.new
     @inbox_prefix = "_INBOX.#{Random::Secure.hex}"
     @inbox_handlers = {} of String => Proc(Message, Nil)
     getter state : State = :connecting
@@ -92,9 +93,7 @@ module NATS
       uri = @servers.sample
       @ping_count = Atomic.new(0)
       @pings = Channel(Channel(Nil)).new(3) # For flushing the connection
-      @inbox_prefix = "_INBOX.#{Random::Secure.hex}"
       @inbox_handlers = {} of String => Proc(Message, Nil)
-      @current_sid = Atomic.new(0_i64)
 
       case uri.scheme
       when "nats"
@@ -107,14 +106,16 @@ module NATS
       default_port = tls ? 4443 : 4222
       host = uri.host.presence || "localhost"
       port = uri.port || default_port
+      LOG.debug { "Connecting to #{host}:#{port}..." }
       s = TCPSocket.new(host, port)
       s.tcp_nodelay = true
       s.sync = false
       s.read_buffering = true
       s.buffer_size = BUFFER_SIZE
 
-      s.skip 5 # "INFO "
-      @server_info = ServerInfo.from_json s.read_line
+      info_line = s.read_line
+      LOG.debug { "RECEIVED: #{info_line}" }
+      @server_info = ServerInfo.from_json info_line[5..-1]
 
       if tls || @server_info.tls_required?
         context = OpenSSL::SSL::Context::Client.new
@@ -129,8 +130,9 @@ module NATS
       end
 
       @socket = s
+      @io = s
 
-      @socket << "CONNECT "
+      @io << "CONNECT "
       connect = {
         verbose: false,
         pedantic: false,
@@ -141,33 +143,39 @@ module NATS
         user: uri.user,
         pass: uri.password,
       }
-      connect.to_json @socket
-      @socket << "\r\n"
+      connect.to_json @io
+      @io << "\r\n"
       ping
       @socket.flush
       until (line = @socket.gets) == "PONG"
         # TODO: Handle errors
       end
       @pings.receive
-      subscribe "#{@inbox_prefix}.*" do |msg|
-        if handler = @inbox_handlers[msg.subject]?
-          handler.call msg
-        end
-      end
 
       if @state.reconnecting?
         subscriptions = @subscriptions
         @subscriptions = {} of Int64 => Subscription
         subscriptions.each_value do |subscription|
-          LOG.debug { "Resubscribing to subscription #{subscription.subject} on subscription id #{subscription.sid}..." }
-          subscribe subscription.subject, subscription.queue_group, &subscription.@block
+          LOG.debug { "Resubscribing to subscription #{subscription.subject}#{" (queue_group: #{subscription.queue_group}}" if subscription.queue_group} on subscription id #{subscription.sid}..." }
+          resubscribe subscription
         end
-        IO.copy @disconnect_buffer, @socket
+        IO.copy @disconnect_buffer.rewind, @io
+        @socket.flush
         @disconnect_buffer.clear
       else
         spawn begin_pings
         spawn begin_outbound
         spawn begin_inbound
+      end
+
+      unless @state.reconnecting?
+        inbox_subject = "#{@inbox_prefix}.*"
+        LOG.debug { "Subscribing to inbox: #{inbox_subject}" }
+        subscribe inbox_subject do |msg|
+          if handler = @inbox_handlers[msg.subject]?
+            handler.call msg
+          end
+        end
       end
 
       @state = :connected
@@ -176,15 +184,13 @@ module NATS
       ##### NO DIRECT SOCKET READS PAST THIS POINT
     end
 
-    def subscribe(subject : String, queue_group : String? = nil, &block : Message, Subscription ->) : Subscription
-      sid = @current_sid.add 1
-
+    def subscribe(subject : String, queue_group : String? = nil, sid = @current_sid.add(1), &block : Message, Subscription ->) : Subscription
       write do
-        @socket << "SUB " << subject << ' '
+        @io << "SUB " << subject << ' '
         if queue_group
-          @socket << queue_group << ' '
+          @io << queue_group << ' '
         end
-        @socket << sid << "\r\n"
+        @io << sid << "\r\n"
       end
 
       @subscriptions[sid] = Subscription.new(subject, sid, queue_group, &block).tap(&.start)
@@ -203,7 +209,7 @@ module NATS
     end
 
     def unsubscribe(sid : Int) : Nil
-      write { @socket << "UNSUB " << sid << "\r\n" }
+      write { @io << "UNSUB " << sid << "\r\n" }
     ensure
       if subscription = @subscriptions.delete sid
         subscription.close
@@ -211,7 +217,7 @@ module NATS
     end
 
     def unsubscribe(sid : Int, max_messages : Int) : Nil
-      write { @socket << "UNSUB " << sid << ' ' << max_messages << "\r\n" }
+      write { @io << "UNSUB " << sid << ' ' << max_messages << "\r\n" }
     ensure
       @subscriptions[sid].unsubscribe_after messages: max_messages
     end
@@ -221,8 +227,8 @@ module NATS
       inbox = Random::Secure.hex(4)
       key = "#{@inbox_prefix}.#{inbox}"
       @inbox_handlers[key] = ->(msg : Message) do
-        channel.send msg
         @inbox_handlers.delete key
+        channel.send msg
       end
       publish subject, message, reply_to: key
 
@@ -235,7 +241,7 @@ module NATS
       end
     end
 
-    def request(subject : String, message : Data, timeout : Time::Span, &block : Message ->) : Nil
+    def request(subject : String, message : Data = "", timeout = 2.seconds, &block : Message ->) : Nil
       inbox = Random::Secure.hex(4)
       key = "#{@inbox_prefix}.#{inbox}"
       @inbox_handlers[key] = ->(msg : Message) do
@@ -266,13 +272,13 @@ module NATS
       end
 
       write do
-        @socket << "PUB " << subject
+        @io << "PUB " << subject
         if reply_to
-          @socket << ' ' << reply_to
+          @io << ' ' << reply_to
         end
-        @socket << ' ' << message.bytesize << "\r\n"
-        @socket.write message.to_slice
-        @socket << "\r\n"
+        @io << ' ' << message.bytesize << "\r\n"
+        @io.write message.to_slice
+        @io << "\r\n"
       end
     end
 
@@ -292,14 +298,14 @@ module NATS
 
     def ping(channel = Channel(Nil).new(1))
       write do
-        @socket << "PING\r\n"
+        @io << "PING\r\n"
         @ping_count.add 1
         @pings.send channel
       end
     end
 
     def pong
-      write { @socket << "PONG\r\n" }
+      write { @io << "PONG\r\n" }
     end
 
     def jetstream
@@ -311,7 +317,7 @@ module NATS
         sleep @ping_interval
         return if @state.closed?
         if @ping_count.get > @max_pings_out
-          handle_disconnect! ServerNotRespondingToPings.new("Ping threshold succeeded, reconnecting")
+          handle_disconnect!
         end
         ping
       end
@@ -334,15 +340,26 @@ module NATS
           @outbound_interval = {@outbound_interval * 2, MAX_OUTBOUND_INTERVAL}.min
         end
       rescue ex : IO::Error
-        handle_disconnect! ex
+        break if state.closed?
+        @outbound_interval = MAX_OUTBOUND_INTERVAL
       rescue ex
         @on_error.call ex
       end
     end
 
     private def begin_inbound
-      while line = @socket.gets
+      backoff = 1
+      loop do
+        if @socket.closed?
+          break if state.closed?
+          handle_inbound_disconnect IO::Error.new, backoff: backoff.milliseconds
+        end
+
+        line = @socket.gets
+        break if state.closed?
         case line
+        when Nil
+          backoff *= 2
         when .starts_with? "MSG"
           starting_point = 4 # "MSG "
           if (subject_end = line.index(' ', starting_point)) && (sid_end = line.index(' ', subject_end + 1))
@@ -393,10 +410,20 @@ module NATS
         else
           @on_error.call UnknownCommand.new(line)
         end
+        backoff = 1
         Fiber.yield
+      rescue ex : IO::Error
+        break if state.closed?
+        handle_inbound_disconnect ex, backoff: backoff.milliseconds
       end
-    rescue ex : IO::Error
-      handle_disconnect! ex
+    end
+
+    def handle_inbound_disconnect(exception, backoff : Time::Span)
+      LOG.debug { "Exception in inbound data handler: #{exception}" }
+      exception.backtrace.each do |line|
+        LOG.debug { line }
+      end
+      sleep backoff
     end
 
     def close
@@ -408,7 +435,7 @@ module NATS
     end
 
     @on_error = ->(error : Exception) {}
-    def on_error(&@on_error : Exception ->)
+    def on_error(&@on_error : Exception -> Nil)
       self
     end
 
@@ -423,6 +450,10 @@ module NATS
     end
 
     private def write : Nil
+      if @socket.closed?
+        handle_disconnect!
+      end
+
       loop do
         @out.synchronize do
           yield
@@ -430,22 +461,26 @@ module NATS
         end
         return
       rescue ex : IO::Error
-        handle_disconnect! ex
+        handle_disconnect!
       end
     end
 
-    private def handle_disconnect!(ex)
-      LOG.debug { "handle_disconnect!" }
-      @out.synchronize do
-        unless @state.closed? || @state.connecting?
-          LOG.debug { "handle_disconnect! #{ex}, state: #{@state}" }
-          spawn @on_disconnect.call
-          @state = :disconnected
-          # Redirect all writes to the buffer until we reconnect to the server
-          @socket = @disconnect_buffer
-          spawn @on_error.call ex
-          spawn reconnect!
+    private def handle_disconnect!
+      loop do
+        @out.synchronize do
+          unless @state.closed? || @state.connecting?
+            @socket.close unless @socket.closed?
+            @state = :disconnected
+            @on_disconnect.call
+            # Redirect all writes to the buffer until we reconnect to the server
+            @io = @disconnect_buffer
+            reconnect!
+          end
         end
+
+        break
+      rescue ex
+        spawn @on_error.call(ex)
       end
     end
 
