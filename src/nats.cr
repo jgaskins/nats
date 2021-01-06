@@ -5,13 +5,36 @@ require "uuid"
 require "openssl"
 require "log"
 
-# TODO: Write documentation for `NATS`
+# NATS is a pub/sub message bus.
+#
+# ```
+# require "nats"
+#
+# # Connect to a NATS server running on localhost
+# nats = NATS::Client.new
+#
+# # Connect to a single remote NATS server
+# nats = NATS::Client.new(URI.parse(ENV["NATS_URL"]))
+#
+# # Connect to a NATS cluster, specified by the NATS_URLS environment variable
+# # as a comma-separated list of URLs
+# servers = ENV["NATS_URLS"]
+#   .split(',')
+#   .map { |url| URI.parse(url) }
+# nats = NATS::Client.new(servers: %w[
+#   nats://nats-1
+#   nats://nats-2
+#   nats://nats-3
+# ])
+# ```
 module NATS
   VERSION = "0.1.0"
 
+  # Generic error
   class Error < ::Exception
   end
 
+  # Raised when trying to reply to a NATS message that is not a reply.
   class NotAReply < Error
     getter nats_message : Message
 
@@ -48,6 +71,8 @@ module NATS
 
   LOG = ::Log.for(self)
 
+  # Instantiating a `NATS::Client` makes a connection to one of the given NATS
+  # servers.
   class Client
     alias Data = String | Bytes
 
@@ -77,6 +102,11 @@ module NATS
     getter? data_waiting = false
     getter server_info : ServerInfo
 
+    # Connect to a single NATS server at the given URI
+    #
+    # ```
+    # nats = NATS::Client.new(URI.parse("nats://nats.example.com"))
+    # ```
     def self.new(
       uri : URI,
       ping_interval = 2.minutes,
@@ -85,6 +115,15 @@ module NATS
       new([uri], ping_interval: ping_interval, max_pings_out: max_pings_out)
     end
 
+    # Connect to a NATS cluster at the given URIs
+    #
+    # ```
+    # nats = NATS::Client.new([
+    #   URI.parse("nats://nats-1.example.com"),
+    #   URI.parse("nats://nats-2.example.com"),
+    #   URI.parse("nats://nats-3.example.com"),
+    # ])
+    # ```
     def initialize(
       @servers = [URI.parse("nats:///")],
       @ping_interval : Time::Span = 2.minutes,
@@ -184,6 +223,21 @@ module NATS
       ##### NO DIRECT SOCKET READS PAST THIS POINT
     end
 
+    # Subscribe to the given `subject`, optionally with a `queue_group` (so that
+    # each message is delivered to this application once instead of once for
+    # each instance of the application), executing the given block for each
+    # message.
+    #
+    # ```
+    # require "nats"
+    #
+    # nats = NATS::Client.new
+    # nats.subscribe "orders.created" do |msg|
+    #   order = Order.from_json(msg.body_io)
+    #
+    #   # ...
+    # end
+    # ```
     def subscribe(subject : String, queue_group : String? = nil, sid = @current_sid.add(1), &block : Message, Subscription ->) : Subscription
       write do
         @io << "SUB " << subject << ' '
@@ -200,10 +254,26 @@ module NATS
       subscribe subscription.subject, subscription.queue_group, subscription.sid, &subscription.@block
     end
 
+    # Unsubscribe from the given subscription
+    #
+    # ```
+    # nats = NATS::Client.new
+    #
+    # new_orders = [] of NATS::Message
+    # subscription = nats.subscribe "orders.created.*" do |msg|
+    #   messages << msg
+    # end
+    #
+    # spawn do
+    #   sleep 10.seconds
+    #   nats.unsubscribe subscription
+    # end
+    # ```
     def unsubscribe(subscription : Subscription) : Nil
       unsubscribe subscription.sid
     end
 
+    # Unsubscribe from the given subscription after the specified number of messages has been received.
     def unsubscribe(subscription : Subscription, max_messages : Int) : Nil
       unsubscribe subscription.sid, max_messages
     end
@@ -222,6 +292,18 @@ module NATS
       @subscriptions[sid].unsubscribe_after messages: max_messages
     end
 
+    # Make a synchronous request to subscribers of the given `subject`, waiting
+    # up to `timeout` for a response from any of the subscribers. The first
+    # message to come back will be returned. If no messages comes back before
+    # the `timeout` elapses, `nil` is returned.
+    #
+    # ```
+    # if order_response = nats.request("orders.info.#{order_id}")
+    #   response << Order.from_json(order_response.body_io)
+    # else
+    #   response.status = :service_unavailable
+    # end
+    # ```
     def request(subject : String, message : Data = "", timeout : Time::Span = 2.seconds) : Message?
       channel = Channel(Message).new(1)
       inbox = Random::Secure.hex(4)
@@ -241,6 +323,9 @@ module NATS
       end
     end
 
+    # Make an asynchronous request to subscribers of the given `subject`, not
+    # waiting for a response. The first message to come back will be passed to
+    # the block.
     def request(subject : String, message : Data = "", timeout = 2.seconds, &block : Message ->) : Nil
       inbox = Random::Secure.hex(4)
       key = "#{@inbox_prefix}.#{inbox}"
