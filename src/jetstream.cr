@@ -1,7 +1,11 @@
 require "json"
+require "./nats"
 
 module NATS
   module JetStream
+    class Error < ::NATS::Error
+    end
+
     class Client
       def initialize(@nats : ::NATS::Client)
       end
@@ -15,6 +19,19 @@ module NATS
       end
 
       module API
+        struct ErrorResponse
+          include JSON::Serializable
+
+          getter error : Error
+
+          struct Error
+            include JSON::Serializable
+
+            getter code : Int32
+            getter description : String
+          end
+        end
+
         struct Stream
           def initialize(@nats : ::NATS::Client)
           end
@@ -53,14 +70,20 @@ module NATS
           def initialize(@nats : ::NATS::Client)
           end
 
-          def create(stream_name : String, **kwargs)
+          def create(stream_name : String, **kwargs) : JetStream::API::V1::Consumer
             consumer_config = NATS::JetStream::API::V1::ConsumerConfig.new(**kwargs)
             create_consumer = { stream_name: stream_name, config: consumer_config }
             create_consumer_subject = "$JS.API.CONSUMER.DURABLE.CREATE.#{stream_name}.#{consumer_config.durable_name}"
-            if response = @nats.request create_consumer_subject, create_consumer.to_json
-              JetStream::API::V1::Consumer.from_json response.body_io
+
+            unless response = @nats.request create_consumer_subject, create_consumer.to_json
+              raise JetStream::Error.new("Did not receive a response from NATS JetStream")
+            end
+
+            case parsed = (JetStream::API::V1::Consumer | ErrorResponse).from_json response.body_io
+            when ErrorResponse
+              raise JetStream::Error.new("#{parsed.error.description} (#{parsed.error.code})")
             else
-              raise "whoops"
+              parsed
             end
           end
 
