@@ -36,6 +36,14 @@ module NATS
             end
           end
 
+          def info(name : String)
+            if response = @nats.request "$JS.API.STREAM.INFO.#{name}"
+              NATS::JetStream::API::V1::Stream.from_json(response.body_io)
+            else
+              raise "whoops"
+            end
+          end
+
           def delete(stream : JetStream::API::V1::Stream)
             @nats.request "$JS.API.STREAM.DELETE.#{stream.config.name}"
           end
@@ -65,6 +73,14 @@ module NATS
               NATS::JetStream::API::V1::ConsumerListResponse.from_json(consumers_response.body_io)
             else
               raise "whoops"
+            end
+          end
+
+          def info(stream_name : String, name : String)
+            if consumer_response = @nats.request "$JS.API.CONSUMER.INFO.#{stream_name}.#{name}"
+              NATS::JetStream::API::V1::Consumer.from_json(consumer_response.body_io)
+            else
+              raise "no info for #{name.inspect} (stream #{stream_name.inspect})"
             end
           end
 
