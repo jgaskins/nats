@@ -221,9 +221,28 @@ module NATS
         end
 
         struct StreamConfig < Message
+          enum Storage
+            Memory
+            File
+
+            def self.from_json(json : JSON::PullParser) : self
+              case value = json.read_string
+              when "memory" then Memory
+              when "file" then File
+              else
+                raise "Invalid storage type: #{value}"
+              end
+            end
+
+            def self.to_json(value : self, json : JSON::Builder)
+              json.string value.to_s.downcase
+            end
+          end
+
           getter name : String
           getter subjects : Array(String)
-          getter storage : String
+          @[JSON::Field(converter: ::NATS::JetStream::API::V1::StreamConfig::Storage)]
+          getter storage : Storage
           @[JSON::Field(converter: ::NATS::JetStream::API::V1::MicrosecondsConverter)]
           getter max_age : Time::Span?
           getter max_bytes : Int64?
@@ -239,7 +258,7 @@ module NATS
           # @[JSON::Field(key: "Duplicates")]
           # getter duplicates : String?
 
-          def initialize(@name, @subjects, @max_age = nil, @max_bytes = nil, @max_msg_size = nil, @max_msgs = nil, @max_consumers = nil, @no_ack = false, @replicas = nil, @retention = nil, @discard = nil, @storage = "file")
+          def initialize(@name, @subjects, @max_age = nil, @max_bytes = nil, @max_msg_size = nil, @max_msgs = nil, @max_consumers = nil, @no_ack = false, @replicas = nil, @retention = nil, @discard = nil, @storage : Storage = :file)
           end
         end
 
