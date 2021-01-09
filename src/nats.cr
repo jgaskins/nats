@@ -313,6 +313,7 @@ module NATS
         channel.send msg
       end
       publish subject, message, reply_to: key
+      @out.synchronize { @socket.flush }
 
       select
       when msg = channel.receive
