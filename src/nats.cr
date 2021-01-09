@@ -371,7 +371,7 @@ module NATS
     def flush(timeout = 2.seconds)
       channel = Channel(Nil).new(1)
       ping channel
-      @socket.flush
+      @out.synchronize { @socket.flush }
 
       Fiber.yield
 
