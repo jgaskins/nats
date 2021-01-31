@@ -604,7 +604,7 @@ module NATS
     getter messages_remaining : Int32?
     private getter message_channel : MessageChannel
 
-    def initialize(@subject, @sid, @queue_group, max_in_flight : Int = 1, &@block : Message, Subscription ->)
+    def initialize(@subject, @sid, @queue_group, max_in_flight : Int = 65536, &@block : Message, Subscription ->)
       @message_channel = MessageChannel.new(max_in_flight)
     end
 
