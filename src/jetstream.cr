@@ -36,13 +36,21 @@ module NATS
           def initialize(@nats : ::NATS::Client)
           end
 
-          def create(**kwargs)
-            create_stream = JetStream::API::V1::StreamConfig.new(**kwargs)
+          def create(storage : JetStream::API::V1::StreamConfig::Storage, **kwargs)
+            create_stream = JetStream::API::V1::StreamConfig.new(**kwargs, storage: storage)
             if response = @nats.request "$JS.API.STREAM.CREATE.#{create_stream.name}", create_stream.to_json
-              JetStream::API::V1::Stream.from_json response.body_io
+              case parsed = (JetStream::API::V1::Stream | ErrorResponse).from_json response.body_io
+              when ErrorResponse
+                raise JetStream::Error.new("#{parsed.error.description} (#{parsed.error.code})")
+              else
+                parsed
+              end
             else
-              raise "whoops"
+              raise JetStream::Error.new("Did not receive a response from NATS JetStream")
             end
+          rescue ex
+            pp body: String.new(response.try(&.body) || Bytes.empty), parsed: parsed
+            raise ex
           end
 
           def list
@@ -192,8 +200,8 @@ module NATS
           getter limit : Int64
           getter streams : Array(Stream)
 
-          def each(&block : Stream ->)
-            streams.each(&block)
+          def each
+            streams.each { |s| yield s }
           end
         end
 
@@ -205,8 +213,8 @@ module NATS
           getter limit : Int64
           getter consumers : Array(Consumer)
 
-          def each(&block : Consumer ->)
-            consumers.each(&block)
+          def each
+            consumers.each { |c| yield c }
           end
         end
 
@@ -291,7 +299,7 @@ module NATS
           # MaxAckPending	The maximum number of messages without acknowledgement that can be outstanding, once this limit is reached message delivery will be suspended
           getter max_ack_pending : Int64?
 
-          def initialize(@deliver_subject, @durable_name = nil, @ack_policy = "explicit", @deliver_policy = "all", @replay_policy = "instant", @ack_wait = nil, @filter_subject = nil, @max_deliver = nil, @opt_start_seq = nil, @sample_frequency = nil, @opt_start_time = nil, @rate_limit = nil, max_ack_pending = nil)
+          def initialize(@deliver_subject = nil, @durable_name = nil, @ack_policy = "explicit", @deliver_policy = "all", @replay_policy = "instant", @ack_wait = nil, @filter_subject = nil, @max_deliver = nil, @opt_start_seq = nil, @sample_frequency = nil, @opt_start_time = nil, @rate_limit = nil, max_ack_pending : Int? = nil)
             @max_ack_pending = max_ack_pending.to_i64 if max_ack_pending
           end
           # getter name : String

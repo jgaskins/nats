@@ -19,6 +19,43 @@ describe NATS do
     string.should eq "foo"
   end
 
+  it "can set message headers without a reply-to" do
+    subject = "temp.#{UUID.random}"
+    headers = nil
+    body = Bytes.empty
+
+    nats.subscribe subject do |msg|
+      headers = msg.headers
+      body = msg.body
+    end
+
+    nats.publish subject, "asdf", headers: NATS::Message::Headers { "foo" => "bar" }
+    nats.flush
+
+    String.new(body).should eq "asdf"
+    headers.should eq NATS::Message::Headers { "foo" => "bar" }
+  end
+
+  it "can set message headers with a reply-to" do
+    subject = "temp.#{UUID.random}"
+    headers = nil
+    body = Bytes.empty
+    reply_to = nil
+
+    nats.subscribe subject do |msg|
+      headers = msg.headers
+      body = msg.body
+      reply_to = msg.reply_to
+    end
+
+    nats.publish subject, "asdf", reply_to: "my-reply-to", headers: NATS::Message::Headers { "foo" => "bar" }
+    nats.flush
+
+    String.new(body).should eq "asdf"
+    reply_to.should eq "my-reply-to"
+    headers.should eq NATS::Message::Headers { "foo" => "bar" }
+  end
+
   it "can publish to multiple subscribers" do
     subject = "temp.#{UUID.random}"
 

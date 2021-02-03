@@ -178,6 +178,7 @@ module NATS
         lang: "crystal",
         version: VERSION,
         protocol: 1,
+        headers: true,
         name: uri.path.sub(%r{\A/}, "").presence,
         user: uri.user,
         pass: uri.password,
@@ -239,6 +240,7 @@ module NATS
     # end
     # ```
     def subscribe(subject : String, queue_group : String? = nil, sid = @current_sid.add(1), &block : Message, Subscription ->) : Subscription
+      LOG.debug { "Subscribing to #{subject.inspect}, queue_group: #{queue_group.inspect}, sid: #{sid}" }
       write do
         @io << "SUB " << subject << ' '
         if queue_group
@@ -279,6 +281,7 @@ module NATS
     end
 
     def unsubscribe(sid : Int) : Nil
+      LOG.debug { "Unsubscribing from sid: #{sid}" }
       write { @io << "UNSUB " << sid << "\r\n" }
     ensure
       if subscription = @subscriptions.delete sid
@@ -287,6 +290,7 @@ module NATS
     end
 
     def unsubscribe(sid : Int, max_messages : Int) : Nil
+      LOG.debug { "Unsubscribing from sid #{sid} after #{max_messages} messages" }
       write { @io << "UNSUB " << sid << ' ' << max_messages << "\r\n" }
     ensure
       @subscriptions[sid].unsubscribe_after messages: max_messages
@@ -352,17 +356,41 @@ module NATS
       end
     end
 
-    def publish(subject : String, message : Data, reply_to : String? = nil) : Nil
+    def publish(subject : String, message : Data, reply_to : String? = nil, headers : Message::Headers? = nil) : Nil
       if message.bytesize > MAX_PUBLISH_SIZE
         raise Error.new("Attempted to publish message of size #{message.bytesize}. Cannot publish messages larger than #{MAX_PUBLISH_SIZE}.")
       end
 
+      LOG.debug { "Publishing #{message.bytesize} bytes to #{subject.inspect}, reply_to: #{reply_to.inspect}, headers: #{headers.inspect}" }
       write do
-        @io << "PUB " << subject
+        if headers
+          @io << "HPUB "
+        else
+          @io << "PUB "
+        end
+
+        @io << subject
         if reply_to
           @io << ' ' << reply_to
         end
-        @io << ' ' << message.bytesize << "\r\n"
+
+        if headers
+          nats_header_preamble = "NATS/1.0\r\n"
+          initial_header_length = nats_header_preamble.bytesize + 2 # 2 extra bytes for final CR+LF
+          header_length = headers.reduce(initial_header_length) do |bytes, (key, value)|
+            bytes += key.bytesize + value.bytesize + 4 # 2 extra bytes for ": " and 2 for CR+LF
+          end
+          @io << ' ' << header_length
+          @io << ' ' << header_length + message.bytesize << "\r\n"
+          @io << nats_header_preamble
+          headers.each do |key, value|
+            @io << key << ": " << value << "\r\n"
+          end
+          @io << "\r\n"
+        else
+          @io << ' ' << message.bytesize << "\r\n"
+        end
+
         @io.write message.to_slice
         @io << "\r\n"
       end
@@ -371,6 +399,7 @@ module NATS
     def flush(timeout = 2.seconds)
       channel = Channel(Nil).new(1)
       ping channel
+      LOG.debug { "Flushing buffer..." }
       @out.synchronize { @socket.flush }
 
       Fiber.yield
@@ -383,6 +412,7 @@ module NATS
     end
 
     def ping(channel = Channel(Nil).new(1))
+      LOG.debug { "Sending PING" }
       write do
         @io << "PING\r\n"
         @ping_count.add 1
@@ -391,6 +421,7 @@ module NATS
     end
 
     def pong
+      LOG.debug { "Sending PONG" }
       write { @io << "PONG\r\n" }
     end
 
@@ -403,6 +434,7 @@ module NATS
         sleep @ping_interval
         return if @state.closed?
         if @ping_count.get > @max_pings_out
+          LOG.debug { "Too many unresolved pings. Reconnecting..." }
           handle_disconnect!
         end
         ping
@@ -417,11 +449,13 @@ module NATS
         return if @state.closed?
 
         if data_waiting?
+          LOG.debug { "Flushing output buffer..." }
           @out.synchronize do
             @socket.flush
             @data_waiting = false
             @outbound_interval = 5.microseconds
           end
+          LOG.debug { "Output flushed." }
         else
           @outbound_interval = {@outbound_interval * 2, MAX_OUTBOUND_INTERVAL}.min
         end
@@ -441,27 +475,63 @@ module NATS
           handle_inbound_disconnect IO::Error.new, backoff: backoff.milliseconds
         end
 
-        line = @socket.gets
+        line = @socket.read_line
         break if state.closed?
+        LOG.debug { line || "" }
         case line
-        when Nil
-          backoff *= 2
-        when .starts_with? "MSG"
+        when .starts_with?("MSG"), .starts_with?("HMSG")
           starting_point = 4 # "MSG "
+          has_headers = line.starts_with?('H')
+          starting_point += 1 if has_headers
+
           if (subject_end = line.index(' ', starting_point)) && (sid_end = line.index(' ', subject_end + 1))
             subject = line[starting_point...subject_end]
             sid = line[subject_end + 1...sid_end].to_i
 
             # Figure out if we got a reply_to and set it and bytesize accordingly
             reply_to_with_byte_size = line[sid_end + 1..-1]
-            if boundary = reply_to_with_byte_size.index(' ')
-              reply_to = reply_to_with_byte_size[0...boundary]
-              bytesize = reply_to_with_byte_size[boundary + 1..-1].to_i
-            else
-              bytesize = reply_to_with_byte_size.to_i
+            if has_headers # HMSG
+              # An HMSG event from the server looks like this (brackets imply optional):
+              #   HMSG my-subject my-sid [my-reply-to] header_size total_size
+              #   NATS/1.0
+              #   My-Key: My-Value
+              #
+              #   My Payload Goes Here
+              #
+              # Total size includes header size, so payload_size = total_size - header_size
+              if reply_to_boundary = reply_to_with_byte_size.index(' ')
+                # 3 tokens: REPLY_TO HEADER_SIZE TOTAL_SIZE
+                if header_length_boundary = reply_to_with_byte_size.index(' ', reply_to_boundary + 1)
+                  reply_to = reply_to_with_byte_size[0...reply_to_boundary]
+                  header_size = reply_to_with_byte_size[reply_to_boundary + 1...header_length_boundary].to_i
+                  bytesize = reply_to_with_byte_size[header_length_boundary + 1..-1].to_i - header_size
+                else # Only 2 tokens: HEADER_SIZE TOTAL_SIZE
+                  header_size = reply_to_with_byte_size[0...reply_to_boundary].to_i
+                  bytesize = reply_to_with_byte_size[reply_to_boundary + 1..-1].to_i - header_size
+                end
+              else
+                raise Error.new("Invalid message declaration with headers: #{line}")
+              end
+              headers = Message::Headers.new
+              if (header_decl = @socket.gets) == "NATS/1.0" # Headers preamble, intended to look like HTTP/1.1
+                until (header_line = @socket.read_line).empty?
+                  key, value = header_line.split(/:\s*/, 2)
+                  headers[key] = value
+                end
+                LOG.debug { "Headers: #{headers.inspect}" }
+              else
+                raise Error.new("Invalid header declaration: #{header_decl} (msg: #{line})")
+              end
+            else # MSG
+              if boundary = reply_to_with_byte_size.rindex(' ')
+                reply_to = reply_to_with_byte_size[0...boundary]
+                bytesize = reply_to_with_byte_size[boundary + 1..-1].to_i
+              else
+                bytesize = reply_to_with_byte_size.to_i
+              end
             end
           else
-            raise Error.new("Invalid message declaration: #{line}")
+            raise Error.new("Invalid message declaration: #{line.inspect}")
           end
 
           body = Bytes.new(bytesize)
@@ -469,13 +539,19 @@ module NATS
           @socket.skip 2 # CRLF
 
           if subscription = @subscriptions[sid]?
-            subscription.send Message.new(subject, body, reply_to: reply_to) do |ex|
+            subscription.send Message.new(subject, body, reply_to: reply_to, headers: headers) do |ex|
+              LOG.debug { "Error occurred in handling subscription #{sid}: #{ex}" }
               @on_error.call ex
+            end
+            if subscription.messages_remaining
+              LOG.debug { "Messages remaining in subscription #{sid} to #{subscription.subject}: #{subscription.messages_remaining}" }
             end
             if (messages_remaining = subscription.messages_remaining) && messages_remaining <= 0
               @subscriptions.delete sid
               subscription.close
             end
+          else
+            LOG.debug { "No subscription #{sid}" }
           end
         when "+OK"
           # Cool, thanks
@@ -509,14 +585,17 @@ module NATS
       exception.backtrace.each do |line|
         LOG.debug { line }
       end
+      LOG.debug { "Waiting #{backoff} to reconnect" }
       sleep backoff
     end
 
     def close
       return if @state.closed?
+      LOG.debug { "Flushing before closing..." }
       flush
       @socket.close
       @state = :closed
+      LOG.debug { "Connection closed" }
     rescue IO::Error
     end
 
@@ -560,6 +639,7 @@ module NATS
             @on_disconnect.call
             # Redirect all writes to the buffer until we reconnect to the server
             @io = @disconnect_buffer
+            LOG.debug { "Output set to in-memory buffer pending reconnection" }
             reconnect!
           end
         end
@@ -573,6 +653,7 @@ module NATS
     private def reconnect!
       return unless @state.disconnected?
       @state = :reconnecting
+      LOG.debug { "Reconnecting..." }
       initialize(
         servers: @servers,
         ping_interval: @ping_interval,
@@ -586,8 +667,11 @@ module NATS
     getter subject : String
     getter body : Bytes
     getter reply_to : String?
+    getter headers : Headers?
 
-    def initialize(@subject, @body, @reply_to = nil)
+    alias Headers = Hash(String, String)
+
+    def initialize(@subject, @body, @reply_to = nil, @headers = nil)
     end
 
     def body_io
@@ -604,7 +688,7 @@ module NATS
     getter messages_remaining : Int32?
     private getter message_channel : MessageChannel
 
-    def initialize(@subject, @sid, @queue_group, max_in_flight : Int = 65536, &@block : Message, Subscription ->)
+    def initialize(@subject, @sid, @queue_group, max_in_flight : Int = 10, &@block : Message, Subscription ->)
       @message_channel = MessageChannel.new(max_in_flight)
     end
 
@@ -617,6 +701,7 @@ module NATS
         while remaining.nil? || remaining > 0
           message, on_error = message_channel.receive
 
+          LOG.debug { "Calling subscription handler for sid #{sid} (subscription to #{subject.inspect}, message subject #{message.subject.inspect})" }
           call message, on_error
 
           remaining = @messages_remaining
