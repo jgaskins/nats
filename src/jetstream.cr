@@ -1,5 +1,6 @@
 require "json"
 require "./nats"
+require "./error"
 
 module NATS
   module JetStream
@@ -16,6 +17,20 @@ module NATS
 
       def consumer
         API::Consumer.new(@nats)
+      end
+
+      def subscribe(subject : String, queue_group : String? = nil, &block : Message ->)
+        @nats.subscribe subject, queue_group: queue_group do |msg|
+          block.call Message.new(msg)
+        end
+      end
+
+      def ack(msg : Message)
+        @nats.publish msg.reply_to, "+ACK"
+      end
+
+      def nack(msg : Message)
+        @nats.publish msg.reply_to, "-NAK"
       end
 
       module API
@@ -70,7 +85,12 @@ module NATS
           end
 
           def delete(stream : JetStream::API::V1::Stream)
-            @nats.request "$JS.API.STREAM.DELETE.#{stream.config.name}"
+            delete stream.config.name
+          end
+
+          def delete(stream : String)
+
+            @nats.request "$JS.API.STREAM.DELETE.#{stream}"
           end
         end
 
@@ -116,7 +136,11 @@ module NATS
           end
 
           def delete(stream : JetStream::API::V1::Stream, consumer : JetStream::API::V1::Consumer)
-            @nats.request "$JS.API.CONSUMER.DELETE.#{stream.config.name}.#{consumer.name}"
+            delete stream.config.name, consumer.name
+          end
+
+          def delete(stream : String, consumer : String)
+            @nats.request "$JS.API.CONSUMER.DELETE.#{stream}.#{consumer}"
           end
         end
       end
@@ -132,13 +156,18 @@ module NATS
       getter pending : Int64
       getter body : Bytes
       getter subject : String
-      getter reply_to : String?
+      getter reply_to : String
       getter headers : ::NATS::Message::Headers?
 
-      # <stream>.<consumer>.<delivered count>.<stream sequence>.<consumer sequence>.<timestamp>.<pending messages>
+      def self.new(msg : ::NATS::Message)
+        from_nats_message msg
+      end
+
       def self.from_nats_message(msg : ::NATS::Message)
+        # reply_to format:
+        # $JS.ACK.<stream>.<consumer>.<delivered count>.<stream sequence>.<consumer sequence>.<timestamp>.<pending messages>
         if reply_to = msg.reply_to
-          _jetstream, _ack, stream, consumer, delivered_count, stream_seq, consumer_seq, timestamp, pending_messages = reply_to.split(".")
+          _jetstream, _ack, stream, consumer, delivered_count, stream_seq, consumer_seq, timestamp, pending_messages = reply_to.split('.')
           new(
             stream: stream,
             consumer: consumer,
@@ -301,7 +330,8 @@ module NATS
           # MaxAckPending	The maximum number of messages without acknowledgement that can be outstanding, once this limit is reached message delivery will be suspended
           getter max_ack_pending : Int64?
 
-          def initialize(@deliver_subject = nil, @durable_name = nil, @ack_policy = "explicit", @deliver_policy = "all", @replay_policy = "instant", @ack_wait = nil, @filter_subject = nil, @max_deliver = nil, @opt_start_seq = nil, @sample_frequency = nil, @opt_start_time = nil, @rate_limit = nil, max_ack_pending : Int? = nil)
+          def initialize(@deliver_subject = nil, @durable_name = nil, @ack_policy = "explicit", @deliver_policy = "all", @replay_policy = "instant", @ack_wait = nil, @filter_subject = nil, max_deliver = nil, @opt_start_seq = nil, @sample_frequency = nil, @opt_start_time = nil, @rate_limit = nil, max_ack_pending : Int? = nil)
+            @max_deliver = max_deliver.try(&.to_i64)
             @max_ack_pending = max_ack_pending.to_i64 if max_ack_pending
           end
           # getter name : String
