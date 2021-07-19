@@ -30,6 +30,8 @@ require "log"
 module NATS
   VERSION = "1.0.1"
 
+  alias Headers = Message::Headers
+
   # Generic error
   class Error < ::Exception
   end

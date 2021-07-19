@@ -133,6 +133,7 @@ module NATS
       getter body : Bytes
       getter subject : String
       getter reply_to : String?
+      getter headers : ::NATS::Message::Headers?
 
       # <stream>.<consumer>.<delivered count>.<stream sequence>.<consumer sequence>.<timestamp>.<pending messages>
       def self.from_nats_message(msg : ::NATS::Message)
@@ -148,14 +149,15 @@ module NATS
             pending: pending_messages.to_i64,
             body: msg.body,
             subject: msg.subject,
-            reply_to: msg.reply_to,
+            reply_to: reply_to,
+            headers: msg.headers,
           )
         else
           raise InvalidNATSMessage.new("Message does not have a reply_to set")
         end
       end
 
-      def initialize(@stream, @consumer, @delivered_count, @stream_seq, @consumer_seq, @timestamp, @pending, @body, @subject, @reply_to)
+      def initialize(@stream, @consumer, @delivered_count, @stream_seq, @consumer_seq, @timestamp, @pending, @body, @subject, @reply_to, @headers)
       end
 
       class InvalidNATSMessage < Exception
