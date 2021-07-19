@@ -4,14 +4,6 @@ version: 1.0.1
 authors:
   - Jamie Gaskins <jgaskins@hey.com>
 
-targets:
-  bench_pub:
-    main: examples/bench_pub.cr
-
-dependencies:
-  ed25519-hd:
-    github: Axentro/ed25519-hd
-
-crystal: 0.35.1
+crystal: ">= 0.35.1, < 2.0.0"
 
 license: MIT
