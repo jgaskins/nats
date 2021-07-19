@@ -18,7 +18,9 @@ NATS is a message broker for distributed systems.
 
 You can use NATS in a publish/subscribe or request/reply paradigm.
 
-In either one, let's consider the following class to be shared:
+### Publish/Subscribe
+
+For publish/subscribe, let's consider the following class to be shared, representing an event that will be published by one service and picked up by another:
 
 ```crystal
 require "uuid"
@@ -37,7 +39,7 @@ struct UserRegisteredEvent
 end
 ```
 
-### Publish/Subscribe
+In one service, we can subscribe to a subject that will be sent all of the events pertaining to a user registering:
 
 ```crystal
 require "nats"
@@ -48,7 +50,7 @@ nats = NATS::Client.new(URI.parse(ENV["NATS_URL"]))
 # group. A message will only be delivered to a single client in a given queue
 # group.
 nats.subscribe "customers.registration", queue_group: "cart-service" do |msg|
-  new_user = UserRegisteredEvent.from_json(msg.body)
+  new_user = UserRegisteredEvent.from_json(msg.body_io)
 
   # This message represents that a new customer has registered, presumably sent
   # by our identity/authentication/user service. We create a record for this
