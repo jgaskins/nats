@@ -78,7 +78,7 @@ module NATS
 
           def info(name : String)
             if response = @nats.request "$JS.API.STREAM.INFO.#{name}"
-              NATS::JetStream::API::V1::Stream.from_json(response.body_io)
+              NATS::JetStream::API::V1::Stream.from_json(String.new(response.body))
             else
               raise "whoops"
             end
@@ -89,7 +89,6 @@ module NATS
           end
 
           def delete(stream : String)
-
             @nats.request "$JS.API.STREAM.DELETE.#{stream}"
           end
         end
