@@ -163,10 +163,6 @@ module NATS
       getter headers : ::NATS::Message::Headers?
 
       def self.new(msg : ::NATS::Message)
-        from_nats_message msg
-      end
-
-      def self.from_nats_message(msg : ::NATS::Message)
         # reply_to format:
         # $JS.ACK.<stream>.<consumer>.<delivered count>.<stream sequence>.<consumer sequence>.<timestamp>.<pending messages>
         if reply_to = msg.reply_to
