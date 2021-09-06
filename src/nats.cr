@@ -78,8 +78,8 @@ module NATS
   class Client
     alias Data = String | Bytes
 
-    BUFFER_SIZE = 1 << 15
-    MEGABYTE = 1 << 20
+    BUFFER_SIZE      = 1 << 15
+    MEGABYTE         = 1 << 20
     MAX_PUBLISH_SIZE = 1 * MEGABYTE
 
     enum State
@@ -100,9 +100,11 @@ module NATS
     @disconnect_buffer = IO::Memory.new
     @inbox_prefix = "_INBOX.#{Random::Secure.hex}"
     @inbox_handlers = {} of String => Proc(Message, Nil)
+
+    # The current state of the connection
     getter state : State = :connecting
-    getter? data_waiting = false
     getter server_info : ServerInfo
+    private getter? data_waiting = false
 
     # Connect to a single NATS server at the given URI
     #
@@ -112,7 +114,7 @@ module NATS
     def self.new(
       uri : URI,
       ping_interval = 2.minutes,
-      max_pings_out = 2,
+      max_pings_out = 2
     )
       new([uri], ping_interval: ping_interval, max_pings_out: max_pings_out)
     end
@@ -129,7 +131,7 @@ module NATS
     def initialize(
       @servers = [URI.parse("nats:///")],
       @ping_interval : Time::Span = 2.minutes,
-      @max_pings_out = 2,
+      @max_pings_out = 2
     )
       uri = @servers.sample
       @ping_count = Atomic.new(0)
@@ -175,15 +177,15 @@ module NATS
 
       @io << "CONNECT "
       connect = {
-        verbose: false,
+        verbose:  false,
         pedantic: false,
-        lang: "crystal",
-        version: VERSION,
+        lang:     "crystal",
+        version:  VERSION,
         protocol: 1,
-        headers: true,
-        name: uri.path.sub(%r{\A/}, "").presence,
-        user: uri.user,
-        pass: uri.password,
+        headers:  true,
+        name:     uri.path.sub(%r{\A/}, "").presence,
+        user:     uri.user,
+        pass:     uri.password,
       }
       connect.to_json @io
       @io << "\r\n"
@@ -203,7 +205,7 @@ module NATS
         end
         IO.copy @disconnect_buffer.rewind, @io
         @socket.flush
-        @disconnect_buffer.clear
+        @disconnect_buffer = IO::Memory.new
       else
         spawn begin_pings
         spawn begin_outbound
@@ -222,8 +224,8 @@ module NATS
 
       @state = :connected
 
-      ##### ALL SOCKET READS SHOULD BE DONE IN #begin_inbound PAST THIS POINT
-      ##### NO DIRECT SOCKET READS PAST THIS POINT
+      # #### ALL SOCKET READS SHOULD BE DONE IN #begin_inbound PAST THIS POINT
+      # #### NO DIRECT SOCKET READS PAST THIS POINT
     end
 
     # Subscribe to the given `subject`, optionally with a `queue_group` (so that
@@ -282,7 +284,7 @@ module NATS
       unsubscribe subscription.sid, max_messages
     end
 
-    def unsubscribe(sid : Int) : Nil
+    private def unsubscribe(sid : Int) : Nil
       LOG.debug { "Unsubscribing from sid: #{sid}" }
       write { @io << "UNSUB " << sid << "\r\n" }
     ensure
@@ -291,7 +293,7 @@ module NATS
       end
     end
 
-    def unsubscribe(sid : Int, max_messages : Int) : Nil
+    private def unsubscribe(sid : Int, max_messages : Int) : Nil
       LOG.debug { "Unsubscribing from sid #{sid} after #{max_messages} messages" }
       write { @io << "UNSUB " << sid << ' ' << max_messages << "\r\n" }
     ensure
@@ -350,6 +352,20 @@ module NATS
       @inbox_handlers.delete key
     end
 
+    # Send the given `body` to the `msg`'s `reply_to` subject, often used in a
+    # request/reply messaging model.
+    #
+    # ```
+    # nats.subscribe "orders.*", queue_group: "orders-service" do |msg|
+    #   _, id = msg.subject.split('.') # Similar to HTTP path routing
+    #
+    #   if order = OrderQuery.new.find_by(id: id)
+    #     nats.reply msg, {order: order}.to_json
+    #   else
+    #     nats.reply msg, {error: "No order with that id found"}.to_json
+    #   end
+    # end
+    # ```
     def reply(msg : Message, body : Data) : Nil
       if subject = msg.reply_to
         publish subject, body
@@ -358,7 +374,40 @@ module NATS
       end
     end
 
-    def publish(subject : String, message : Data, reply_to : String? = nil, headers : Message::Headers? = nil) : Nil
+    # Publish the given message body (either `Bytes` for binary data or `String` for text) on the given NATS subject, optionally supplying a `reply_to` subject (if expecting a reply or to notify the receiver where to send updates) and any `headers`.
+    #
+    # ```
+    # # Send an empty message to a subject
+    # nats.publish "hello"
+    #
+    # # Serialize an object to a subject
+    # nats.publish "orders.#{order.id}", order.to_json
+    #
+    # # Tell a recipient where to send results. For example, to stream results
+    # # to a given subject:
+    # reply_subject = "replies.orders.list.customer.123"
+    # orders = [] of Order
+    # nats.subscribe reply_subject do |msg|
+    #   case result = (Order | Complete).from_json(String.new(msg.body))
+    #   in Order
+    #     orders << result
+    #   in Complete
+    #     nats.unsubscribe reply_subject
+    #   end
+    # end
+    # nats.publish "orders.list.customer.123", reply_to: reply_subject
+    #
+    # # Publish a message to NATS JetStream with a message-deduplication header
+    # # for idempotency:
+    # nats.jetstream.subscribe consumer_subject, queue_group: "my-service" do |msg|
+    #   # ...
+    # end
+    # nats.publish orders_subject, order.to_json, headers: NATS::Message::Headers {
+    #   # Deduplicate using the equivalent of a cache key
+    #   "Nats-Msg-Id" => "order-submitted-#{order.id}-#{order.updated_at.to_json}",
+    # }
+    # ```
+    def publish(subject : String, message : Data = Bytes.empty, reply_to : String? = nil, headers : Message::Headers? = nil) : Nil
       if message.bytesize > MAX_PUBLISH_SIZE
         raise Error.new("Attempted to publish message of size #{message.bytesize}. Cannot publish messages larger than #{MAX_PUBLISH_SIZE}.")
       end
@@ -398,6 +447,7 @@ module NATS
       end
     end
 
+    # Flush the client's output buffer over the wire
     def flush(timeout = 2.seconds)
       channel = Channel(Nil).new(1)
       ping channel
@@ -422,11 +472,14 @@ module NATS
       end
     end
 
+    # :nodoc:
     def pong
       LOG.debug { "Sending PONG" }
       write { @io << "PONG\r\n" }
     end
 
+    # Returns a `NATS::JetStream::Client` that uses this client's connection to
+    # the NATS server.
     def jetstream
       @jetstream ||= JetStream::Client.new(self)
     end
@@ -445,6 +498,7 @@ module NATS
 
     MAX_OUTBOUND_INTERVAL = 10.milliseconds
     @outbound_interval : Time::Span = 5.microseconds
+
     private def begin_outbound
       loop do
         sleep @outbound_interval
@@ -515,7 +569,7 @@ module NATS
                 raise Error.new("Invalid message declaration with headers: #{line}")
               end
               headers = Message::Headers.new
-              if (header_decl = @socket.gets) == "NATS/1.0" # Headers preamble, intended to look like HTTP/1.1
+              if (header_decl = @socket.read_line).starts_with? "NATS/1.0" # Headers preamble, intended to look like HTTP/1.1
                 until (header_line = @socket.read_line).empty?
                   key, value = header_line.split(/:\s*/, 2)
                   headers[key] = value
@@ -582,7 +636,7 @@ module NATS
       end
     end
 
-    def handle_inbound_disconnect(exception, backoff : Time::Span)
+    private def handle_inbound_disconnect(exception, backoff : Time::Span)
       LOG.debug { "Exception in inbound data handler: #{exception}" }
       exception.backtrace.each do |line|
         LOG.debug { line }
@@ -591,6 +645,9 @@ module NATS
       sleep backoff
     end
 
+    # Close this NATS connection. This should be done explicitly before exiting
+    # the program so that the NATS server can remove any subscriptions that were
+    # associated with this client.
     def close
       return if @state.closed?
       LOG.debug { "Flushing before closing..." }
@@ -602,16 +659,40 @@ module NATS
     end
 
     @on_error = ->(error : Exception) {}
+
+    # Execute the given block whenever an exception is raised inside this NATS
+    # client.
+    #
+    # ```
+    # nats = NATS::Client.new
+    # nats.on_error { |error| Honeybadger.notify error }
+    # ```
     def on_error(&@on_error : Exception -> Nil)
       self
     end
 
-    @on_disconnect = -> {}
+    @on_disconnect = ->{}
+
+    # Execute the given block whenever this client is disconnected from the NATS
+    # server.
+    #
+    # ```
+    # nats = NATS::Client.new
+    # nats.on_disconnect { Datadog.metrics.increment "nats.disconnect" }
+    # ```
     def on_disconnect(&@on_disconnect)
       self
     end
 
-    @on_reconnect = -> {}
+    @on_reconnect = ->{}
+
+    # Execute the given block whenever this client is reconnected to the NATS
+    # server.
+    #
+    # ```
+    # nats = NATS::Client.new
+    # nats.on_reconnect { Datadog.metrics.increment "nats.reconnect" }
+    # ```
     def on_reconnect(&@on_reconnect)
       self
     end

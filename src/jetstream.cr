@@ -3,10 +3,14 @@ require "./nats"
 require "./error"
 
 module NATS
+  # NATS JetStream
   module JetStream
     class Error < ::NATS::Error
     end
 
+    # This class provides a client for NATS JetStream for at-least-once delivery.
+    # You can either instantiate it with a NATS client or with the
+    # `NATS::Client#jetstream` method as a shortcut.
     class Client
       def initialize(@nats : ::NATS::Client)
       end
