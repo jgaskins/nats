@@ -99,8 +99,12 @@ module NATS
 
           def create(stream_name : String, **kwargs) : JetStream::API::V1::Consumer
             consumer_config = NATS::JetStream::API::V1::ConsumerConfig.new(**kwargs)
-            create_consumer = { stream_name: stream_name, config: consumer_config }
-            create_consumer_subject = "$JS.API.CONSUMER.DURABLE.CREATE.#{stream_name}.#{consumer_config.durable_name}"
+            create_consumer = {stream_name: stream_name, config: consumer_config}
+            if durable_name = consumer_config.durable_name
+              create_consumer_subject = "$JS.API.CONSUMER.DURABLE.CREATE.#{stream_name}.#{durable_name}"
+            else
+              create_consumer_subject = "$JS.API.CONSUMER.CREATE.#{stream_name}"
+            end
 
             unless response = @nats.request create_consumer_subject, create_consumer.to_json
               raise JetStream::Error.new("Did not receive a response from NATS JetStream")
