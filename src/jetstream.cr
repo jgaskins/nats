@@ -202,11 +202,34 @@ module NATS
           getter config : StreamConfig
           getter created : Time
           getter state : StreamState
+          getter cluster : ClusterInfo?
+          getter mirror : StreamSourceInfo?
+          getter sources : Array(StreamSourceInfo) = [] of StreamSourceInfo
+        end
+
+        struct StreamSourceInfo < Message
+          getter name : String
+          getter external : ExternalStream?
+          getter lag : UInt64
+          @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
+          getter active : Time::Span
+          getter error : APIError?
+        end
+
+        struct ExternalStream < Message
+          getter api : String
+          getter deliver : String
+        end
+
+        struct APIError < Message
+          getter code : Int64
+          getter err_code : UInt16?
+          getter description : String?
         end
 
         struct Consumer < Message
           getter stream_name : String?
-          getter name : String
+          getter name : String?
           getter created : Time
           getter config : ConsumerConfig
           getter delivered : Sequence
@@ -215,6 +238,8 @@ module NATS
           getter num_redelivered : Int64
           getter num_waiting : Int64
           getter num_pending : Int64
+          getter cluster : ClusterInfo?
+          getter? push_bound : Bool = false
 
           struct Sequence < Message
             getter consumer_seq : Int64
@@ -262,24 +287,26 @@ module NATS
           enum Storage
             Memory
             File
+          end
 
-            def self.from_json(json : JSON::PullParser) : self
-              case value = json.read_string
-              when "memory" then Memory
-              when "file" then File
-              else
-                raise "Invalid storage type: #{value}"
-              end
-            end
+          enum RetentionPolicy
+            Limits
+            Interest
+            Workqueue
+          end
 
-            def self.to_json(value : self, json : JSON::Builder)
-              json.string value.to_s.downcase
-            end
+          enum DiscardPolicy
+            Old
+            New
+          end
+
+          struct Placement < Message
+            getter cluster : String
+            getter tags : Array(String) = %w[]
           end
 
           getter name : String
           getter subjects : Array(String)
-          @[JSON::Field(converter: ::NATS::JetStream::API::V1::StreamConfig::Storage)]
           getter storage : Storage
           @[JSON::Field(converter: ::NATS::JetStream::API::V1::MicrosecondsConverter)]
           getter max_age : Time::Span?
@@ -289,29 +316,56 @@ module NATS
           getter max_consumers : Int32?
           getter? no_ack : Bool?
           getter replicas : Int32?
-          getter retention : String?
-          getter discard : String?
+          getter retention : RetentionPolicy?
+          getter discard : DiscardPolicy?
+          # @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
+          # getter duplicate_window : Time::Span?
+          getter placement : Placement?
+          getter mirror : StreamSourceInfo?
+          getter sources : Array(StreamSourceInfo) = [] of StreamSourceInfo
 
-          # Not sure what this does
-          # @[JSON::Field(key: "Duplicates")]
-          # getter duplicates : String?
-
-          def initialize(@name, @subjects, @max_age = nil, @max_bytes = nil, @max_msg_size = nil, @max_msgs = nil, @max_consumers = nil, @no_ack = false, @replicas = nil, @retention = nil, @discard = nil, @storage : Storage = :file)
+          def initialize(
+            @name,
+            @subjects,
+            @max_age = nil,
+            @max_bytes = nil,
+            @max_msg_size = nil,
+            @max_msgs = nil,
+            @max_consumers = nil,
+            @no_ack = false,
+            @replicas = nil,
+            @retention : RetentionPolicy? = nil,
+            @discard : DiscardPolicy? = nil,
+            @storage : Storage = :file,
+          )
           end
         end
 
         struct ConsumerConfig < Message
           # AckPolicy	How messages should be acknowledged, AckNone, AckAll or AckExplicit
-          getter ack_policy : String
+          getter ack_policy : AckPolicy
           # AckWait	How long to allow messages to remain un-acknowledged before attempting redelivery
           @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
           getter ack_wait : Time::Span?
           # DeliverPolicy	The initial starting mode of the consumer, DeliverAll, DeliverLast, DeliverNew, DeliverByStartSequence or DeliverByStartTime
-          getter deliver_policy : String
+          getter deliver_policy : DeliverPolicy
           # DeliverySubject	The subject to deliver observed messages, when not set, a pull-based Consumer is created
           getter deliver_subject : String?
           # Durable	The name of the Consumer
           getter durable_name : String?
+
+          getter deliver_group : String?
+          getter description : String?
+          getter max_waiting : Int64?
+          @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
+          getter idle_heartbeat : Time::Span?
+          getter? flow_control : Bool = false
+
+          # Apparently we're not supposed to use this in clients
+          # See https://github.com/nats-io/nats-server/blob/3aa8e63b290ac4ba1c99193827b3f66ad5679904/server/consumer.go#L70-L71
+          # getter? direct : Bool = false
+
+
           # FilterSubject	When consuming from a Stream with many subjects, or wildcards, select only a specific incoming subjects, supports wildcards
           getter filter_subject : String?
           # MaxDeliver	Maximum amount times a specific message will be delivered. Use this to avoid poison pills crashing all your services forever
@@ -319,31 +373,59 @@ module NATS
           # OptStartSeq	When first consuming messages from the Stream start at this particular message in the set
           getter opt_start_seq : Int64?
           # ReplayPolicy	How messages are sent ReplayInstant or ReplayOriginal
-          getter replay_policy : String
+          getter replay_policy : ReplayPolicy
           # SampleFrequency	What percentage of acknowledgements should be samples for observability, 0-100
-          getter sample_frequency : Int8?
+          getter sample_frequency : String?
           # OptStartTime	When first consuming messages from the Stream start with messages on or after this time
           getter opt_start_time : Time?
           # RateLimit	The rate of message delivery in bits per second
-          getter rate_limit : Int64?
+          getter rate_limit_bps : UInt64?
           # MaxAckPending	The maximum number of messages without acknowledgement that can be outstanding, once this limit is reached message delivery will be suspended
           getter max_ack_pending : Int64?
 
-          def initialize(@deliver_subject = nil, @durable_name = nil, @ack_policy = "explicit", @deliver_policy = "all", @replay_policy = "instant", @ack_wait = nil, @filter_subject = nil, max_deliver = nil, @opt_start_seq = nil, @sample_frequency = nil, @opt_start_time = nil, @rate_limit = nil, max_ack_pending : Int? = nil)
+          def initialize(@deliver_subject = nil, @durable_name = nil, @ack_policy : AckPolicy = :explicit, @deliver_policy : DeliverPolicy = :all, @replay_policy : ReplayPolicy = :instant, @ack_wait = nil, @filter_subject = nil, max_deliver = nil, @opt_start_seq = nil, @sample_frequency = nil, @opt_start_time = nil, @rate_limit_bps = nil, max_ack_pending : Int? = nil, @idle_heartbeat = nil, @deliver_group = durable_name)
             @max_deliver = max_deliver.try(&.to_i64)
             @max_ack_pending = max_ack_pending.to_i64 if max_ack_pending
           end
-          # getter name : String
-          # getter stream : String
-          # getter delivery_target : String?
-          # getter start_policy : String?
-          # getter acknowledgement_policy : String?
-          # getter replay_policy : String?
-          # getter stream_filter : String?
-          # getter max_deliveries : Int64?
 
-          # def initialize(@name, @stream, @delivery_target = nil, @start_policy = nil, @acknowledgement_policy = nil, @replay_policy = nil, @stream_filter = nil, @max_deliveries = nil)
-          # end
+          enum AckPolicy
+            # See https://github.com/nats-io/nats-server/blob/3aa8e63b290ac4ba1c99193827b3f66ad5679904/server/consumer.go#L136-L143
+            None
+            All
+            Explicit
+          end
+
+          enum DeliverPolicy
+            # See https://github.com/nats-io/nats-server/blob/3aa8e63b290ac4ba1c99193827b3f66ad5679904/server/consumer.go#L105-L120
+            All
+            Last
+            New
+            ByStartSequence
+            ByStartTime
+            LastPerSubject
+            Undefined
+          end
+
+          enum ReplayPolicy
+            # See https://github.com/nats-io/nats-server/blob/3aa8e63b290ac4ba1c99193827b3f66ad5679904/server/consumer.go#L157-L162
+            Instant
+            Original
+          end
+        end
+
+        struct ClusterInfo < Message
+          getter name : String?
+          getter leader : String?
+          getter replicas : Array(PeerInfo) = [] of PeerInfo
+        end
+
+        struct PeerInfo < Message
+          getter name : String
+          getter? current : Bool
+          getter? offline : Bool
+          @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
+          getter active : Time::Span
+          getter lag : UInt64
         end
 
         module MicrosecondsConverter
