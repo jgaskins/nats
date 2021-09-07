@@ -3,7 +3,9 @@ require "./nats"
 require "./error"
 
 module NATS
-  # NATS JetStream
+  # NATS JetStream provides at-least-once delivery guarantees with the
+  # possibility of exactly-once for some use cases, allowing NATS to be used for
+  # scenarios where 100% delivery of messages and events is required.
   module JetStream
     class Error < ::NATS::Error
     end
@@ -15,161 +17,178 @@ module NATS
       def initialize(@nats : ::NATS::Client)
       end
 
+      # Returns an `API::Stream` instance to interact with the NATS JetStream
+      # API for streams.
       def stream
-        API::Stream.new(@nats)
+        Streams.new(@nats)
       end
 
+      # Returns an `API::Consumer` instance to interact with the NATS JetStream
+      # API for consumers.
       def consumer
-        API::Consumer.new(@nats)
+        Consumers.new(@nats)
       end
 
+      # Subscribe to messages delivered to the given consumer. Note that this
+      # consumer _must_ be a push-based consumer. Pull-based consumers do not
+      # allow subscriptions because you must explicitly request the next
+      # message.
+      #
+      # ```
+      # js = nats.jetstream
+      # consumer = js.consumer.info("orders", "fulfillment")
+      # js.subscribe consumer do |msg|
+      #   # ...
+      #
+      #   js.ack msg
+      # end
+      # ```
+      def subscribe(consumer : JetStream::API::V1::Consumer, &block : Message ->)
+        if subject = consumer.config.deliver_subject
+          subscribe subject, queue_group: consumer.config.deliver_group, &block
+        else
+          raise ArgumentError.new("Consumer is not a push consumer (no `deliver_subject`)")
+        end
+      end
+
+      # Subscribe to the given subject with an optional queue group. This is
+      # effectively identical to `NATS::Client#subscribe`, but the message
+      # yielded to the block is a `NATS::JetStream::Message` instead of
+      # a `NATS::Message`.
+      #
+      # ```
+      # js = nats.jetstream
+      # js.subscribe "orders.*", queue_group: "fulfillment" do |msg|
+      #   # ...
+      #
+      #   js.ack msg
+      # end
+      # ```
+      #
+      # _NOTE:_ If provided, the `queue_group` _must_ be the same as a `Consumer`'s `deliver_group` for NATS server 2.4.0 and above.
       def subscribe(subject : String, queue_group : String? = nil, &block : Message ->)
         @nats.subscribe subject, queue_group: queue_group do |msg|
           block.call Message.new(msg)
         end
       end
 
+      # Acknowledge success processing the specified message, usually called at
+      # the end of your subscription block.
+      #
+      # ```
+      # jetstream.subscribe consumer do |msg|
+      #   # ...
+      #
+      #   jetstream.ack msg
+      # end
+      # ```
       def ack(msg : Message)
         @nats.publish msg.reply_to, "+ACK"
       end
 
+      # Negatively acknowledge the processing of a message, typically called
+      # when an exception is raised while processing.
+      #
+      # ```
+      # jetstream.subscribe consumer do |msg|
+      #   # doing some work
+      #
+      #   jetstream.ack msg # Successfully processed
+      # rescue ex
+      #   jetstream.nack msg # Processing was unsuccessful, try again.
+      # end
+      # ```
+      #
+      # You can also implement exponential backoff by pushing the nack into a
+      # fiber that sleeps for some time before:
+      #
+      # ```
+      # jetstream.subscribe consumer do |msg|
+      #   # ...
+      # rescue ex
+      #   # Very important to do this in a `spawn`. Do not block the `subscribe`
+      #   # handler for more than 1-2 seconds or the NATS server will see you as
+      #   # a slow client and terminate the connection.
+      #   spawn do
+      #     # Sleep at most for the amount of time that NATS will wait to redeliver
+      #     backoff = {
+      #       (2 ** msg.delivered_count).milliseconds,
+      #       # Cap backoff because NATS will redeliver it before this time anyway
+      #       consumer.config.ack_wait || 30.seconds,
+      #     }.min
+      #     sleep backoff
+      #     jetstream.nack msg
+      #   end
+      # end
+      # ```
       def nack(msg : Message)
         @nats.publish msg.reply_to, "-NAK"
       end
 
       module API
-        struct ErrorResponse
-          include JSON::Serializable
-
-          getter error : Error
-
-          struct Error
-            include JSON::Serializable
-
-            getter code : Int32
-            getter description : String
-          end
-        end
-
-        struct Stream
-          def initialize(@nats : ::NATS::Client)
-          end
-
-          def create(storage : JetStream::API::V1::StreamConfig::Storage, **kwargs)
-            create_stream = JetStream::API::V1::StreamConfig.new(**kwargs, storage: storage)
-            if response = @nats.request "$JS.API.STREAM.CREATE.#{create_stream.name}", create_stream.to_json
-              case parsed = (JetStream::API::V1::Stream | ErrorResponse).from_json response.body_io
-              when ErrorResponse
-                raise JetStream::Error.new("#{parsed.error.description} (#{parsed.error.code})")
-              else
-                parsed
-              end
-            else
-              raise JetStream::Error.new("Did not receive a response from NATS JetStream")
-            end
-          rescue ex
-            pp body: String.new(response.try(&.body) || Bytes.empty), parsed: parsed
-            raise ex
-          end
-
-          def list
-            if response = @nats.request "$JS.API.STREAM.LIST"
-              NATS::JetStream::API::V1::StreamListResponse.from_json(response.body_io)
-            else
-              raise "whoops"
-            end
-          end
-
-          def info(name : String)
-            if response = @nats.request "$JS.API.STREAM.INFO.#{name}"
-              NATS::JetStream::API::V1::Stream.from_json(String.new(response.body))
-            else
-              raise "whoops"
-            end
-          end
-
-          def delete(stream : JetStream::API::V1::Stream)
-            delete stream.config.name
-          end
-
-          def delete(stream : String)
-            @nats.request "$JS.API.STREAM.DELETE.#{stream}"
-          end
-        end
-
-        struct Consumer
-          def initialize(@nats : ::NATS::Client)
-          end
-
-          def create(stream_name : String, **kwargs) : JetStream::API::V1::Consumer
-            consumer_config = NATS::JetStream::API::V1::ConsumerConfig.new(**kwargs)
-            create_consumer = {stream_name: stream_name, config: consumer_config}
-            if durable_name = consumer_config.durable_name
-              create_consumer_subject = "$JS.API.CONSUMER.DURABLE.CREATE.#{stream_name}.#{durable_name}"
-            else
-              create_consumer_subject = "$JS.API.CONSUMER.CREATE.#{stream_name}"
-            end
-
-            unless response = @nats.request create_consumer_subject, create_consumer.to_json
-              raise JetStream::Error.new("Did not receive a response from NATS JetStream")
-            end
-
-            case parsed = (JetStream::API::V1::Consumer | ErrorResponse).from_json response.body_io
-            when ErrorResponse
-              raise JetStream::Error.new("#{parsed.error.description} (#{parsed.error.code})")
-            else
-              parsed
-            end
-          end
-
-          def list(stream : JetStream::API::V1::Stream)
-            list stream.config.name
-          end
-
-          def list(stream_name : String)
-            if consumers_response = @nats.request "$JS.API.CONSUMER.LIST.#{stream_name}"
-              NATS::JetStream::API::V1::ConsumerListResponse.from_json(consumers_response.body_io)
-            else
-              raise "whoops"
-            end
-          end
-
-          def info(stream_name : String, name : String)
-            if consumer_response = @nats.request "$JS.API.CONSUMER.INFO.#{stream_name}.#{name}"
-              NATS::JetStream::API::V1::Consumer.from_json(consumer_response.body_io)
-            else
-              raise "no info for #{name.inspect} (stream #{stream_name.inspect})"
-            end
-          end
-
-          def delete(stream : JetStream::API::V1::Stream, consumer : JetStream::API::V1::Consumer)
-            delete stream.config.name, consumer.name
-          end
-
-          def delete(stream : String, consumer : String)
-            @nats.request "$JS.API.CONSUMER.DELETE.#{stream}.#{consumer}"
-          end
-        end
       end
     end
 
+    # A `NATS::JetStream::Message` is very similar to a `NATS::Message` in that
+    # it represents a piece of information published by a NATS client (not
+    # necessarily _this_ NATS client, though). This `Message` type contains more
+    # information, however, such as information about the stream and consumer
+    # it came from, how many times it's been delivered, etc.
     struct Message
+      # The name of the stream this message was consumed from
       getter stream : String
+
+      # The name of the consumer we received this message from
       getter consumer : String
+
+      # The number of times this particular message has been delivered by this
+      # consumer, starting at 1
       getter delivered_count : Int64
+
+      # The position of this message within its stream
       getter stream_seq : Int64
+
+      # The position of this message within its consumer, including redeliveries
       getter consumer_seq : Int64
+
+      # When this message was originally published
       getter timestamp : Time
+
+      # How many messages follow this message for this consumer
       getter pending : Int64
+
+      # The original body of the message, encoded as binary. If you need text,
+      # wrap the body in a `String`.
+      #
+      # ```
+      # jetstream.subscribe consumer do |msg|
+      #   body_string = String.new(msg.body)
+      #
+      #   # ...
+      # end
+      # ```
       getter body : Bytes
+
+      # The original subject this message was published to, which can be (and
+      # most likely is) different from the subject it was delivered to
       getter subject : String
+
+      # The subject used for acknowledging this message
       getter reply_to : String
+
+      # Any headers that were published with this message, including ones
+      # interpreted by the NATS server, such as `Nats-Msg-Id` for message
+      # deduplication.
       getter headers : ::NATS::Message::Headers?
 
+      # Instantiate a `NATS::JetStream::Message` based on a `NATS::Message`.
+      # Used by JetStream subscriptions to build `JetStream::Message`
+      # instances, since JetStream is a layer on top of core NATS.
       def self.new(msg : ::NATS::Message)
         # reply_to format:
         # $JS.ACK.<stream>.<consumer>.<delivered count>.<stream sequence>.<consumer sequence>.<timestamp>.<pending messages>
         if reply_to = msg.reply_to
+          # TODO: figure out if it's worth optimizing to avoid the array allocation
           _jetstream, _ack, stream, consumer, delivered_count, stream_seq, consumer_seq, timestamp, pending_messages = reply_to.split('.')
           new(
             stream: stream,
@@ -196,12 +215,152 @@ module NATS
       end
     end
 
+    alias Streams = API::V1::Streams
+    alias Consumers = API::V1::Consumers
+
     module API
       abstract struct Message
         include JSON::Serializable
       end
 
       module V1
+        struct ErrorResponse
+          include JSON::Serializable
+
+          getter error : Error
+
+          struct Error
+            include JSON::Serializable
+
+            getter code : Int32
+            getter description : String
+          end
+        end
+
+        # A stream in NATS JetStream represents the history of messages
+        # pertaining to a given domain. When you publish a message to a subject
+        # that a stream is monitoring, the stream then adds that message to its
+        # history in the order it was published.
+        struct Streams
+          def initialize(@nats : ::NATS::Client)
+          end
+
+          # Create a stream of the given storage type and with the given
+          # properties, which are passed unmodified to
+          # `NATS::JetStream::API::V1::StreamConfig.new`.
+          def create(storage : JetStream::API::V1::StreamConfig::Storage, **kwargs)
+            create_stream = JetStream::API::V1::StreamConfig.new(**kwargs, storage: storage)
+            if response = @nats.request "$JS.API.STREAM.CREATE.#{create_stream.name}", create_stream.to_json
+              case parsed = (JetStream::API::V1::Stream | ErrorResponse).from_json response.body_io
+              when ErrorResponse
+                raise JetStream::Error.new("#{parsed.error.description} (#{parsed.error.code})")
+              else
+                parsed
+              end
+            else
+              raise JetStream::Error.new("Did not receive a response from NATS JetStream")
+            end
+          rescue ex
+            pp body: String.new(response.try(&.body) || Bytes.empty), parsed: parsed
+            raise ex
+          end
+
+          # List all available streams
+          def list
+            if response = @nats.request "$JS.API.STREAM.LIST"
+              NATS::JetStream::API::V1::StreamListResponse.from_json(response.body_io)
+            else
+              raise "whoops"
+            end
+          end
+
+          # Get the current state of the stream with the given `name`
+          def info(name : String) : ::NATS::JetStream::API::V1::Stream
+            if response = @nats.request "$JS.API.STREAM.INFO.#{name}"
+              NATS::JetStream::API::V1::Stream.from_json(String.new(response.body))
+            else
+              raise "whoops"
+            end
+          end
+
+          # Delete the given stream
+          def delete(stream : JetStream::API::V1::Stream)
+            delete stream.config.name
+          end
+
+          # Delete the stream with the given name
+          def delete(stream : String)
+            @nats.request "$JS.API.STREAM.DELETE.#{stream}"
+          end
+        end
+
+        # A NATS JetStream consumer is a message index sourced from a stream.
+        # It can apply additional filters and records which messages are pending,
+        # acknowledged, etc, at the consumer layer.
+        struct Consumers
+          def initialize(@nats : ::NATS::Client)
+          end
+
+          # Create a consumer for the given stream with the given properties,
+          # which are passed unmodified to `NATS::JetStream::API::V1::Consumer.new`.
+          def create(stream_name : String, **properties) : NATS::JetStream::API::V1::Consumer
+            consumer_config = NATS::JetStream::API::V1::ConsumerConfig.new(**properties)
+            create_consumer = {stream_name: stream_name, config: consumer_config}
+            if durable_name = consumer_config.durable_name
+              create_consumer_subject = "$JS.API.CONSUMER.DURABLE.CREATE.#{stream_name}.#{durable_name}"
+            else
+              create_consumer_subject = "$JS.API.CONSUMER.CREATE.#{stream_name}"
+            end
+
+            unless response = @nats.request create_consumer_subject, create_consumer.to_json
+              raise JetStream::Error.new("Did not receive a response from NATS JetStream")
+            end
+
+            case parsed = (JetStream::API::V1::Consumer | ErrorResponse).from_json response.body_io
+            in JetStream::API::V1::Consumer
+              parsed
+            in ErrorResponse
+              raise JetStream::Error.new("#{parsed.error.description} (#{parsed.error.code})")
+            end
+          end
+
+          # Returns a paginated list of consumers for the specified stream.
+          def list(stream : JetStream::API::V1::Stream)
+            list stream.config.name
+          end
+
+          # Returns a paginated list of consumers for the stream with the
+          # specified name.
+          def list(stream_name : String)
+            if consumers_response = @nats.request "$JS.API.CONSUMER.LIST.#{stream_name}"
+              NATS::JetStream::API::V1::ConsumerListResponse.from_json(consumers_response.body_io)
+            else
+              raise "whoops"
+            end
+          end
+
+          # Return the consumer with the specified `name` associated with the
+          # given stream.
+          def info(stream_name : String, name : String)
+            if consumer_response = @nats.request "$JS.API.CONSUMER.INFO.#{stream_name}.#{name}"
+              NATS::JetStream::API::V1::Consumer.from_json(consumer_response.body_io)
+            else
+              raise "no info for #{name.inspect} (stream #{stream_name.inspect})"
+            end
+          end
+
+          # Delete the given consumer for the given stream
+          def delete(stream : JetStream::API::V1::Stream, consumer : JetStream::API::V1::Consumer)
+            delete stream.config.name, consumer.name
+          end
+
+          # Delete the consumer with the given name associated with the stream
+          # with the given name.
+          def delete(stream : String, consumer : String)
+            @nats.request "$JS.API.CONSUMER.DELETE.#{stream}.#{consumer}"
+          end
+        end
+
         struct Stream < Message
           getter config : StreamConfig
           getter created : Time
@@ -231,26 +390,6 @@ module NATS
           getter description : String?
         end
 
-        struct Consumer < Message
-          getter stream_name : String?
-          getter name : String?
-          getter created : Time
-          getter config : ConsumerConfig
-          getter delivered : Sequence
-          getter ack_floor : Sequence
-          getter num_ack_pending : Int64
-          getter num_redelivered : Int64
-          getter num_waiting : Int64
-          getter num_pending : Int64
-          getter cluster : ClusterInfo?
-          getter? push_bound : Bool = false
-
-          struct Sequence < Message
-            getter consumer_seq : Int64
-            getter stream_seq : Int64
-          end
-        end
-
         struct StreamListResponse < Message
           include Enumerable(Stream)
 
@@ -261,19 +400,6 @@ module NATS
 
           def each
             streams.each { |s| yield s }
-          end
-        end
-
-        struct ConsumerListResponse < Message
-          include Enumerable(Consumer)
-
-          getter total : Int64
-          getter offset : Int64
-          getter limit : Int64
-          getter consumers : Array(Consumer)
-
-          def each
-            consumers.each { |c| yield c }
           end
         end
 
@@ -288,19 +414,56 @@ module NATS
         end
 
         struct StreamConfig < Message
+          # The `Storage` parameter tells the NATS server how to store the
+          # messages in the stream.
           enum Storage
+            # Store messages in memory. This is the fastest, but is not durable.
+            # If the NATS server is restarted for any reason, the stream will
+            # be dropped. Using this option may also increase the amount of
+            # memory required by your NATS server. Use with caution.
             Memory
+
+            # Store messages on disk. Always use this if your system depends on
+            # 100% delivery.
             File
           end
 
+          # The `RetentionPolicy` tells the NATS server when messages can be
+          # discarded. Your options are to wait until the a quantity/volume/time
+          # limit has been reached, _all_ consumers have acknowledged, or _any_
+          # consumers have acknowledged.
+          #
+          # ```
+          # jetstream.stream.create(
+          #   # ...
+          #   retention: :workqueue,
+          # )
+          # ```
           enum RetentionPolicy
+            # Discard messages when the stream has reached the limit of either
+            # the number of messages or the total stream size in bytes, or the
+            # message's max age has passed.
             Limits
+
+            # Discard a message when all subscribed consumers have acknowledged
+            # it to guarantee delivery but not keep the message in memory. This
+            # is the default behavior of AMQP.
             Interest
+
+            # Discard a message when the first consumer has acknowledged it, as
+            # in a work queue like Sidekiq.
             Workqueue
           end
 
+          # The `DiscardPolicy` tells the NATS server which end of the stream to
+          # truncate when the stream is full — should we start dropping old
+          # messages or avoid adding new ones?
           enum DiscardPolicy
+            # Drop old messages when the stream has reached a count or volume
+            # limit
             Old
+
+            # Don't add new messages until old ones are discarded
             New
           end
 
@@ -309,7 +472,10 @@ module NATS
             getter tags : Array(String) = %w[]
           end
 
+          # Name of this stream
           getter name : String
+
+          # Which subjects this stream will listen for.
           getter subjects : Array(String)
           getter storage : Storage
           @[JSON::Field(converter: ::NATS::JetStream::API::V1::MicrosecondsConverter)]
@@ -322,11 +488,11 @@ module NATS
           getter replicas : Int32?
           getter retention : RetentionPolicy?
           getter discard : DiscardPolicy?
-          # @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
-          # getter duplicate_window : Time::Span?
           getter placement : Placement?
           getter mirror : StreamSourceInfo?
           getter sources : Array(StreamSourceInfo) = [] of StreamSourceInfo
+          @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
+          getter duplicate_window : Time::Span?
 
           def initialize(
             @name,
@@ -342,6 +508,50 @@ module NATS
             @discard : DiscardPolicy? = nil,
             @storage : Storage = :file,
           )
+          end
+        end
+
+        struct Consumer < Message
+          # The name of the stream this consumer sources its messages from
+          getter stream_name : String?
+
+          # The name of this consumer
+          getter name : String?
+
+          # The timestamp when this consumer was created
+          getter created : Time
+
+          # The configuration used to create this consumer (including its defaults)
+          getter config : ConsumerConfig
+
+          # The number of times this consumer has delivered messages for this stream
+          getter delivered : Sequence
+
+          # The number of messages that have been acknowledged for this consumer/stream
+          getter ack_floor : Sequence
+
+          # The number of messages currently in-flight that are awaiting acknowledgement
+          getter num_ack_pending : Int64
+
+          # The number of messages that have been redelivered
+          getter num_redelivered : Int64
+
+          # The number of messages that are currently waiting
+          getter num_waiting : Int64
+
+          # The number of messages in the stream that this consumer has not delivered at all yet
+          getter num_pending : Int64
+
+          # Where this consumer's data lives in the cluster
+          getter cluster : ClusterInfo?
+
+          getter? push_bound : Bool = false
+
+          # The sequence represense a cursor for how many messages have been
+          # delivered or acknowledged for this consumer and stream.
+          struct Sequence < Message
+            getter consumer_seq : Int64
+            getter stream_seq : Int64
           end
         end
 
@@ -392,28 +602,81 @@ module NATS
             @max_ack_pending = max_ack_pending.to_i64 if max_ack_pending
           end
 
+          # The way this consumer expects messages to be acknowledged.
+          #
+          # See [AckPolicy in the NATS server code](https://github.com/nats-io/nats-server/blob/3aa8e63b290ac4ba1c99193827b3f66ad5679904/server/consumer.go#L136-L143)
           enum AckPolicy
-            # See https://github.com/nats-io/nats-server/blob/3aa8e63b290ac4ba1c99193827b3f66ad5679904/server/consumer.go#L136-L143
+            # No acknowledgements are required. All messages are considered
+            # acknowledged on delivery.
             None
+
+            # Acknowledging a message acknowledges all messages that came before
+            # it.
             All
+
+            # Every message must be acknowledged individually. This is the
+            # default.
             Explicit
           end
 
+          # Where to begin consuming messages from a stream.
+          #
+          # See [DeliverPolicy in the NATS server code](https://github.com/nats-io/nats-server/blob/3aa8e63b290ac4ba1c99193827b3f66ad5679904/server/consumer.go#L105-L120)
           enum DeliverPolicy
-            # See https://github.com/nats-io/nats-server/blob/3aa8e63b290ac4ba1c99193827b3f66ad5679904/server/consumer.go#L105-L120
+            # Deliver _all_ messages from a stream via this consumer
             All
+
+            # Start from the current last message in the stream when this
+            # consumer was created
             Last
+
+            # Start _after_ the current last message in the stream when this
+            # consumer was created. This is different from `Last` in that it
+            # will not begin delivering messages until more are published.
             New
+
+            # Start delivery at the sequence in the stream denoted by
+            # `opt_start_seq`. `opt_start_seq` is _required_ when this
+            # `DeliverPolicy` is used.
             ByStartSequence
+
+            # Start delivery at the first message whose `timestamp` is equal to
+            # or later than `opt_start_time`. `opt_start_time` is _required
+            # when this `DeliverPolicy` is used.
             ByStartTime
+
+            # Similar to `Last`, but on a per-subject basis.
             LastPerSubject
+
+            # If you've got this set, something's probably borked. This value
+            # only exists in this client because [the server can send it](https://github.com/nats-io/nats-server/blob/3aa8e63b290ac4ba1c99193827b3f66ad5679904/server/consumer.go#L118-L119).
             Undefined
           end
 
+          # A consumer's `replay_policy` is the pace at which to replay messages
+          # from a stream.
+          #
+          # See [ReplayPolicy in the NATS server code](https://github.com/nats-io/nats-server/blob/3aa8e63b290ac4ba1c99193827b3f66ad5679904/server/consumer.go#L157-L162)
           enum ReplayPolicy
-            # See https://github.com/nats-io/nats-server/blob/3aa8e63b290ac4ba1c99193827b3f66ad5679904/server/consumer.go#L157-L162
+            # Tells the NATS server to deliver messages immediately
             Instant
+
+            # Tells the NATS server to deliver messages at the rate they were
+            # originally published.
             Original
+          end
+        end
+
+        struct ConsumerListResponse < Message
+          include Enumerable(Consumer)
+
+          getter total : Int64
+          getter offset : Int64
+          getter limit : Int64
+          getter consumers : Array(Consumer)
+
+          def each
+            consumers.each { |c| yield c }
           end
         end
 

@@ -82,11 +82,26 @@ module NATS
     MEGABYTE         = 1 << 20
     MAX_PUBLISH_SIZE = 1 * MEGABYTE
 
+    # The current state of the client's connection
     enum State
+      # The connection is currently awaiting a completed NATS connection. We
+      # could be awaiting TCP, TLS, NATS protocol handshake, synchronization,
+      # etc. Ideally, a client doesn't spend more than a few milliseconds in
+      # this state.
       Connecting
+
+      # A successful NATS connection has been made.
       Connected
+
+      # The client has been disconnected and is either currently executing its
+      # disconnect handler or is waiting on the reconnect backoff period.
       Disconnected
+
+      # The disconnect handler has been invoked, the backoff period has elapsed
+      # and the client is currenty attempting to reconnect to the NATS server.
       Reconnecting
+
+      # The client has been explicitly closed with `NATS::Client#close`.
       Closed
     end
 
@@ -701,6 +716,9 @@ module NATS
       if @socket.closed?
         handle_disconnect!
       end
+      if @state.closed?
+        raise ClientClosed.new("Client has been explicitly closed.")
+      end
 
       loop do
         @out.synchronize do
@@ -743,6 +761,11 @@ module NATS
         max_pings_out: @max_pings_out,
       )
       @on_reconnect.call
+    end
+
+    # Raised when an attempt is made to communicate with the NATS server using
+    # a client instance that has been explicitly closed.
+    class ClientClosed < Error
     end
   end
 
