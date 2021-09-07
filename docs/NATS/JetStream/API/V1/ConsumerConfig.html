@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Crystal Docs 1.0.0">
+<meta name="crystal_docs.project_version" content="main-dev">
+<meta name="crystal_docs.project_name" content="nats">
+
+
+
+<link href="../../../../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../../../js/doc.js"></script>
+
+  <meta name="repository-name" content="nats">
+  <title>NATS::JetStream::API::V1::ConsumerConfig - nats main-dev</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../../../../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../../../../index.html">
+          nats
+        </a>
+      </h1>
+
+      <span class="project-version">
+        main-dev
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="nats/NATS" data-name="nats">
+      <a href="../../../../NATS.html">NATS</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="nats/NATS/Client" data-name="nats::client">
+      <a href="../../../../NATS/Client.html">Client</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Client/ClientClosed" data-name="nats::client::clientclosed">
+      <a href="../../../../NATS/Client/ClientClosed.html">ClientClosed</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Client/Data" data-name="nats::client::data">
+      <a href="../../../../NATS/Client/Data.html">Data</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Client/State" data-name="nats::client::state">
+      <a href="../../../../NATS/Client/State.html">State</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Error" data-name="nats::error">
+      <a href="../../../../NATS/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Headers" data-name="nats::headers">
+      <a href="../../../../NATS/Headers.html">Headers</a>
+      
+    </li>
+  
+  <li class="parent open current" data-id="nats/NATS/JetStream" data-name="nats::jetstream">
+      <a href="../../../../NATS/JetStream.html">JetStream</a>
+      
+        <ul>
+  
+  <li class="parent open current" data-id="nats/NATS/JetStream/API" data-name="nats::jetstream::api">
+      <a href="../../../../NATS/JetStream/API.html">API</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/Message" data-name="nats::jetstream::api::message">
+      <a href="../../../../NATS/JetStream/API/Message.html">Message</a>
+      
+    </li>
+  
+  <li class="parent open current" data-id="nats/NATS/JetStream/API/V1" data-name="nats::jetstream::api::v1">
+      <a href="../../../../NATS/JetStream/API/V1.html">V1</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/APIError" data-name="nats::jetstream::api::v1::apierror">
+      <a href="../../../../NATS/JetStream/API/V1/APIError.html">APIError</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ClusterInfo" data-name="nats::jetstream::api::v1::clusterinfo">
+      <a href="../../../../NATS/JetStream/API/V1/ClusterInfo.html">ClusterInfo</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1/Consumer" data-name="nats::jetstream::api::v1::consumer">
+      <a href="../../../../NATS/JetStream/API/V1/Consumer.html">Consumer</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Consumer/Sequence" data-name="nats::jetstream::api::v1::consumer::sequence">
+      <a href="../../../../NATS/JetStream/API/V1/Consumer/Sequence.html">Sequence</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent open current" data-id="nats/NATS/JetStream/API/V1/ConsumerConfig" data-name="nats::jetstream::api::v1::consumerconfig">
+      <a href="../../../../NATS/JetStream/API/V1/ConsumerConfig.html">ConsumerConfig</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ConsumerConfig/AckPolicy" data-name="nats::jetstream::api::v1::consumerconfig::ackpolicy">
+      <a href="../../../../NATS/JetStream/API/V1/ConsumerConfig/AckPolicy.html">AckPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ConsumerConfig/DeliverPolicy" data-name="nats::jetstream::api::v1::consumerconfig::deliverpolicy">
+      <a href="../../../../NATS/JetStream/API/V1/ConsumerConfig/DeliverPolicy.html">DeliverPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ConsumerConfig/ReplayPolicy" data-name="nats::jetstream::api::v1::consumerconfig::replaypolicy">
+      <a href="../../../../NATS/JetStream/API/V1/ConsumerConfig/ReplayPolicy.html">ReplayPolicy</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ConsumerListResponse" data-name="nats::jetstream::api::v1::consumerlistresponse">
+      <a href="../../../../NATS/JetStream/API/V1/ConsumerListResponse.html">ConsumerListResponse</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Consumers" data-name="nats::jetstream::api::v1::consumers">
+      <a href="../../../../NATS/JetStream/API/V1/Consumers.html">Consumers</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1/ErrorResponse" data-name="nats::jetstream::api::v1::errorresponse">
+      <a href="../../../../NATS/JetStream/API/V1/ErrorResponse.html">ErrorResponse</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ErrorResponse/Error" data-name="nats::jetstream::api::v1::errorresponse::error">
+      <a href="../../../../NATS/JetStream/API/V1/ErrorResponse/Error.html">Error</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ExternalStream" data-name="nats::jetstream::api::v1::externalstream">
+      <a href="../../../../NATS/JetStream/API/V1/ExternalStream.html">ExternalStream</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/MicrosecondsConverter" data-name="nats::jetstream::api::v1::microsecondsconverter">
+      <a href="../../../../NATS/JetStream/API/V1/MicrosecondsConverter.html">MicrosecondsConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/NanosecondsConverter" data-name="nats::jetstream::api::v1::nanosecondsconverter">
+      <a href="../../../../NATS/JetStream/API/V1/NanosecondsConverter.html">NanosecondsConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/PeerInfo" data-name="nats::jetstream::api::v1::peerinfo">
+      <a href="../../../../NATS/JetStream/API/V1/PeerInfo.html">PeerInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Stream" data-name="nats::jetstream::api::v1::stream">
+      <a href="../../../../NATS/JetStream/API/V1/Stream.html">Stream</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1/StreamConfig" data-name="nats::jetstream::api::v1::streamconfig">
+      <a href="../../../../NATS/JetStream/API/V1/StreamConfig.html">StreamConfig</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamConfig/DiscardPolicy" data-name="nats::jetstream::api::v1::streamconfig::discardpolicy">
+      <a href="../../../../NATS/JetStream/API/V1/StreamConfig/DiscardPolicy.html">DiscardPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamConfig/Placement" data-name="nats::jetstream::api::v1::streamconfig::placement">
+      <a href="../../../../NATS/JetStream/API/V1/StreamConfig/Placement.html">Placement</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamConfig/RetentionPolicy" data-name="nats::jetstream::api::v1::streamconfig::retentionpolicy">
+      <a href="../../../../NATS/JetStream/API/V1/StreamConfig/RetentionPolicy.html">RetentionPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamConfig/Storage" data-name="nats::jetstream::api::v1::streamconfig::storage">
+      <a href="../../../../NATS/JetStream/API/V1/StreamConfig/Storage.html">Storage</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamListResponse" data-name="nats::jetstream::api::v1::streamlistresponse">
+      <a href="../../../../NATS/JetStream/API/V1/StreamListResponse.html">StreamListResponse</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Streams" data-name="nats::jetstream::api::v1::streams">
+      <a href="../../../../NATS/JetStream/API/V1/Streams.html">Streams</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamSourceInfo" data-name="nats::jetstream::api::v1::streamsourceinfo">
+      <a href="../../../../NATS/JetStream/API/V1/StreamSourceInfo.html">StreamSourceInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamState" data-name="nats::jetstream::api::v1::streamstate">
+      <a href="../../../../NATS/JetStream/API/V1/StreamState.html">StreamState</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/Client" data-name="nats::jetstream::client">
+      <a href="../../../../NATS/JetStream/Client.html">Client</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Client/API" data-name="nats::jetstream::client::api">
+      <a href="../../../../NATS/JetStream/Client/API.html">API</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Consumers" data-name="nats::jetstream::consumers">
+      <a href="../../../../NATS/JetStream/Consumers.html">Consumers</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Error" data-name="nats::jetstream::error">
+      <a href="../../../../NATS/JetStream/Error.html">Error</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/Message" data-name="nats::jetstream::message">
+      <a href="../../../../NATS/JetStream/Message.html">Message</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Message/InvalidNATSMessage" data-name="nats::jetstream::message::invalidnatsmessage">
+      <a href="../../../../NATS/JetStream/Message/InvalidNATSMessage.html">InvalidNATSMessage</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Streams" data-name="nats::jetstream::streams">
+      <a href="../../../../NATS/JetStream/Streams.html">Streams</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Message" data-name="nats::message">
+      <a href="../../../../NATS/Message.html">Message</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Message/Headers" data-name="nats::message::headers">
+      <a href="../../../../NATS/Message/Headers.html">Headers</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/NotAReply" data-name="nats::notareply">
+      <a href="../../../../NATS/NotAReply.html">NotAReply</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/ServerInfo" data-name="nats::serverinfo">
+      <a href="../../../../NATS/ServerInfo.html">ServerInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/ServerNotRespondingToPings" data-name="nats::servernotrespondingtopings">
+      <a href="../../../../NATS/ServerNotRespondingToPings.html">ServerNotRespondingToPings</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Subscription" data-name="nats::subscription">
+      <a href="../../../../NATS/Subscription.html">Subscription</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Subscription/MessageChannel" data-name="nats::subscription::messagechannel">
+      <a href="../../../../NATS/Subscription/MessageChannel.html">MessageChannel</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/UnknownCommand" data-name="nats::unknowncommand">
+      <a href="../../../../NATS/UnknownCommand.html">UnknownCommand</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">struct</span> NATS::JetStream::API::V1::ConsumerConfig
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../../../NATS/JetStream/API/V1/ConsumerConfig.html">NATS::JetStream::API::V1::ConsumerConfig</a></li><li class="superclass"><a href="../../../../NATS/JetStream/API/Message.html">NATS::JetStream::API::Message</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      jetstream.cr
+    
+    <br/>
+  
+
+
+
+
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new(pull:JSON::PullParser)-class-method" class="signature"><strong>.new</strong>(pull : JSON::PullParser)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#new(deliver_subject=nil,durable_name=nil,ack_policy:AckPolicy=:explicit,deliver_policy:DeliverPolicy=:all,replay_policy:ReplayPolicy=:instant,ack_wait=nil,filter_subject=nil,max_deliver=nil,opt_start_seq=nil,sample_frequency=nil,opt_start_time=nil,rate_limit_bps=nil,max_ack_pending:Int?=nil,idle_heartbeat=nil,deliver_group=durable_name)-class-method" class="signature"><strong>.new</strong>(deliver_subject = <span class="n">nil</span>, durable_name = <span class="n">nil</span>, ack_policy : AckPolicy = <span class="n">:explicit</span>, deliver_policy : DeliverPolicy = <span class="n">:all</span>, replay_policy : ReplayPolicy = <span class="n">:instant</span>, ack_wait = <span class="n">nil</span>, filter_subject = <span class="n">nil</span>, max_deliver = <span class="n">nil</span>, opt_start_seq = <span class="n">nil</span>, sample_frequency = <span class="n">nil</span>, opt_start_time = <span class="n">nil</span>, rate_limit_bps = <span class="n">nil</span>, max_ack_pending : Int? = <span class="n">nil</span>, idle_heartbeat = <span class="n">nil</span>, deliver_group = durable_name)</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#ack_policy:AckPolicy-instance-method" class="signature"><strong>#ack_policy</strong> : AckPolicy</a>
+        
+          <div class="summary"><p>AckPolicy	How messages should be acknowledged, AckNone, AckAll or AckExplicit</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#ack_wait:Time::Span?-instance-method" class="signature"><strong>#ack_wait</strong> : Time::Span?</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#deliver_group:String?-instance-method" class="signature"><strong>#deliver_group</strong> : String?</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#deliver_policy:DeliverPolicy-instance-method" class="signature"><strong>#deliver_policy</strong> : DeliverPolicy</a>
+        
+          <div class="summary"><p>DeliverPolicy	The initial starting mode of the consumer, DeliverAll, DeliverLast, DeliverNew, DeliverByStartSequence or DeliverByStartTime</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#deliver_subject:String?-instance-method" class="signature"><strong>#deliver_subject</strong> : String?</a>
+        
+          <div class="summary"><p>DeliverySubject	The subject to deliver observed messages, when not set, a pull-based Consumer is created</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#description:String?-instance-method" class="signature"><strong>#description</strong> : String?</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#durable_name:String?-instance-method" class="signature"><strong>#durable_name</strong> : String?</a>
+        
+          <div class="summary"><p>Durable	The name of the Consumer</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#filter_subject:String?-instance-method" class="signature"><strong>#filter_subject</strong> : String?</a>
+        
+          <div class="summary"><p>FilterSubject	When consuming from a Stream with many subjects, or wildcards, select only a specific incoming subjects, supports wildcards</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#flow_control?:Bool-instance-method" class="signature"><strong>#flow_control?</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#idle_heartbeat:Time::Span?-instance-method" class="signature"><strong>#idle_heartbeat</strong> : Time::Span?</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#max_ack_pending:Int64?-instance-method" class="signature"><strong>#max_ack_pending</strong> : Int64?</a>
+        
+          <div class="summary"><p>MaxAckPending	The maximum number of messages without acknowledgement that can be outstanding, once this limit is reached message delivery will be suspended</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#max_deliver:Int64?-instance-method" class="signature"><strong>#max_deliver</strong> : Int64?</a>
+        
+          <div class="summary"><p>MaxDeliver	Maximum amount times a specific message will be delivered.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#max_waiting:Int64?-instance-method" class="signature"><strong>#max_waiting</strong> : Int64?</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#opt_start_seq:Int64?-instance-method" class="signature"><strong>#opt_start_seq</strong> : Int64?</a>
+        
+          <div class="summary"><p>OptStartSeq	When first consuming messages from the Stream start at this particular message in the set</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#opt_start_time:Time?-instance-method" class="signature"><strong>#opt_start_time</strong> : Time?</a>
+        
+          <div class="summary"><p>OptStartTime	When first consuming messages from the Stream start with messages on or after this time</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rate_limit_bps:UInt64?-instance-method" class="signature"><strong>#rate_limit_bps</strong> : UInt64?</a>
+        
+          <div class="summary"><p>RateLimit	The rate of message delivery in bits per second</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#replay_policy:ReplayPolicy-instance-method" class="signature"><strong>#replay_policy</strong> : ReplayPolicy</a>
+        
+          <div class="summary"><p>ReplayPolicy	How messages are sent ReplayInstant or ReplayOriginal</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#sample_frequency:String?-instance-method" class="signature"><strong>#sample_frequency</strong> : String?</a>
+        
+          <div class="summary"><p>SampleFrequency	What percentage of acknowledgements should be samples for observability, 0-100</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+  <h3>Constructor methods inherited from struct <code><a href="../../../../NATS/JetStream/API/Message.html">NATS::JetStream::API::Message</a></code></h3>
+  
+  
+    <a href="../../../../NATS/JetStream/API/Message.html#new(pull:JSON::PullParser)-class-method" class="tooltip">
+      <span>new(pull : JSON::PullParser)</span>
+    new</a>
+    
+  
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(pull:JSON::PullParser)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(pull : JSON::PullParser)
+
+        <a class="method-permalink" href="#new(pull:JSON::PullParser)-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new(deliver_subject=nil,durable_name=nil,ack_policy:AckPolicy=:explicit,deliver_policy:DeliverPolicy=:all,replay_policy:ReplayPolicy=:instant,ack_wait=nil,filter_subject=nil,max_deliver=nil,opt_start_seq=nil,sample_frequency=nil,opt_start_time=nil,rate_limit_bps=nil,max_ack_pending:Int?=nil,idle_heartbeat=nil,deliver_group=durable_name)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(deliver_subject = <span class="n">nil</span>, durable_name = <span class="n">nil</span>, ack_policy : <a href="../../../../NATS/JetStream/API/V1/ConsumerConfig/AckPolicy.html">AckPolicy</a> = <span class="n">:explicit</span>, deliver_policy : <a href="../../../../NATS/JetStream/API/V1/ConsumerConfig/DeliverPolicy.html">DeliverPolicy</a> = <span class="n">:all</span>, replay_policy : <a href="../../../../NATS/JetStream/API/V1/ConsumerConfig/ReplayPolicy.html">ReplayPolicy</a> = <span class="n">:instant</span>, ack_wait = <span class="n">nil</span>, filter_subject = <span class="n">nil</span>, max_deliver = <span class="n">nil</span>, opt_start_seq = <span class="n">nil</span>, sample_frequency = <span class="n">nil</span>, opt_start_time = <span class="n">nil</span>, rate_limit_bps = <span class="n">nil</span>, max_ack_pending : Int? = <span class="n">nil</span>, idle_heartbeat = <span class="n">nil</span>, deliver_group = durable_name)
+
+        <a class="method-permalink" href="#new(deliver_subject=nil,durable_name=nil,ack_policy:AckPolicy=:explicit,deliver_policy:DeliverPolicy=:all,replay_policy:ReplayPolicy=:instant,ack_wait=nil,filter_subject=nil,max_deliver=nil,opt_start_seq=nil,sample_frequency=nil,opt_start_time=nil,rate_limit_bps=nil,max_ack_pending:Int?=nil,idle_heartbeat=nil,deliver_group=durable_name)-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="ack_policy:AckPolicy-instance-method">
+      <div class="signature">
+        
+        def <strong>ack_policy</strong> : <a href="../../../../NATS/JetStream/API/V1/ConsumerConfig/AckPolicy.html">AckPolicy</a>
+
+        <a class="method-permalink" href="#ack_policy:AckPolicy-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>AckPolicy	How messages should be acknowledged, AckNone, AckAll or AckExplicit</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="ack_wait:Time::Span?-instance-method">
+      <div class="signature">
+        
+        def <strong>ack_wait</strong> : Time::Span?
+
+        <a class="method-permalink" href="#ack_wait:Time::Span?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="deliver_group:String?-instance-method">
+      <div class="signature">
+        
+        def <strong>deliver_group</strong> : String?
+
+        <a class="method-permalink" href="#deliver_group:String?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="deliver_policy:DeliverPolicy-instance-method">
+      <div class="signature">
+        
+        def <strong>deliver_policy</strong> : <a href="../../../../NATS/JetStream/API/V1/ConsumerConfig/DeliverPolicy.html">DeliverPolicy</a>
+
+        <a class="method-permalink" href="#deliver_policy:DeliverPolicy-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>DeliverPolicy	The initial starting mode of the consumer, DeliverAll, DeliverLast, DeliverNew, DeliverByStartSequence or DeliverByStartTime</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="deliver_subject:String?-instance-method">
+      <div class="signature">
+        
+        def <strong>deliver_subject</strong> : String?
+
+        <a class="method-permalink" href="#deliver_subject:String?-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>DeliverySubject	The subject to deliver observed messages, when not set, a pull-based Consumer is created</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="description:String?-instance-method">
+      <div class="signature">
+        
+        def <strong>description</strong> : String?
+
+        <a class="method-permalink" href="#description:String?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="durable_name:String?-instance-method">
+      <div class="signature">
+        
+        def <strong>durable_name</strong> : String?
+
+        <a class="method-permalink" href="#durable_name:String?-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Durable	The name of the Consumer</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="filter_subject:String?-instance-method">
+      <div class="signature">
+        
+        def <strong>filter_subject</strong> : String?
+
+        <a class="method-permalink" href="#filter_subject:String?-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>FilterSubject	When consuming from a Stream with many subjects, or wildcards, select only a specific incoming subjects, supports wildcards</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="flow_control?:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>flow_control?</strong> : Bool
+
+        <a class="method-permalink" href="#flow_control?:Bool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="idle_heartbeat:Time::Span?-instance-method">
+      <div class="signature">
+        
+        def <strong>idle_heartbeat</strong> : Time::Span?
+
+        <a class="method-permalink" href="#idle_heartbeat:Time::Span?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="max_ack_pending:Int64?-instance-method">
+      <div class="signature">
+        
+        def <strong>max_ack_pending</strong> : Int64?
+
+        <a class="method-permalink" href="#max_ack_pending:Int64?-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>MaxAckPending	The maximum number of messages without acknowledgement that can be outstanding, once this limit is reached message delivery will be suspended</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="max_deliver:Int64?-instance-method">
+      <div class="signature">
+        
+        def <strong>max_deliver</strong> : Int64?
+
+        <a class="method-permalink" href="#max_deliver:Int64?-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>MaxDeliver	Maximum amount times a specific message will be delivered. Use this to avoid poison pills crashing all your services forever</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="max_waiting:Int64?-instance-method">
+      <div class="signature">
+        
+        def <strong>max_waiting</strong> : Int64?
+
+        <a class="method-permalink" href="#max_waiting:Int64?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="opt_start_seq:Int64?-instance-method">
+      <div class="signature">
+        
+        def <strong>opt_start_seq</strong> : Int64?
+
+        <a class="method-permalink" href="#opt_start_seq:Int64?-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>OptStartSeq	When first consuming messages from the Stream start at this particular message in the set</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="opt_start_time:Time?-instance-method">
+      <div class="signature">
+        
+        def <strong>opt_start_time</strong> : Time?
+
+        <a class="method-permalink" href="#opt_start_time:Time?-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>OptStartTime	When first consuming messages from the Stream start with messages on or after this time</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rate_limit_bps:UInt64?-instance-method">
+      <div class="signature">
+        
+        def <strong>rate_limit_bps</strong> : UInt64?
+
+        <a class="method-permalink" href="#rate_limit_bps:UInt64?-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>RateLimit	The rate of message delivery in bits per second</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="replay_policy:ReplayPolicy-instance-method">
+      <div class="signature">
+        
+        def <strong>replay_policy</strong> : <a href="../../../../NATS/JetStream/API/V1/ConsumerConfig/ReplayPolicy.html">ReplayPolicy</a>
+
+        <a class="method-permalink" href="#replay_policy:ReplayPolicy-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>ReplayPolicy	How messages are sent ReplayInstant or ReplayOriginal</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sample_frequency:String?-instance-method">
+      <div class="signature">
+        
+        def <strong>sample_frequency</strong> : String?
+
+        <a class="method-permalink" href="#sample_frequency:String?-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>SampleFrequency	What percentage of acknowledgements should be samples for observability, 0-100</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Crystal Docs 1.0.0">
+<meta name="crystal_docs.project_version" content="main-dev">
+<meta name="crystal_docs.project_name" content="nats">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="nats">
+  <title>NATS::Client - nats main-dev</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          nats
+        </a>
+      </h1>
+
+      <span class="project-version">
+        main-dev
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="nats/NATS" data-name="nats">
+      <a href="../NATS.html">NATS</a>
+      
+        <ul>
+  
+  <li class="parent open current" data-id="nats/NATS/Client" data-name="nats::client">
+      <a href="../NATS/Client.html">Client</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Client/ClientClosed" data-name="nats::client::clientclosed">
+      <a href="../NATS/Client/ClientClosed.html">ClientClosed</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Client/Data" data-name="nats::client::data">
+      <a href="../NATS/Client/Data.html">Data</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Client/State" data-name="nats::client::state">
+      <a href="../NATS/Client/State.html">State</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Error" data-name="nats::error">
+      <a href="../NATS/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Headers" data-name="nats::headers">
+      <a href="../NATS/Headers.html">Headers</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream" data-name="nats::jetstream">
+      <a href="../NATS/JetStream.html">JetStream</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API" data-name="nats::jetstream::api">
+      <a href="../NATS/JetStream/API.html">API</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/Message" data-name="nats::jetstream::api::message">
+      <a href="../NATS/JetStream/API/Message.html">Message</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1" data-name="nats::jetstream::api::v1">
+      <a href="../NATS/JetStream/API/V1.html">V1</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/APIError" data-name="nats::jetstream::api::v1::apierror">
+      <a href="../NATS/JetStream/API/V1/APIError.html">APIError</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ClusterInfo" data-name="nats::jetstream::api::v1::clusterinfo">
+      <a href="../NATS/JetStream/API/V1/ClusterInfo.html">ClusterInfo</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1/Consumer" data-name="nats::jetstream::api::v1::consumer">
+      <a href="../NATS/JetStream/API/V1/Consumer.html">Consumer</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Consumer/Sequence" data-name="nats::jetstream::api::v1::consumer::sequence">
+      <a href="../NATS/JetStream/API/V1/Consumer/Sequence.html">Sequence</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1/ConsumerConfig" data-name="nats::jetstream::api::v1::consumerconfig">
+      <a href="../NATS/JetStream/API/V1/ConsumerConfig.html">ConsumerConfig</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ConsumerConfig/AckPolicy" data-name="nats::jetstream::api::v1::consumerconfig::ackpolicy">
+      <a href="../NATS/JetStream/API/V1/ConsumerConfig/AckPolicy.html">AckPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ConsumerConfig/DeliverPolicy" data-name="nats::jetstream::api::v1::consumerconfig::deliverpolicy">
+      <a href="../NATS/JetStream/API/V1/ConsumerConfig/DeliverPolicy.html">DeliverPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ConsumerConfig/ReplayPolicy" data-name="nats::jetstream::api::v1::consumerconfig::replaypolicy">
+      <a href="../NATS/JetStream/API/V1/ConsumerConfig/ReplayPolicy.html">ReplayPolicy</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ConsumerListResponse" data-name="nats::jetstream::api::v1::consumerlistresponse">
+      <a href="../NATS/JetStream/API/V1/ConsumerListResponse.html">ConsumerListResponse</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Consumers" data-name="nats::jetstream::api::v1::consumers">
+      <a href="../NATS/JetStream/API/V1/Consumers.html">Consumers</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1/ErrorResponse" data-name="nats::jetstream::api::v1::errorresponse">
+      <a href="../NATS/JetStream/API/V1/ErrorResponse.html">ErrorResponse</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ErrorResponse/Error" data-name="nats::jetstream::api::v1::errorresponse::error">
+      <a href="../NATS/JetStream/API/V1/ErrorResponse/Error.html">Error</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ExternalStream" data-name="nats::jetstream::api::v1::externalstream">
+      <a href="../NATS/JetStream/API/V1/ExternalStream.html">ExternalStream</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/MicrosecondsConverter" data-name="nats::jetstream::api::v1::microsecondsconverter">
+      <a href="../NATS/JetStream/API/V1/MicrosecondsConverter.html">MicrosecondsConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/NanosecondsConverter" data-name="nats::jetstream::api::v1::nanosecondsconverter">
+      <a href="../NATS/JetStream/API/V1/NanosecondsConverter.html">NanosecondsConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/PeerInfo" data-name="nats::jetstream::api::v1::peerinfo">
+      <a href="../NATS/JetStream/API/V1/PeerInfo.html">PeerInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Stream" data-name="nats::jetstream::api::v1::stream">
+      <a href="../NATS/JetStream/API/V1/Stream.html">Stream</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1/StreamConfig" data-name="nats::jetstream::api::v1::streamconfig">
+      <a href="../NATS/JetStream/API/V1/StreamConfig.html">StreamConfig</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamConfig/DiscardPolicy" data-name="nats::jetstream::api::v1::streamconfig::discardpolicy">
+      <a href="../NATS/JetStream/API/V1/StreamConfig/DiscardPolicy.html">DiscardPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamConfig/Placement" data-name="nats::jetstream::api::v1::streamconfig::placement">
+      <a href="../NATS/JetStream/API/V1/StreamConfig/Placement.html">Placement</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamConfig/RetentionPolicy" data-name="nats::jetstream::api::v1::streamconfig::retentionpolicy">
+      <a href="../NATS/JetStream/API/V1/StreamConfig/RetentionPolicy.html">RetentionPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamConfig/Storage" data-name="nats::jetstream::api::v1::streamconfig::storage">
+      <a href="../NATS/JetStream/API/V1/StreamConfig/Storage.html">Storage</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamListResponse" data-name="nats::jetstream::api::v1::streamlistresponse">
+      <a href="../NATS/JetStream/API/V1/StreamListResponse.html">StreamListResponse</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Streams" data-name="nats::jetstream::api::v1::streams">
+      <a href="../NATS/JetStream/API/V1/Streams.html">Streams</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamSourceInfo" data-name="nats::jetstream::api::v1::streamsourceinfo">
+      <a href="../NATS/JetStream/API/V1/StreamSourceInfo.html">StreamSourceInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamState" data-name="nats::jetstream::api::v1::streamstate">
+      <a href="../NATS/JetStream/API/V1/StreamState.html">StreamState</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/Client" data-name="nats::jetstream::client">
+      <a href="../NATS/JetStream/Client.html">Client</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Client/API" data-name="nats::jetstream::client::api">
+      <a href="../NATS/JetStream/Client/API.html">API</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Consumers" data-name="nats::jetstream::consumers">
+      <a href="../NATS/JetStream/Consumers.html">Consumers</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Error" data-name="nats::jetstream::error">
+      <a href="../NATS/JetStream/Error.html">Error</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/Message" data-name="nats::jetstream::message">
+      <a href="../NATS/JetStream/Message.html">Message</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Message/InvalidNATSMessage" data-name="nats::jetstream::message::invalidnatsmessage">
+      <a href="../NATS/JetStream/Message/InvalidNATSMessage.html">InvalidNATSMessage</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Streams" data-name="nats::jetstream::streams">
+      <a href="../NATS/JetStream/Streams.html">Streams</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Message" data-name="nats::message">
+      <a href="../NATS/Message.html">Message</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Message/Headers" data-name="nats::message::headers">
+      <a href="../NATS/Message/Headers.html">Headers</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/NotAReply" data-name="nats::notareply">
+      <a href="../NATS/NotAReply.html">NotAReply</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/ServerInfo" data-name="nats::serverinfo">
+      <a href="../NATS/ServerInfo.html">ServerInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/ServerNotRespondingToPings" data-name="nats::servernotrespondingtopings">
+      <a href="../NATS/ServerNotRespondingToPings.html">ServerNotRespondingToPings</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Subscription" data-name="nats::subscription">
+      <a href="../NATS/Subscription.html">Subscription</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Subscription/MessageChannel" data-name="nats::subscription::messagechannel">
+      <a href="../NATS/Subscription/MessageChannel.html">MessageChannel</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/UnknownCommand" data-name="nats::unknowncommand">
+      <a href="../NATS/UnknownCommand.html">UnknownCommand</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">class</span> NATS::Client
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../NATS/Client.html">NATS::Client</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Instantiating a <code><a href="../NATS/Client.html">NATS::Client</a></code> makes a connection to one of the given NATS
+servers.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      nats.cr
+    
+    <br/>
+  
+
+
+
+  
+    <h2>
+      <a id="constant-summary" class="anchor" href="#constant-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+      Constant Summary
+    </h2>
+  
+  <dl>
+    
+      <dt class="entry-const" id="BUFFER_SIZE">
+        <strong>BUFFER_SIZE</strong> = <code><span class="n">1</span> <span class="o">&lt;&lt;</span> <span class="n">15</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="MAX_OUTBOUND_INTERVAL">
+        <strong>MAX_OUTBOUND_INTERVAL</strong> = <code><span class="n">10</span>.milliseconds</code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="MAX_PUBLISH_SIZE">
+        <strong>MAX_PUBLISH_SIZE</strong> = <code><span class="n">1</span> <span class="o">*</span> <span class="t">MEGABYTE</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="MEGABYTE">
+        <strong>MEGABYTE</strong> = <code><span class="n">1</span> <span class="o">&lt;&lt;</span> <span class="n">20</span></code>
+      </dt>
+      
+    
+  </dl>
+
+
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new(uri:URI,ping_interval=2.minutes,max_pings_out=2)-class-method" class="signature"><strong>.new</strong>(uri : URI, ping_interval = <span class="n">2</span>.minutes, max_pings_out = <span class="n">2</span>)</a>
+        
+          <div class="summary"><p>Connect to a single NATS server at the given URI</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#new(servers=[URI.parse(%22nats:///%22)],ping_interval:Time::Span=2.minutes,max_pings_out=2)-class-method" class="signature"><strong>.new</strong>(servers = [<span class="t">URI</span>.parse(<span class="s">&quot;nats:///&quot;</span>)], ping_interval : Time::Span = <span class="n">2</span>.minutes, max_pings_out = <span class="n">2</span>)</a>
+        
+          <div class="summary"><p>Connect to a NATS cluster at the given URIs</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#close-instance-method" class="signature"><strong>#close</strong></a>
+        
+          <div class="summary"><p>Close this NATS connection.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#flush(timeout=2.seconds)-instance-method" class="signature"><strong>#flush</strong>(timeout = <span class="n">2</span>.seconds)</a>
+        
+          <div class="summary"><p>Flush the client's output buffer over the wire</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#jetstream-instance-method" class="signature"><strong>#jetstream</strong></a>
+        
+          <div class="summary"><p>Returns a <code><a href="../NATS/JetStream/Client.html">NATS::JetStream::Client</a></code> that uses this client's connection to the NATS server.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#on_disconnect(&on_disconnect)-instance-method" class="signature"><strong>#on_disconnect</strong>(&on_disconnect)</a>
+        
+          <div class="summary"><p>Execute the given block whenever this client is disconnected from the NATS server.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#on_error(&on_error:Exception-%3ENil)-instance-method" class="signature"><strong>#on_error</strong>(&on_error : Exception -> Nil)</a>
+        
+          <div class="summary"><p>Execute the given block whenever an exception is raised inside this NATS client.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#on_reconnect(&on_reconnect)-instance-method" class="signature"><strong>#on_reconnect</strong>(&on_reconnect)</a>
+        
+          <div class="summary"><p>Execute the given block whenever this client is reconnected to the NATS server.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#ping(channel=Channel(Nil).new(1))-instance-method" class="signature"><strong>#ping</strong>(channel = <span class="t">Channel</span>(<span class="t">Nil</span>).<span class="k">new</span>(<span class="n">1</span>))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#publish(subject:String,message:Data=Bytes.empty,reply_to:String?=nil,headers:Message::Headers?=nil):Nil-instance-method" class="signature"><strong>#publish</strong>(subject : String, message : Data = <span class="t">Bytes</span>.empty, reply_to : String? = <span class="n">nil</span>, headers : Message::Headers? = <span class="n">nil</span>) : Nil</a>
+        
+          <div class="summary"><p>Publish the given message body (either <code>Bytes</code> for binary data or <code>String</code> for text) on the given NATS subject, optionally supplying a <code>reply_to</code> subject (if expecting a reply or to notify the receiver where to send updates) and any <code>headers</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#reply(msg:Message,body:Data):Nil-instance-method" class="signature"><strong>#reply</strong>(msg : Message, body : Data) : Nil</a>
+        
+          <div class="summary"><p>Send the given <code>body</code> to the <code>msg</code>'s <code>reply_to</code> subject, often used in a request/reply messaging model.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#request(subject:String,message:Data=%22%22,timeout:Time::Span=2.seconds):Message?-instance-method" class="signature"><strong>#request</strong>(subject : String, message : Data = <span class="s">&quot;&quot;</span>, timeout : Time::Span = <span class="n">2</span>.seconds) : Message?</a>
+        
+          <div class="summary"><p>Make a synchronous request to subscribers of the given <code>subject</code>, waiting up to <code>timeout</code> for a response from any of the subscribers.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#request(subject:String,message:Data=%22%22,timeout=2.seconds,&block:Message-%3E):Nil-instance-method" class="signature"><strong>#request</strong>(subject : String, message : Data = <span class="s">&quot;&quot;</span>, timeout = <span class="n">2</span>.seconds, &block : Message -> ) : Nil</a>
+        
+          <div class="summary"><p>Make an asynchronous request to subscribers of the given <code>subject</code>, not waiting for a response.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#server_info:ServerInfo-instance-method" class="signature"><strong>#server_info</strong> : ServerInfo</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#state:State-instance-method" class="signature"><strong>#state</strong> : State</a>
+        
+          <div class="summary"><p>The current state of the connection</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#subscribe(subject:String,queue_group:String?=nil,sid=@current_sid.add(1),&block:Message,Subscription-%3E):Subscription-instance-method" class="signature"><strong>#subscribe</strong>(subject : String, queue_group : String? = <span class="n">nil</span>, sid = @current_sid.add(<span class="n">1</span>), &block : Message, Subscription -> ) : Subscription</a>
+        
+          <div class="summary"><p>Subscribe to the given <code>subject</code>, optionally with a <code>queue_group</code> (so that each message is delivered to this application once instead of once for each instance of the application), executing the given block for each message.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#unsubscribe(subscription:Subscription,max_messages:Int):Nil-instance-method" class="signature"><strong>#unsubscribe</strong>(subscription : Subscription, max_messages : Int) : Nil</a>
+        
+          <div class="summary"><p>Unsubscribe from the given subscription after the specified number of messages has been received.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#unsubscribe(subscription:Subscription):Nil-instance-method" class="signature"><strong>#unsubscribe</strong>(subscription : Subscription) : Nil</a>
+        
+          <div class="summary"><p>Unsubscribe from the given subscription</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(uri:URI,ping_interval=2.minutes,max_pings_out=2)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(uri : URI, ping_interval = <span class="n">2</span>.minutes, max_pings_out = <span class="n">2</span>)
+
+        <a class="method-permalink" href="#new(uri:URI,ping_interval=2.minutes,max_pings_out=2)-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Connect to a single NATS server at the given URI</p>
+
+<pre><code class="language-crystal">nats <span class="o">=</span> <span class="t">NATS</span><span class="t">::</span><span class="t">Client</span>.<span class="k">new</span>(<span class="t">URI</span>.parse(<span class="s">&quot;nats://nats.example.com&quot;</span>))</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new(servers=[URI.parse(&quot;nats:///&quot;)],ping_interval:Time::Span=2.minutes,max_pings_out=2)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(servers = [<span class="t">URI</span>.parse(<span class="s">&quot;nats:///&quot;</span>)], ping_interval : Time::Span = <span class="n">2</span>.minutes, max_pings_out = <span class="n">2</span>)
+
+        <a class="method-permalink" href="#new(servers=[URI.parse(%22nats:///%22)],ping_interval:Time::Span=2.minutes,max_pings_out=2)-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Connect to a NATS cluster at the given URIs</p>
+
+<pre><code class="language-crystal">nats <span class="o">=</span> <span class="t">NATS</span><span class="t">::</span><span class="t">Client</span>.<span class="k">new</span>([
+  <span class="t">URI</span>.parse(<span class="s">&quot;nats://nats-1.example.com&quot;</span>),
+  <span class="t">URI</span>.parse(<span class="s">&quot;nats://nats-2.example.com&quot;</span>),
+  <span class="t">URI</span>.parse(<span class="s">&quot;nats://nats-3.example.com&quot;</span>),
+])</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="close-instance-method">
+      <div class="signature">
+        
+        def <strong>close</strong>
+
+        <a class="method-permalink" href="#close-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Close this NATS connection. This should be done explicitly before exiting
+the program so that the NATS server can remove any subscriptions that were
+associated with this client.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="flush(timeout=2.seconds)-instance-method">
+      <div class="signature">
+        
+        def <strong>flush</strong>(timeout = <span class="n">2</span>.seconds)
+
+        <a class="method-permalink" href="#flush(timeout=2.seconds)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Flush the client's output buffer over the wire</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="jetstream-instance-method">
+      <div class="signature">
+        
+        def <strong>jetstream</strong>
+
+        <a class="method-permalink" href="#jetstream-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns a <code><a href="../NATS/JetStream/Client.html">NATS::JetStream::Client</a></code> that uses this client's connection to
+the NATS server.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="on_disconnect(&amp;on_disconnect)-instance-method">
+      <div class="signature">
+        
+        def <strong>on_disconnect</strong>(&on_disconnect)
+
+        <a class="method-permalink" href="#on_disconnect(&on_disconnect)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Execute the given block whenever this client is disconnected from the NATS
+server.</p>
+
+<pre><code class="language-crystal">nats <span class="o">=</span> <span class="t">NATS</span><span class="t">::</span><span class="t">Client</span>.<span class="k">new</span>
+nats.on_disconnect { <span class="t">Datadog</span>.metrics.increment <span class="s">&quot;nats.disconnect&quot;</span> }</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="on_error(&amp;on_error:Exception-&gt;Nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>on_error</strong>(&on_error : Exception -> Nil)
+
+        <a class="method-permalink" href="#on_error(&on_error:Exception-%3ENil)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Execute the given block whenever an exception is raised inside this NATS
+client.</p>
+
+<pre><code class="language-crystal">nats <span class="o">=</span> <span class="t">NATS</span><span class="t">::</span><span class="t">Client</span>.<span class="k">new</span>
+nats.on_error { <span class="o">|</span>error<span class="o">|</span> <span class="t">Honeybadger</span>.notify error }</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="on_reconnect(&amp;on_reconnect)-instance-method">
+      <div class="signature">
+        
+        def <strong>on_reconnect</strong>(&on_reconnect)
+
+        <a class="method-permalink" href="#on_reconnect(&on_reconnect)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Execute the given block whenever this client is reconnected to the NATS
+server.</p>
+
+<pre><code class="language-crystal">nats <span class="o">=</span> <span class="t">NATS</span><span class="t">::</span><span class="t">Client</span>.<span class="k">new</span>
+nats.on_reconnect { <span class="t">Datadog</span>.metrics.increment <span class="s">&quot;nats.reconnect&quot;</span> }</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="ping(channel=Channel(Nil).new(1))-instance-method">
+      <div class="signature">
+        
+        def <strong>ping</strong>(channel = <span class="t">Channel</span>(<span class="t">Nil</span>).<span class="k">new</span>(<span class="n">1</span>))
+
+        <a class="method-permalink" href="#ping(channel=Channel(Nil).new(1))-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="publish(subject:String,message:Data=Bytes.empty,reply_to:String?=nil,headers:Message::Headers?=nil):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>publish</strong>(subject : String, message : <a href="../NATS/Client/Data.html">Data</a> = <span class="t">Bytes</span>.empty, reply_to : String? = <span class="n">nil</span>, headers : <a href="../NATS/Message/Headers.html">Message::Headers</a>? = <span class="n">nil</span>) : Nil
+
+        <a class="method-permalink" href="#publish(subject:String,message:Data=Bytes.empty,reply_to:String?=nil,headers:Message::Headers?=nil):Nil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Publish the given message body (either <code>Bytes</code> for binary data or <code>String</code> for text) on the given NATS subject, optionally supplying a <code>reply_to</code> subject (if expecting a reply or to notify the receiver where to send updates) and any <code>headers</code>.</p>
+
+<pre><code class="language-crystal"><span class="c"># Send an empty message to a subject</span>
+nats.publish <span class="s">&quot;hello&quot;</span>
+
+<span class="c"># Serialize an object to a subject</span>
+nats.publish <span class="s">&quot;orders.</span><span class="i">#{</span>order.id<span class="i">}</span><span class="s">&quot;</span>, order.to_json
+
+<span class="c"># Tell a recipient where to send results. For example, to stream results</span>
+<span class="c"># to a given subject:</span>
+reply_subject <span class="o">=</span> <span class="s">&quot;replies.orders.list.customer.123&quot;</span>
+orders <span class="o">=</span> <span class="o">[]</span> <span class="k">of</span> <span class="t">Order</span>
+nats.subscribe reply_subject <span class="k">do</span> <span class="o">|</span>msg<span class="o">|</span>
+  <span class="k">case</span> result <span class="o">=</span> (<span class="t">Order</span> <span class="o">|</span> <span class="t">Complete</span>).from_json(<span class="t">String</span>.<span class="k">new</span>(msg.body))
+  <span class="k">in</span> <span class="t">Order</span>
+    orders <span class="o">&lt;&lt;</span> result
+  <span class="k">in</span> <span class="t">Complete</span>
+    nats.unsubscribe reply_subject
+  <span class="k">end</span>
+<span class="k">end</span>
+nats.publish <span class="s">&quot;orders.list.customer.123&quot;</span>, reply_to: reply_subject
+
+<span class="c"># Publish a message to NATS JetStream with a message-deduplication header</span>
+<span class="c"># for idempotency:</span>
+nats.jetstream.subscribe consumer_subject, queue_group: <span class="s">&quot;my-service&quot;</span> <span class="k">do</span> <span class="o">|</span>msg<span class="o">|</span>
+  <span class="c"># ...</span>
+<span class="k">end</span>
+nats.publish orders_subject, order.to_json, headers: <span class="t">NATS</span><span class="t">::</span><span class="t">Message</span><span class="t">::</span><span class="t">Headers</span> {
+  <span class="c"># Deduplicate using the equivalent of a cache key</span>
+  <span class="s">&quot;Nats-Msg-Id&quot;</span> => <span class="s">&quot;order-submitted-</span><span class="i">#{</span>order.id<span class="i">}</span><span class="s">-</span><span class="i">#{</span>order.updated_at.to_json<span class="i">}</span><span class="s">&quot;</span>,
+}</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="reply(msg:Message,body:Data):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>reply</strong>(msg : <a href="../NATS/Message.html">Message</a>, body : <a href="../NATS/Client/Data.html">Data</a>) : Nil
+
+        <a class="method-permalink" href="#reply(msg:Message,body:Data):Nil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Send the given <code>body</code> to the <code>msg</code>'s <code>reply_to</code> subject, often used in a
+request/reply messaging model.</p>
+
+<pre><code class="language-crystal">nats.subscribe <span class="s">&quot;orders.*&quot;</span>, queue_group: <span class="s">&quot;orders-service&quot;</span> <span class="k">do</span> <span class="o">|</span>msg<span class="o">|</span>
+  _, id <span class="o">=</span> msg.subject.split(<span class="s">&#39;.&#39;</span>) <span class="c"># Similar to HTTP path routing</span>
+
+  <span class="k">if</span> order <span class="o">=</span> <span class="t">OrderQuery</span>.<span class="k">new</span>.find_by(id: id)
+    nats.reply msg, {order: order}.to_json
+  <span class="k">else</span>
+    nats.reply msg, {error: <span class="s">&quot;No order with that id found&quot;</span>}.to_json
+  <span class="k">end</span>
+<span class="k">end</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="request(subject:String,message:Data=&quot;&quot;,timeout:Time::Span=2.seconds):Message?-instance-method">
+      <div class="signature">
+        
+        def <strong>request</strong>(subject : String, message : <a href="../NATS/Client/Data.html">Data</a> = <span class="s">&quot;&quot;</span>, timeout : Time::Span = <span class="n">2</span>.seconds) : <a href="../NATS/Message.html">Message</a>?
+
+        <a class="method-permalink" href="#request(subject:String,message:Data=%22%22,timeout:Time::Span=2.seconds):Message?-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Make a synchronous request to subscribers of the given <code>subject</code>, waiting
+up to <code>timeout</code> for a response from any of the subscribers. The first
+message to come back will be returned. If no messages comes back before
+the <code>timeout</code> elapses, <code>nil</code> is returned.</p>
+
+<pre><code class="language-crystal"><span class="k">if</span> order_response <span class="o">=</span> nats.request(<span class="s">&quot;orders.info.</span><span class="i">#{</span>order_id<span class="i">}</span><span class="s">&quot;</span>)
+  response <span class="o">&lt;&lt;</span> <span class="t">Order</span>.from_json(order_response.body_io)
+<span class="k">else</span>
+  response.status <span class="o">=</span> <span class="n">:service_unavailable</span>
+<span class="k">end</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="request(subject:String,message:Data=&quot;&quot;,timeout=2.seconds,&amp;block:Message-&gt;):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>request</strong>(subject : String, message : <a href="../NATS/Client/Data.html">Data</a> = <span class="s">&quot;&quot;</span>, timeout = <span class="n">2</span>.seconds, &block : <a href="../NATS/Message.html">Message</a> -> ) : Nil
+
+        <a class="method-permalink" href="#request(subject:String,message:Data=%22%22,timeout=2.seconds,&block:Message-%3E):Nil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Make an asynchronous request to subscribers of the given <code>subject</code>, not
+waiting for a response. The first message to come back will be passed to
+the block.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="server_info:ServerInfo-instance-method">
+      <div class="signature">
+        
+        def <strong>server_info</strong> : <a href="../NATS/ServerInfo.html">ServerInfo</a>
+
+        <a class="method-permalink" href="#server_info:ServerInfo-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="state:State-instance-method">
+      <div class="signature">
+        
+        def <strong>state</strong> : <a href="../NATS/Client/State.html">State</a>
+
+        <a class="method-permalink" href="#state:State-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The current state of the connection</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="subscribe(subject:String,queue_group:String?=nil,sid=@current_sid.add(1),&amp;block:Message,Subscription-&gt;):Subscription-instance-method">
+      <div class="signature">
+        
+        def <strong>subscribe</strong>(subject : String, queue_group : String? = <span class="n">nil</span>, sid = @current_sid.add(<span class="n">1</span>), &block : <a href="../NATS/Message.html">Message</a>, <a href="../NATS/Subscription.html">Subscription</a> -> ) : <a href="../NATS/Subscription.html">Subscription</a>
+
+        <a class="method-permalink" href="#subscribe(subject:String,queue_group:String?=nil,sid=@current_sid.add(1),&block:Message,Subscription-%3E):Subscription-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Subscribe to the given <code>subject</code>, optionally with a <code>queue_group</code> (so that
+each message is delivered to this application once instead of once for
+each instance of the application), executing the given block for each
+message.</p>
+
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;nats&quot;</span>
+
+nats <span class="o">=</span> <span class="t">NATS</span><span class="t">::</span><span class="t">Client</span>.<span class="k">new</span>
+nats.subscribe <span class="s">&quot;orders.created&quot;</span> <span class="k">do</span> <span class="o">|</span>msg<span class="o">|</span>
+  order <span class="o">=</span> <span class="t">Order</span>.from_json(msg.body_io)
+
+  <span class="c"># ...</span>
+<span class="k">end</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="unsubscribe(subscription:Subscription,max_messages:Int):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>unsubscribe</strong>(subscription : <a href="../NATS/Subscription.html">Subscription</a>, max_messages : Int) : Nil
+
+        <a class="method-permalink" href="#unsubscribe(subscription:Subscription,max_messages:Int):Nil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Unsubscribe from the given subscription after the specified number of messages has been received.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="unsubscribe(subscription:Subscription):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>unsubscribe</strong>(subscription : <a href="../NATS/Subscription.html">Subscription</a>) : Nil
+
+        <a class="method-permalink" href="#unsubscribe(subscription:Subscription):Nil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Unsubscribe from the given subscription</p>
+
+<pre><code class="language-crystal">nats <span class="o">=</span> <span class="t">NATS</span><span class="t">::</span><span class="t">Client</span>.<span class="k">new</span>
+
+new_orders <span class="o">=</span> <span class="o">[]</span> <span class="k">of</span> <span class="t">NATS</span><span class="t">::</span><span class="t">Message</span>
+subscription <span class="o">=</span> nats.subscribe <span class="s">&quot;orders.created.*&quot;</span> <span class="k">do</span> <span class="o">|</span>msg<span class="o">|</span>
+  messages <span class="o">&lt;&lt;</span> msg
+<span class="k">end</span>
+
+spawn <span class="k">do</span>
+  sleep <span class="n">10</span>.seconds
+  nats.unsubscribe subscription
+<span class="k">end</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+
+
+</div>
+
+</body>
+</html>
