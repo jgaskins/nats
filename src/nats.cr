@@ -653,8 +653,10 @@ module NATS
 
     private def handle_inbound_disconnect(exception, backoff : Time::Span)
       LOG.debug { "Exception in inbound data handler: #{exception}" }
-      exception.backtrace.each do |line|
-        LOG.debug { line }
+      if backtrace = exception.backtrace?
+        backtrace.each do |line|
+          LOG.debug { line }
+        end
       end
       LOG.debug { "Waiting #{backoff} to reconnect" }
       sleep backoff
