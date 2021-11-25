@@ -2,12 +2,33 @@ require "json"
 require "./nats"
 require "./error"
 
+module Base64
+  def self.from_json(json : JSON::PullParser)
+    decode json.read_string
+  end
+
+  def self.to_json(json : JSON::Builder, value : Bytes)
+    json.string encode(value)
+  end
+end
+
 module NATS
   # NATS JetStream provides at-least-once delivery guarantees with the
   # possibility of exactly-once for some use cases, allowing NATS to be used for
   # scenarios where 100% delivery of messages and events is required.
   module JetStream
     class Error < ::NATS::Error
+    end
+
+    # https://github.com/nats-io/nats-server/blob/main/server/errors.json
+    enum Errors : Int32 # Should be wide enough?
+      None = 0
+      NoMessageFound = 10037
+      StreamWrongLastSequence = 10071
+
+      def self.new(json : JSON::PullParser)
+        new json.read_int.to_i
+      end
     end
 
     # This class provides a client for NATS JetStream for at-least-once delivery.
@@ -139,6 +160,7 @@ module NATS
       #   # doing some work
       #
       #   jetstream.ack msg # Successfully processed
+      #
       # rescue ex
       #   jetstream.nack msg # Processing was unsuccessful, try again.
       # end
@@ -150,6 +172,7 @@ module NATS
       # ```
       # jetstream.subscribe consumer do |msg|
       #   # ...
+      #
       # rescue ex
       #   # Very important to do this in a `spawn`. Do not block the `subscribe`
       #   # handler for more than 1-2 seconds or the NATS server will see you as
@@ -168,9 +191,6 @@ module NATS
       # ```
       def nack(msg : Message)
         @nats.publish msg.reply_to, "-NAK"
-      end
-
-      module API
       end
     end
 
@@ -224,7 +244,7 @@ module NATS
       # Any headers that were published with this message, including ones
       # interpreted by the NATS server, such as `Nats-Msg-Id` for message
       # deduplication.
-      getter headers : ::NATS::Message::Headers?
+      getter headers : Headers?
 
       # Instantiate a `NATS::JetStream::Message` based on a `NATS::Message`.
       # Used by JetStream subscriptions to build `JetStream::Message`
@@ -278,6 +298,7 @@ module NATS
             include JSON::Serializable
 
             getter code : Int32
+            getter err_code : Errors = :none
             getter description : String
           end
         end
@@ -293,10 +314,23 @@ module NATS
           # Create a stream of the given storage type and with the given
           # properties, which are passed unmodified to
           # `NATS::JetStream::API::V1::StreamConfig.new`.
-          def create(storage : JetStream::API::V1::StreamConfig::Storage, **kwargs)
-            create_stream = JetStream::API::V1::StreamConfig.new(**kwargs, storage: storage)
+          def create(
+            storage : API::V1::StreamConfig::Storage,
+            retention : API::V1::StreamConfig::RetentionPolicy? = nil,
+            **kwargs
+          )
+            create_stream = JetStream::API::V1::StreamConfig.new(
+              **kwargs,
+              storage: storage,
+              retention: retention,
+            )
+
+            if create_stream.name.includes? '.'
+              raise JetStream::Error.new("Cannot create stream with '.' in the name")
+            end
+
             if response = @nats.request "$JS.API.STREAM.CREATE.#{create_stream.name}", create_stream.to_json
-              case parsed = (JetStream::API::V1::Stream | ErrorResponse).from_json response.body_io
+              case parsed = (JetStream::API::V1::Stream | ErrorResponse).from_json String.new(response.body)
               when ErrorResponse
                 raise JetStream::Error.new("#{parsed.error.description} (#{parsed.error.code})")
               else
@@ -306,14 +340,13 @@ module NATS
               raise JetStream::Error.new("Did not receive a response from NATS JetStream")
             end
           rescue ex
-            pp body: String.new(response.try(&.body) || Bytes.empty), parsed: parsed
             raise ex
           end
 
           # List all available streams
           def list
             if response = @nats.request "$JS.API.STREAM.LIST"
-              NATS::JetStream::API::V1::StreamListResponse.from_json(response.body_io)
+              NATS::JetStream::API::V1::StreamListResponse.from_json(String.new(response.body))
             else
               raise "whoops"
             end
@@ -336,6 +369,23 @@ module NATS
           # Delete the stream with the given name
           def delete(stream : String)
             @nats.request "$JS.API.STREAM.DELETE.#{stream}"
+          end
+
+          def get_msg(stream : String, *, last_by_subj : String, sequence : Int = 0)
+            if response = @nats.request "$JS.API.STREAM.MSG.GET.#{stream}", {last_by_subj: last_by_subj, seq: sequence}.to_json
+              case parsed = (StreamGetMsgResponse | ErrorResponse).from_json String.new(response.body)
+              in StreamGetMsgResponse
+                parsed
+              in ErrorResponse
+                if parsed.error.err_code.no_message_found?
+                  nil # No message
+                else
+                  raise Error.new(parsed.error.description)
+                end
+              end
+            else
+              raise Error.new("Did not receive a response when getting message #{last_by_subj.inspect} from #{stream.inspect}")
+            end
           end
         end
 
@@ -361,7 +411,7 @@ module NATS
               raise JetStream::Error.new("Did not receive a response from NATS JetStream")
             end
 
-            case parsed = (JetStream::API::V1::Consumer | ErrorResponse).from_json response.body_io
+            case parsed = (JetStream::API::V1::Consumer | ErrorResponse).from_json String.new(response.body)
             in JetStream::API::V1::Consumer
               parsed
             in ErrorResponse
@@ -378,7 +428,7 @@ module NATS
           # specified name.
           def list(stream_name : String)
             if consumers_response = @nats.request "$JS.API.CONSUMER.LIST.#{stream_name}"
-              NATS::JetStream::API::V1::ConsumerListResponse.from_json(consumers_response.body_io)
+              NATS::JetStream::API::V1::ConsumerListResponse.from_json(String.new(consumers_response.body))
             else
               raise "whoops"
             end
@@ -388,7 +438,7 @@ module NATS
           # given stream.
           def info(stream_name : String, name : String)
             if consumer_response = @nats.request "$JS.API.CONSUMER.INFO.#{stream_name}.#{name}"
-              NATS::JetStream::API::V1::Consumer.from_json(consumer_response.body_io)
+              NATS::JetStream::API::V1::Consumer.from_json(String.new(consumer_response.body))
             else
               raise "no info for #{name.inspect} (stream #{stream_name.inspect})"
             end
@@ -445,6 +495,45 @@ module NATS
 
           def each
             streams.each { |s| yield s }
+          end
+        end
+
+        struct StreamGetMsgResponse < Message
+          getter message : Message
+
+          struct Message
+            include JSON::Serializable
+            getter subject : String
+            getter seq : Int64
+            @[JSON::Field(converter: Base64)]
+            getter data : Bytes = Bytes.empty
+            @[JSON::Field(key: "hdrs", converter: ::NATS::JetStream::API::V1::StreamGetMsgResponse::Message::HeadersConverter)]
+            getter headers : Headers?
+            getter time : Time
+
+            module HeadersConverter
+              def self.from_json(json : JSON::PullParser)
+                if string = json.read_string_or_null
+                  # Decoded string will be in the format:
+                  #   "NATS/1.0\r\nHeader1: Value1\r\nHeader2: Value2\r\n\r\n"
+                  # So we want to omit the first line (preamble) and the last
+                  # line (it's blank).
+                  raw = Base64.decode_string(string)
+                  header_count = raw.count('\n') - 2
+                  headers = Headers.new(initial_capacity: header_count)
+
+                  raw.each_line do |line|
+                    if separator_index = line.index(':')
+                      key = line[0...separator_index]
+                      value = line[separator_index + 2..]
+                      headers[key] = value
+                    end
+                  end
+
+                  headers
+                end
+              end
+            end
           end
         end
 
@@ -519,6 +608,7 @@ module NATS
 
           # Name of this stream
           getter name : String
+          getter description : String?
 
           # Which subjects this stream will listen for.
           getter subjects : Array(String)
@@ -538,10 +628,16 @@ module NATS
           getter sources : Array(StreamSourceInfo) = [] of StreamSourceInfo
           @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
           getter duplicate_window : Time::Span?
+          @[JSON::Field(key: "allow_rollup_hdrs")]
+          getter? allow_rollup_headers : Bool?
+          getter? deny_purge : Bool?
+          getter? deny_delete : Bool?
+          getter? sealed : Bool?
 
           def initialize(
             @name,
             @subjects,
+            @description = nil,
             @max_age = nil,
             @max_bytes = nil,
             @max_msg_size = nil,
@@ -550,8 +646,10 @@ module NATS
             @no_ack = false,
             @replicas = nil,
             @retention : RetentionPolicy? = nil,
+            @allow_rollup_headers = nil,
+            @deny_delete = nil,
             @discard : DiscardPolicy? = nil,
-            @storage : Storage = :file,
+            @storage : Storage = :file
           )
           end
         end
@@ -624,7 +722,6 @@ module NATS
           # See https://github.com/nats-io/nats-server/blob/3aa8e63b290ac4ba1c99193827b3f66ad5679904/server/consumer.go#L70-L71
           # getter? direct : Bool = false
 
-
           # FilterSubject	When consuming from a Stream with many subjects, or wildcards, select only a specific incoming subjects, supports wildcards
           getter filter_subject : String?
           # MaxDeliver	Maximum amount times a specific message will be delivered. Use this to avoid poison pills crashing all your services forever
@@ -642,9 +739,27 @@ module NATS
           # MaxAckPending	The maximum number of messages without acknowledgement that can be outstanding, once this limit is reached message delivery will be suspended
           getter max_ack_pending : Int64?
 
-          def initialize(@deliver_subject = nil, @durable_name = nil, @ack_policy : AckPolicy = :explicit, @deliver_policy : DeliverPolicy = :all, @replay_policy : ReplayPolicy = :instant, @ack_wait = nil, @filter_subject = nil, max_deliver = nil, @opt_start_seq = nil, @sample_frequency = nil, @opt_start_time = nil, @rate_limit_bps = nil, max_ack_pending : Int? = nil, @idle_heartbeat = nil, @deliver_group = durable_name)
+          def initialize(
+            @deliver_subject = nil,
+            @durable_name = nil,
+            @ack_policy : AckPolicy = :explicit,
+            @deliver_policy : DeliverPolicy = :all,
+            @replay_policy : ReplayPolicy = :instant,
+            @ack_wait = nil,
+            @filter_subject = nil,
+            max_deliver = nil,
+            @opt_start_seq = nil,
+            @sample_frequency = nil,
+            @opt_start_time = nil,
+            @rate_limit_bps = nil,
+            max_ack_pending : Int? = nil,
+            max_waiting : Int? = nil,
+            @idle_heartbeat = nil,
+            @deliver_group = durable_name
+          )
             @max_deliver = max_deliver.try(&.to_i64)
             @max_ack_pending = max_ack_pending.to_i64 if max_ack_pending
+            @max_waiting = max_waiting.try(&.to_i64)
           end
 
           # The way this consumer expects messages to be acknowledged.
@@ -760,6 +875,14 @@ module NATS
           end
         end
       end
+    end
+  end
+
+  class Client
+    # Returns a `NATS::JetStream::Client` that uses this client's connection to
+    # the NATS server.
+    def jetstream
+      @jetstream ||= JetStream::Client.new(self)
     end
   end
 end

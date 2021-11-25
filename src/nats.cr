@@ -264,7 +264,7 @@ module NATS
     #
     # nats = NATS::Client.new
     # nats.subscribe "orders.created" do |msg|
-    #   order = Order.from_json(msg.body_io)
+    #   order = Order.from_json(String.new(msg.body))
     #
     #   # ...
     # end
@@ -333,28 +333,28 @@ module NATS
     #
     # ```
     # if order_response = nats.request("orders.info.#{order_id}")
-    #   response << Order.from_json(order_response.body_io)
+    #   response << Order.from_json(String.new(order_response.body))
     # else
     #   response.status = :service_unavailable
     # end
     # ```
-    def request(subject : String, message : Data = "", timeout : Time::Span = 2.seconds) : Message?
+    def request(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil) : Message?
       channel = Channel(Message).new(1)
       inbox = Random::Secure.hex(4)
       key = "#{@inbox_prefix}.#{inbox}"
-      @inbox_handlers[key] = ->(msg : Message) do
-        @inbox_handlers.delete key
-        channel.send msg
-      end
-      publish subject, message, reply_to: key
+      @inbox_handlers[key] = ->(msg : Message) { channel.send msg }
+      publish subject, message, reply_to: key, headers: headers
       @out.synchronize { @socket.flush }
 
-      select
-      when msg = channel.receive
-        msg
-      when timeout(timeout)
+      begin
+        select
+        when msg = channel.receive
+          msg
+        when timeout(timeout)
+          nil
+        end
+      ensure
         @inbox_handlers.delete key
-        nil
       end
     end
 
@@ -428,7 +428,7 @@ module NATS
     # nats.jetstream.subscribe consumer_subject, queue_group: "my-service" do |msg|
     #   # ...
     # end
-    # nats.publish orders_subject, order.to_json, headers: NATS::Message::Headers {
+    # nats.publish orders_subject, order.to_json, headers: NATS::Message::Headers{
     #   # Deduplicate using the equivalent of a cache key
     #   "Nats-Msg-Id" => "order-submitted-#{order.id}-#{order.updated_at.to_json}",
     # }
@@ -502,12 +502,6 @@ module NATS
     def pong
       LOG.debug { "Sending PONG" }
       write { @io << "PONG\r\n" }
-    end
-
-    # Returns a `NATS::JetStream::Client` that uses this client's connection to
-    # the NATS server.
-    def jetstream
-      @jetstream ||= JetStream::Client.new(self)
     end
 
     private def begin_pings
@@ -793,6 +787,7 @@ module NATS
     def initialize(@subject, @body, @reply_to = nil, @headers = nil)
     end
 
+    @[Deprecated("Instantiating a new IO::Memory for each message made them heavier than intended, so we're now recommending using `String.new(msg.body)`")]
     def body_io
       @body_io ||= IO::Memory.new(@body)
     end
