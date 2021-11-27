@@ -29,6 +29,9 @@ module NATS
     class KeyEmptyError < Error
     end
 
+    class KeyError < Error
+    end
+
     class InvalidKeyname < Error
     end
 
@@ -69,42 +72,103 @@ module NATS
       )
       end
 
+      # Set the value of a key
       def put(key : String, value : Data)
         @kv.put name, key, value
       end
 
+      # Set the value of a key
       def []=(key : String, value : Data)
         put key, value
       end
 
+      # Get the value of a key as a `KV::Entry` - returns `nil` if the key does
+      # not exist or if it's been deleted with `ignore_deletes` set to `true`.
+      #
+      # *Important*: If you do not set `ignore_deletes`, you may get a deleted
+      # key. This is because the keys are stored in a stream and deleting the
+      # key sets an `operation` flag (implemented in the NATS server as a
+      # `KV-Operation` message header) and this method retrieves the last entry
+      # in the stream for this key. `ignore_deletes` simply tells the client to
+      # ignore deleted messages.
       def get(key : String, ignore_deletes = false) : Entry?
         @kv.get name, key, ignore_deletes: ignore_deletes
       end
 
+      # Get the value of a key as a `KV::Entry` - raises `KeyError` if the key
+      # does not exist or if it's been deleted with `ignore_deletes` set to
+      # `true`.
       def get!(key : String, ignore_deletes = false) : Entry
         unless get(key, ignore_deletes)
-          raise Error.new("Key #{key.inspect} expected, but not found")
+          raise KeyError.new("Key #{key.inspect} expected, but not found")
         end
       end
 
+      # Creates the given `key` with the given `value` if and only if the key
+      # does not yet exist.
       def create(key : String, value : String)
         @kv.create name, key, value
       end
 
+      # Updates the given `key` with the given `value` if and only if it exists
+      # and is currently at the given `revision`. If you do not have the latest
+      # revision, this method returns `nil` so you can perform domain-specific
+      # conflict resolution. If you need to set the key regardless of revision,
+      # use `Bucket#put` instead.
       def update(key : String, value : String, revision : Int64)
         @kv.update name, key, value, revision
       end
 
+      # Deletes the given `key` from the KV store. Inside the NATS server, this
+      # is implemented as adding another message to the stream that signifies
+      # deletion.
       def delete(key : String)
         @kv.delete name, key
       end
 
+      # Purges the given `key` from the KV store. Inside the NATS server, this
+      # is implemented as rolling up all versions of this key into a single
+      # message with its `KV::Entry#operation` value (`KV-Operation` header)
+      # set to `KV::Entry::Operation::Purge`.
       def purge(key : String)
         @kv.purge name, key
       end
 
+      # List all known keys for this bucket, returned as a `Set(String)`.
       def keys
         @kv.keys(name)
+      end
+
+      # Watch the given key (or wildcard) for changes and yielding them to the
+      # block. By default, this will also yield deleted messages. To avoid that,
+      # pass `ignore_deletes: true`.
+      #
+      # ```
+      # bucket.watch("session.*") do |entry|
+      #   _prefix, session_id = entry.subject.split('.', 2)
+      #   if entry.operation.deleted?
+      #     # do deleted things
+      #   else
+      #     # the session was updated
+      #   end
+      # end
+      # ```
+      #
+      # This method blocks until the yielded `Watch` is stopped (use
+      # `watch.stop`), so if you want to run it in the background, you will need
+      # to run this method inside a `spawn` block.
+      #
+      # You can also use this method to wait for a specific key to change once:
+      #
+      # ```
+      # bucket.watch my_key do |entry, watch|
+      #   # react to the key change
+      # ensure
+      #   watch.stop # exit the block
+      # end
+      # ```
+      def watch(key : String, *, ignore_deletes = false, &block : Entry, Watch ->)
+        @kv.watch(name, key, ignore_deletes: ignore_deletes, &block)
       end
     end
 
@@ -266,8 +330,6 @@ module NATS
       end
 
       def watch(bucket : String, key : String, *, ignore_deletes = false, &block : Entry, Watch ->)
-        validate_key! key unless key == ">"
-
         stop_channel = Channel(Nil).new
         watch = Watch.new(stop_channel)
         inbox = "$WATCH_INBOX.#{Random::Secure.hex}"
@@ -316,15 +378,6 @@ module NATS
         end
         if stream_name && consumer && (name = consumer.name)
           @nats.jetstream.consumer.delete stream_name, name
-        end
-      end
-
-      class Watch
-        def initialize(@stop_channel : Channel(Nil))
-        end
-
-        def stop
-          @stop_channel.send nil
         end
       end
 
@@ -388,6 +441,15 @@ module NATS
       end
 
       def initialize(@bucket, @key, @value, @revision, @created_at, @operation, @delta = 0i64)
+      end
+    end
+
+    class Watch
+      def initialize(@stop_channel : Channel(Nil))
+      end
+
+      def stop
+        @stop_channel.send nil
       end
     end
   end
