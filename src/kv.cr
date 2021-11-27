@@ -54,7 +54,7 @@ module NATS
           name: "KV_#{bucket}",
           description: description,
           subjects: ["$KV.#{bucket}.>"],
-          max_msgs: history,
+          max_msgs_per_subject: history.to_i64,
           max_bytes: max_bytes,
           max_age: ttl,
           max_msg_size: max_value_size,

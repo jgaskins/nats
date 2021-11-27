@@ -618,6 +618,7 @@ module NATS
           getter max_bytes : Int64?
           getter max_msg_size : Int32?
           getter max_msgs : Int64?
+          getter max_msgs_per_subject : Int64?
           getter max_consumers : Int32?
           getter? no_ack : Bool?
           getter replicas : Int32?
@@ -642,6 +643,7 @@ module NATS
             @max_bytes = nil,
             @max_msg_size = nil,
             @max_msgs = nil,
+            @max_msgs_per_subject = nil,
             @max_consumers = nil,
             @no_ack = false,
             @replicas = nil,
