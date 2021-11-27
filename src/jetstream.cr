@@ -371,8 +371,16 @@ module NATS
             @nats.request "$JS.API.STREAM.DELETE.#{stream}"
           end
 
-          def get_msg(stream : String, *, last_by_subj : String, sequence : Int = 0)
-            if response = @nats.request "$JS.API.STREAM.MSG.GET.#{stream}", {last_by_subj: last_by_subj, seq: sequence}.to_json
+          def get_msg(stream : String, *, last_by_subject : String)
+            get_msg stream, {last_by_subj: last_by_subject}
+          end
+
+          def get_msg(stream : String, *, sequence : String)
+            get_msg stream, {sequence: sequence}
+          end
+
+          def get_msg(stream : String, **params)
+            if response = @nats.request "$JS.API.STREAM.MSG.GET.#{stream}", params.to_json
               case parsed = (StreamGetMsgResponse | ErrorResponse).from_json String.new(response.body)
               in StreamGetMsgResponse
                 parsed
@@ -384,7 +392,7 @@ module NATS
                 end
               end
             else
-              raise Error.new("Did not receive a response when getting message #{last_by_subj.inspect} from #{stream.inspect}")
+              raise Error.new("Did not receive a response when getting message from stream #{stream.inspect} with options #{params}")
             end
           end
         end

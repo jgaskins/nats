@@ -84,10 +84,10 @@ module NATS
       end
 
       # Get the value associated with the current
-      def get(bucket : String, key : String, sequence : Int = 0) : KeyValueEntry?
+      def get(bucket : String, key : String, revision : Int = 0) : KeyValueEntry?
         validate_key! key unless key == ">"
 
-        if response = @nats.jetstream.stream.get_msg("KV_#{bucket}", last_by_subj: "$KV.#{bucket}.#{key}", sequence: sequence)
+        if response = @nats.jetstream.stream.get_msg("KV_#{bucket}", last_by_subj: "$KV.#{bucket}.#{key}", sequence: revision)
           operation = KeyValueEntry::Operation::Put
 
           case response.message.headers.try { |h| h["KV-Operation"]? }
