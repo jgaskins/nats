@@ -31,6 +31,7 @@ module NATS
   VERSION = "1.0.2"
 
   alias Headers = Message::Headers
+  alias Data = String | Bytes
 
   # Generic error
   class Error < ::Exception

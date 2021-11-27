@@ -32,6 +32,82 @@ module NATS
     class InvalidKeyname < Error
     end
 
+    class Bucket
+      getter name : String
+
+      def self.new(stream : JetStream::API::V1::Stream, kv : Client)
+        config = stream.config
+        new(
+          name: config.name.lchop("KV_"),
+          stream_name: config.name,
+          description: config.description,
+          max_value_size: config.max_msg_size,
+          history: config.max_msgs_per_subject,
+          ttl: config.max_age,
+          max_bytes: config.max_bytes,
+          storage: config.storage,
+          replicas: config.replicas,
+          allow_rollup: config.allow_rollup_headers?,
+          deny_delete: config.deny_delete?,
+          kv: kv,
+        )
+      end
+
+      def initialize(
+        @name : String,
+        @stream_name : String,
+        @description : String?,
+        @max_value_size : Int32?,
+        @history : Int64?,
+        @ttl : Time::Span?,
+        @max_bytes : Int64?,
+        @storage : JetStream::API::V1::StreamConfig::Storage,
+        @replicas : Int32?,
+        @allow_rollup : Bool?,
+        @deny_delete : Bool?,
+        @kv : Client
+      )
+      end
+
+      def put(key : String, value : Data)
+        @kv.put name, key, value
+      end
+
+      def []=(key : String, value : Data)
+        put key, value
+      end
+
+      def get(key : String, ignore_deletes = false) : Entry?
+        @kv.get name, key, ignore_deletes: ignore_deletes
+      end
+
+      def get!(key : String, ignore_deletes = false) : Entry
+        unless get(key, ignore_deletes)
+          raise Error.new("Key #{key.inspect} expected, but not found")
+        end
+      end
+
+      def create(key : String, value : String)
+        @kv.create name, key, value
+      end
+
+      def update(key : String, value : String, revision : Int64)
+        @kv.update name, key, value, revision
+      end
+
+      def delete(key : String)
+        @kv.delete name, key
+      end
+
+      def purge(key : String)
+        @kv.purge name, key
+      end
+
+      def keys
+        @kv.keys(name)
+      end
+    end
+
     class Client
       def initialize(@nats : ::NATS::Client)
       end
@@ -46,25 +122,31 @@ module NATS
         ttl : Time::Span? = nil,
         max_bytes : Int64? = nil,
         storage : JetStream::API::V1::StreamConfig::Storage = :file,
-        replicas : Int32? = nil,
-        allow_rollup : Bool? = nil,
-        deny_delete : Bool? = nil
+        replicas : Int32 = 1,
+        allow_rollup : Bool = true,
+        deny_delete : Bool = true
       )
-        @nats.jetstream.stream.create(
+        stream = @nats.jetstream.stream.create(
           name: "KV_#{bucket}",
           description: description,
           subjects: ["$KV.#{bucket}.>"],
-          max_msgs_per_subject: history.to_i64,
+          max_msgs_per_subject: history.try(&.to_i64),
           max_bytes: max_bytes,
           max_age: ttl,
           max_msg_size: max_value_size,
           storage: storage,
-          replicas: replicas,
+          replicas: {replicas, 1}.max,
           allow_rollup_headers: allow_rollup,
           deny_delete: deny_delete,
-                  # No need to ack KV messages
-          # no_ack: true,
-)
+        )
+
+        Bucket.new(stream, self)
+      end
+
+      def get_bucket(name : String) : Bucket?
+        if stream = @nats.jetstream.stream.info("KV_#{name}")
+          Bucket.new(stream, self)
+        end
       end
 
       # Assign `value` to `key` in `bucket`.
@@ -84,20 +166,22 @@ module NATS
       end
 
       # Get the value associated with the current
-      def get(bucket : String, key : String, revision : Int = 0) : KeyValueEntry?
+      def get(bucket : String, key : String, ignore_deletes = false) : Entry?
         validate_key! key unless key == ">"
 
-        if response = @nats.jetstream.stream.get_msg("KV_#{bucket}", last_by_subj: "$KV.#{bucket}.#{key}", sequence: revision)
-          operation = KeyValueEntry::Operation::Put
+        if response = @nats.jetstream.stream.get_msg("KV_#{bucket}", last_by_subject: "$KV.#{bucket}.#{key}")
+          operation = Entry::Operation::Put
 
           case response.message.headers.try { |h| h["KV-Operation"]? }
           when "DEL"
-            operation = KeyValueEntry::Operation::Delete
+            operation = Entry::Operation::Delete
           when "PURGE"
-            operation = KeyValueEntry::Operation::Purge
+            operation = Entry::Operation::Purge
           end
+          return nil if ignore_deletes && !operation.put?
+
           _, bucket_name, key_name = response.message.subject.split('.', 3)
-          get = KeyValueEntry.new(
+          get = Entry.new(
             bucket: bucket_name,
             key: key_name,
             value: response.message.data,
@@ -105,25 +189,6 @@ module NATS
             created_at: response.message.time,
             operation: operation,
           )
-        end
-      end
-
-      struct KeyValueEntry
-        getter bucket : String
-        getter key : String
-        getter value : Bytes
-        getter revision : Int64
-        getter created_at : Time
-        getter delta : Int64
-        getter operation : Operation
-
-        enum Operation
-          Put
-          Delete
-          Purge
-        end
-
-        def initialize(@bucket, @key, @value, @revision, @created_at, @operation, @delta = 0i64)
         end
       end
 
@@ -139,7 +204,13 @@ module NATS
       # end
       # ```
       def create(bucket : String, key : String, value : String | Bytes) : Int64?
-        update bucket, key, value, revision: 0
+        revision = update bucket, key, value, revision: 0
+
+        if revision
+          revision
+        elsif (entry = get(bucket, key)) && !entry.operation.put?
+          update(bucket, key, value, revision: entry.revision)
+        end
       end
 
       # Update a bucket's key with the specified value only if the current value
@@ -194,7 +265,7 @@ module NATS
         keys
       end
 
-      def watch(bucket : String, key : String, *, ignore_deletes = false, &block : KeyValueEntry, Watch ->)
+      def watch(bucket : String, key : String, *, ignore_deletes = false, &block : Entry, Watch ->)
         validate_key! key unless key == ">"
 
         stop_channel = Channel(Nil).new
@@ -207,22 +278,24 @@ module NATS
           stream_name: stream_name,
           deliver_subject: inbox,
           deliver_group: deliver_group,
+          deliver_policy: :last_per_subject,
+          filter_subject: "$KV.#{bucket}.#{key}",
         )
         subscription = @nats.subscribe inbox, queue_group: deliver_group do |msg|
           js_msg = JetStream::Message.new(msg)
           @nats.jetstream.ack js_msg
 
-          operation = KeyValueEntry::Operation::Put
+          operation = Entry::Operation::Put
           case msg.headers.try { |h| h["KV-Operation"]? }
           when "DEL"
-            operation = KeyValueEntry::Operation::Delete
+            operation = Entry::Operation::Delete
           when "PURGE"
-            operation = KeyValueEntry::Operation::Purge
+            operation = Entry::Operation::Purge
           end
 
           if !ignore_deletes || operation.put?
             _, bucket_name, key_name = msg.subject.split('.', 3)
-            get = KeyValueEntry.new(
+            get = Entry.new(
               bucket: bucket_name,
               key: key_name,
               value: msg.body,
@@ -267,12 +340,19 @@ module NATS
       end
 
       def purge(bucket : String, key : String)
-        headers = Headers{"KV-Operation" => "PURGE"}
+        headers = Headers{
+          "KV-Operation" => "PURGE",
+          "Nats-Rollup"  => "sub",
+        }
         if response = @nats.request "$KV.#{bucket}.#{key}", "", headers: headers
           PutResponse.from_json(String.new(response.body)).seq
         else
           raise Error.new("No response received from the NATS server when purging #{key.inspect} on KV #{bucket.inspect}")
         end
+      end
+
+      def delete(bucket : Bucket)
+        delete_bucket bucket.name
       end
 
       def delete_bucket(bucket : String)
@@ -289,6 +369,25 @@ module NATS
         if key !~ %r{\A[-/_=\.a-zA-Z0-9]+\z}
           raise InvalidKeyname.new("Key may only contain alphanumeric characters, -, /, _, =, and . (got: #{key.inspect})")
         end
+      end
+    end
+
+    struct Entry
+      getter bucket : String
+      getter key : String
+      getter value : Bytes
+      getter revision : Int64
+      getter created_at : Time
+      getter delta : Int64
+      getter operation : Operation
+
+      enum Operation
+        Put
+        Delete
+        Purge
+      end
+
+      def initialize(@bucket, @key, @value, @revision, @created_at, @operation, @delta = 0i64)
       end
     end
   end

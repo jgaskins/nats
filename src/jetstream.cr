@@ -22,8 +22,9 @@ module NATS
 
     # https://github.com/nats-io/nats-server/blob/main/server/errors.json
     enum Errors : Int32 # Should be wide enough?
-      None = 0
-      NoMessageFound = 10037
+      None                    =     0
+      NoMessageFound          = 10037
+      StreamNotFound          = 10059
       StreamWrongLastSequence = 10071
 
       def self.new(json : JSON::PullParser)
@@ -353,11 +354,20 @@ module NATS
           end
 
           # Get the current state of the stream with the given `name`
-          def info(name : String) : ::NATS::JetStream::API::V1::Stream
+          def info(name : String) : ::NATS::JetStream::API::V1::Stream?
             if response = @nats.request "$JS.API.STREAM.INFO.#{name}"
-              NATS::JetStream::API::V1::Stream.from_json(String.new(response.body))
+              case parsed = (Stream | ErrorResponse).from_json(String.new(response.body))
+              in Stream
+                parsed
+              in ErrorResponse
+                if parsed.error.err_code.stream_not_found?
+                  nil
+                else
+                  raise Error.new(parsed.error.description)
+                end
+              end
             else
-              raise "whoops"
+              raise Error.new("Response timed out while fetching stream #{name.inspect}")
             end
           end
 
@@ -376,10 +386,10 @@ module NATS
           end
 
           def get_msg(stream : String, *, sequence : String)
-            get_msg stream, {sequence: sequence}
+            get_msg stream, {seq: sequence}
           end
 
-          def get_msg(stream : String, **params)
+          private def get_msg(stream : String, params)
             if response = @nats.request "$JS.API.STREAM.MSG.GET.#{stream}", params.to_json
               case parsed = (StreamGetMsgResponse | ErrorResponse).from_json String.new(response.body)
               in StreamGetMsgResponse
@@ -406,8 +416,12 @@ module NATS
 
           # Create a consumer for the given stream with the given properties,
           # which are passed unmodified to `NATS::JetStream::API::V1::Consumer.new`.
-          def create(stream_name : String, **properties) : NATS::JetStream::API::V1::Consumer
-            consumer_config = NATS::JetStream::API::V1::ConsumerConfig.new(**properties)
+          def create(
+            stream_name : String,
+            deliver_policy : ConsumerConfig::DeliverPolicy = :all,
+            **properties
+          ) : NATS::JetStream::API::V1::Consumer
+            consumer_config = NATS::JetStream::API::V1::ConsumerConfig.new(**properties, deliver_policy: deliver_policy)
             create_consumer = {stream_name: stream_name, config: consumer_config}
             if durable_name = consumer_config.durable_name
               create_consumer_subject = "$JS.API.CONSUMER.DURABLE.CREATE.#{stream_name}.#{durable_name}"
