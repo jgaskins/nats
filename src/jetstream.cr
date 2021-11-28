@@ -2,16 +2,6 @@ require "json"
 require "./nats"
 require "./error"
 
-module Base64
-  def self.from_json(json : JSON::PullParser)
-    decode json.read_string
-  end
-
-  def self.to_json(json : JSON::Builder, value : Bytes)
-    json.string encode(value)
-  end
-end
-
 module NATS
   # NATS JetStream provides at-least-once delivery guarantees with the
   # possibility of exactly-once for some use cases, allowing NATS to be used for
@@ -527,11 +517,21 @@ module NATS
             include JSON::Serializable
             getter subject : String
             getter seq : Int64
-            @[JSON::Field(converter: Base64)]
+            @[JSON::Field(converter: ::NATS::JetStream::API::V1::StreamGetMsgResponse::Message::Base64Data)]
             getter data : Bytes = Bytes.empty
             @[JSON::Field(key: "hdrs", converter: ::NATS::JetStream::API::V1::StreamGetMsgResponse::Message::HeadersConverter)]
             getter headers : Headers?
             getter time : Time
+
+            module Base64Data
+              def self.from_json(json : JSON::PullParser)
+                ::Base64.decode json.read_string
+              end
+
+              def self.to_json(json : JSON::Builder, value : Bytes)
+                json.string ::Base64.encode(value)
+              end
+            end
 
             module HeadersConverter
               def self.from_json(json : JSON::PullParser)
