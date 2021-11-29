@@ -166,4 +166,19 @@ describe NATS::KV do
       bucket.keys.should_not contain "purged"
     end
   end
+
+  describe "getting the history of a key" do
+    test "it gets the full history of the key in chronological order" do
+      key = "key"
+      10.times do |i|
+        bucket[key] = i.to_s
+      end
+
+      bucket.history(key).map(&.value).should eq Array.new(10, &.to_s.to_slice)
+    end
+
+    test "it returns an empty array if there is no history" do
+      bucket.history("my-key").should be_empty
+    end
+  end
 end

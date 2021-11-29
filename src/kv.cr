@@ -139,6 +139,11 @@ module NATS
         @kv.keys(name)
       end
 
+      # Get the history
+      def history(key : String)
+        @kv.history(name, key)
+      end
+
       # Watch the given key (or wildcard) for changes and yielding them to the
       # block. By default, this will also yield deleted messages. To avoid that,
       # pass `ignore_deletes: true`.
@@ -338,18 +343,50 @@ module NATS
         keys
       end
 
-      def watch(bucket : String, key : String, *, ignore_deletes = false, &block : Entry, Watch ->)
+      def history(bucket : String, key : String) : Array(Entry)
+        history = [] of Entry
+
+        if stream = @nats.jetstream.stream.info("KV_#{bucket}")
+          # If there are no messages in the stream just return the empty list of
+          # entries. Otherwise, we will end up sitting here waiting for entries
+          # to come streaming in.
+          if stream.state.messages == 0
+            return history
+          end
+        end
+
+        watch bucket, key, include_history: true do |msg, watch|
+          history << msg
+          watch.stop if msg.delta == 0
+        end
+
+        history
+      end
+
+      def watch(
+        bucket : String,
+        key : String,
+        *,
+        ignore_deletes = false,
+        include_history = false,
+        &block : Entry, Watch ->
+      )
         stop_channel = Channel(Nil).new
         watch = Watch.new(stop_channel)
         inbox = "$WATCH_INBOX.#{Random::Secure.hex}"
         deliver_group = Random::Secure.hex
+        if include_history
+          deliver_policy = JetStream::API::V1::ConsumerConfig::DeliverPolicy::All
+        else
+          deliver_policy = JetStream::API::V1::ConsumerConfig::DeliverPolicy::LastPerSubject
+        end
 
         stream_name = "KV_#{bucket}"
         consumer = @nats.jetstream.consumer.create(
           stream_name: stream_name,
           deliver_subject: inbox,
           deliver_group: deliver_group,
-          deliver_policy: :last_per_subject,
+          deliver_policy: deliver_policy,
           filter_subject: "$KV.#{bucket}.#{key}",
         )
         subscription = @nats.subscribe inbox, queue_group: deliver_group do |msg|
