@@ -94,7 +94,7 @@ module NATS
         put key, value
       end
 
-      # Get the value of a key as a `KV::Entry` - returns `nil` if the key does
+      # Get the entry for a key as a `KV::Entry` - returns `nil` if the key does
       # not exist or if it's been deleted with `ignore_deletes` set to `true`.
       #
       # *Important*: If you do not set `ignore_deletes`, you may get a deleted
