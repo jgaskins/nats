@@ -38,16 +38,17 @@ module NATS
     struct Bucket
       getter name : String
       getter stream_name : String
-      getter description : String?
-      getter max_value_size : Int32?
-      getter history : Int64?
-      getter ttl : Time::Span?
-      getter max_bytes : Int64?
-      getter storage : JetStream::API::V1::StreamConfig::Storage
-      getter replicas : Int32?
-      getter allow_rollup : Bool?
-      getter deny_delete : Bool?
+      @description : String?
+      @max_value_size : Int32?
+      @history : Int64?
+      @ttl : Time::Span?
+      @max_bytes : Int64?
+      @storage : JetStream::API::V1::StreamConfig::Storage
+      @replicas : Int32?
+      @allow_rollup : Bool?
+      @deny_delete : Bool?
 
+      # :nodoc:
       def self.new(stream : JetStream::API::V1::Stream, kv : Client)
         config = stream.config
         new(
@@ -66,6 +67,7 @@ module NATS
         )
       end
 
+      # :nodoc:
       def initialize(
         @name : String,
         @stream_name : String,
