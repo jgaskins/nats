@@ -11,6 +11,7 @@ private macro create_stream(subjects)
 end
 
 nats = NATS::Client.new
+js = nats.jetstream
 
 describe NATS::JetStream do
   it "creates and deletes streams" do
@@ -57,15 +58,15 @@ describe NATS::JetStream do
     )
 
     begin
-      nats.publish write_subject, "hello"
+      js.publish write_subject, "hello"
       channel = Channel(Nil).new
 
       msg_subject = nil
       msg_body = nil
-      nats.subscribe read_subject do |msg|
+      nats.jetstream.subscribe consumer do |msg|
         msg_subject = msg.subject
         msg_body = msg.body
-        nats.reply msg, ""
+        js.ack msg
         channel.send nil
       end
 

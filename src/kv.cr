@@ -35,8 +35,18 @@ module NATS
     class InvalidKeyname < Error
     end
 
-    class Bucket
+    struct Bucket
       getter name : String
+      getter stream_name : String
+      getter description : String?
+      getter max_value_size : Int32?
+      getter history : Int64?
+      getter ttl : Time::Span?
+      getter max_bytes : Int64?
+      getter storage : JetStream::API::V1::StreamConfig::Storage
+      getter replicas : Int32?
+      getter allow_rollup : Bool?
+      getter deny_delete : Bool?
 
       def self.new(stream : JetStream::API::V1::Stream, kv : Client)
         config = stream.config
@@ -221,17 +231,14 @@ module NATS
       # Assign `value` to `key` in `bucket`.
       def put(bucket : String, key : String, value : String | Bytes) : Int64
         validate_key! key
-        if response = @nats.request("$KV.#{bucket}.#{key}", value)
-          PutResponse.from_json(String.new(response.body)).seq
-        else
+        case response = @nats.jetstream.publish("$KV.#{bucket}.#{key}", value)
+        in JetStream::API::V1::PubAck
+          response.sequence
+        in JetStream::API::V1::ErrorResponse
+          raise Error.new(response.error.description)
+        in Nil
           raise Error.new("No response received from the NATS server when setting #{key.inspect} on KV #{bucket.inspect}")
         end
-      end
-
-      struct PutResponse
-        include JSON::Serializable
-        getter stream : String
-        getter seq : Int64
       end
 
       # Get the value associated with the current
@@ -299,19 +306,17 @@ module NATS
         headers = Headers{
           "Nats-Expected-Last-Subject-Sequence" => revision.to_s,
         }
-        if response = @nats.request "$KV.#{bucket}.#{key}", value, headers: headers
-          case parsed = (PutResponse | JetStream::API::V1::ErrorResponse).from_json(String.new(response.body))
-          in PutResponse
-            parsed.seq
-          in JetStream::API::V1::ErrorResponse
-            # https://github.com/nats-io/nats-server/blob/3f12216fcc349ae0f7af779c6a4647209fbbe9ab/server/errors.json#L62-L71
-            if parsed.error.err_code.stream_wrong_last_sequence?
-              nil
-            else
-              raise Error.new(parsed.error.description)
-            end
+        case response = @nats.jetstream.publish "$KV.#{bucket}.#{key}", value, headers: headers
+        in JetStream::API::V1::PubAck
+          response.sequence
+        in JetStream::API::V1::ErrorResponse
+          # https://github.com/nats-io/nats-server/blob/3f12216fcc349ae0f7af779c6a4647209fbbe9ab/server/errors.json#L62-L71
+          if response.error.err_code.stream_wrong_last_sequence?
+            nil
+          else
+            raise Error.new(response.error.description)
           end
-        else
+        in Nil
           raise Error.new("No response received from the NATS server when updating #{key.inspect} on KV #{bucket.inspect}")
         end
       end
@@ -431,9 +436,13 @@ module NATS
         validate_key! key
 
         headers = Headers{"KV-Operation" => "DEL"}
-        if response = @nats.request "$KV.#{bucket}.#{key}", "", headers: headers
-          PutResponse.from_json(String.new(response.body)).seq
-        else
+        case response = @nats.jetstream.publish "$KV.#{bucket}.#{key}", "", headers: headers
+          # JetStream::API::V1::PubAck.from_json(String.new(response.body)).seq
+        in JetStream::API::V1::PubAck
+          response
+        in JetStream::API::V1::ErrorResponse
+          raise Error.new(response.error.description)
+        in Nil
           raise Error.new("No response received from the NATS server when deleting #{key.inspect} on KV #{bucket.inspect}")
         end
       end
@@ -443,9 +452,12 @@ module NATS
           "KV-Operation" => "PURGE",
           "Nats-Rollup"  => "sub",
         }
-        if response = @nats.request "$KV.#{bucket}.#{key}", "", headers: headers
-          PutResponse.from_json(String.new(response.body)).seq
-        else
+        case response = @nats.jetstream.publish "$KV.#{bucket}.#{key}", "", headers: headers
+        in JetStream::API::V1::PubAck
+          response
+        in JetStream::API::V1::ErrorResponse
+          raise Error.new(response.error.description)
+        in Nil
           raise Error.new("No response received from the NATS server when purging #{key.inspect} on KV #{bucket.inspect}")
         end
       end

@@ -41,6 +41,28 @@ module NATS
         Consumers.new(@nats)
       end
 
+      def publish(
+        subject : String,
+        body : Data,
+        timeout : Time::Span = 2.seconds,
+        headers : Headers = Headers.new,
+        message_id : String? = nil,
+        expected_last_message_id : String? = nil,
+        expected_last_sequence : Int64? = nil,
+        expected_stream : String? = nil,
+        expected_last_subject_sequence : Int64? = nil,
+      )
+        headers["Nats-Msg-Id"] = message_id if message_id
+        headers["Nats-Expected-Last-Msg-Id"] = expected_last_message_id if expected_last_message_id
+        headers["Nats-Expected-Stream"] = expected_stream if expected_stream
+        headers["Nats-Expected-Last-Sequence"] = expected_last_sequence if expected_last_sequence
+        headers["Nats-Expected-Last-Subject-Sequence"] = expected_last_subject_sequence if expected_last_subject_sequence
+
+        if response = @nats.request(subject, body, timeout: timeout, headers: headers)
+          (API::V1::PubAck | API::V1::ErrorResponse).from_json(String.new(response.body))
+        end
+      end
+
       # Subscribe to messages delivered to the given consumer. Note that this
       # consumer _must_ be a push-based consumer. Pull-based consumers do not
       # allow subscriptions because you must explicitly request the next
@@ -294,6 +316,16 @@ module NATS
           end
         end
 
+        struct PubAck
+          include JSON::Serializable
+
+          getter stream : String
+          @[JSON::Field(key: "seq")]
+          getter sequence : Int64
+          getter duplicate : Bool?
+          getter domain : String?
+        end
+
         # A stream in NATS JetStream represents the history of messages
         # pertaining to a given domain. When you publish a message to a subject
         # that a stream is monitoring, the stream then adds that message to its
@@ -410,7 +442,7 @@ module NATS
             stream_name : String,
             deliver_policy : ConsumerConfig::DeliverPolicy = :all,
             **properties
-          ) : NATS::JetStream::API::V1::Consumer
+          ) : Consumer
             consumer_config = NATS::JetStream::API::V1::ConsumerConfig.new(**properties, deliver_policy: deliver_policy)
             create_consumer = {stream_name: stream_name, config: consumer_config}
             if durable_name = consumer_config.durable_name
@@ -423,8 +455,8 @@ module NATS
               raise JetStream::Error.new("Did not receive a response from NATS JetStream")
             end
 
-            case parsed = (JetStream::API::V1::Consumer | ErrorResponse).from_json String.new(response.body)
-            in JetStream::API::V1::Consumer
+            case parsed = (Consumer | ErrorResponse).from_json String.new(response.body)
+            in Consumer
               parsed
             in ErrorResponse
               raise JetStream::Error.new("#{parsed.error.description} (#{parsed.error.code})")
