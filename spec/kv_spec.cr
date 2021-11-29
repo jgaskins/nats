@@ -147,6 +147,10 @@ describe NATS::KV do
       bucket.keys.should contain "b"
     end
 
+    test "returns an empty set when there are no keys" do
+      bucket.keys.should be_empty
+    end
+
     test "ignores keys that are deleted or purged" do
       bucket.put "a", "a"
       bucket.put "b", "b"

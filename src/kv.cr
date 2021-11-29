@@ -311,9 +311,18 @@ module NATS
         end
       end
 
-      #
-      def keys(bucket : String)
+      # Get all of the keys for the given bucket name
+      def keys(bucket : String) : Set(String)
         keys = Set(String).new
+
+        if stream = @nats.jetstream.stream.info("KV_#{bucket}")
+          # If there are no messages in the stream just return the empty set of
+          # keys. Otherwise, we will end up sitting here waiting for keys to
+          # come streaming in.
+          if stream.state.messages == 0
+            return keys
+          end
+        end
 
         # Look at all the keys in the current bucket
         watch bucket, ">" do |msg, watch|
