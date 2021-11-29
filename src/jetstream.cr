@@ -667,7 +667,7 @@ module NATS
           # Which subjects this stream will listen for.
           getter subjects : Array(String)
           getter storage : Storage
-          @[JSON::Field(converter: ::NATS::JetStream::API::V1::MicrosecondsConverter)]
+          @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
           getter max_age : Time::Span?
           getter max_bytes : Int64?
           getter max_msg_size : Int32?
@@ -909,16 +909,6 @@ module NATS
           @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
           getter active : Time::Span
           getter lag : UInt64
-        end
-
-        module MicrosecondsConverter
-          def self.to_json(span : Time::Span, json : JSON::Builder)
-            json.number span.total_microseconds.to_i64
-          end
-
-          def self.from_json(json : JSON::PullParser)
-            json.read_int.microseconds
-          end
         end
 
         module NanosecondsConverter
