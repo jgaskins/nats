@@ -121,6 +121,17 @@ module NATS
     getter server_info : ServerInfo
     private getter? data_waiting = false
 
+    def self.new(*, ping_interval = 2.minutes, max_pings_out = 2)
+      new(
+        servers: ENV
+          .fetch("NATS_SERVERS", "nats:///")
+          .split(',')
+          .map { |url| URI.parse url },
+        ping_interval: ping_interval,
+        max_pings_out: max_pings_out,
+      )
+    end
+
     # Connect to a single NATS server at the given URI
     #
     # ```
@@ -144,7 +155,7 @@ module NATS
     # ])
     # ```
     def initialize(
-      @servers = [URI.parse("nats:///")],
+      @servers : Array(URI),
       @ping_interval : Time::Span = 2.minutes,
       @max_pings_out = 2
     )
