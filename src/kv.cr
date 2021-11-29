@@ -103,7 +103,7 @@ module NATS
       # `KV-Operation` message header) and this method retrieves the last entry
       # in the stream for this key. `ignore_deletes` simply tells the client to
       # ignore deleted messages.
-      def get(key : String, ignore_deletes = false) : Entry?
+      def get(key : String, *, ignore_deletes = false) : Entry?
         @kv.get name, key, ignore_deletes: ignore_deletes
       end
 
