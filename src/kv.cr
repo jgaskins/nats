@@ -107,6 +107,16 @@ module NATS
         @kv.get name, key, ignore_deletes: ignore_deletes
       end
 
+      # Get the value of a key, if it exists (not counting `Delete` operations),
+      # stripping away all metadata to return only the value. If you need
+      # metadata such as `revision`, `timestamp`, or `operation`, or if you need
+      # to be able to get deleted keys, you should use `Bucket#get` instead.
+      def []?(key : String) : Bytes?
+        if entry = get(key, ignore_deletes: true)
+          entry.value
+        end
+      end
+
       # Get the value of a key as a `KV::Entry` - raises `KeyError` if the key
       # does not exist or if it's been deleted with `ignore_deletes` set to
       # `true`.
