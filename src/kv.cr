@@ -437,7 +437,6 @@ module NATS
 
         headers = Headers{"KV-Operation" => "DEL"}
         case response = @nats.jetstream.publish "$KV.#{bucket}.#{key}", "", headers: headers
-          # JetStream::API::V1::PubAck.from_json(String.new(response.body)).seq
         in JetStream::API::V1::PubAck
           response
         in JetStream::API::V1::ErrorResponse
