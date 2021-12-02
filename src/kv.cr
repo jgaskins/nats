@@ -211,7 +211,7 @@ module NATS
 
       # https://github.com/nats-io/nats.go/blob/d7c1d78a50fc9cded3814ae7d7176fa66b73a4b0/kv.go#L295-L307
       def create_bucket(
-        bucket : String,
+        name : String,
         description : String = "",
         *,
         max_value_size : Int32? = nil,
@@ -223,10 +223,14 @@ module NATS
         allow_rollup : Bool = true,
         deny_delete : Bool = true
       )
+        unless name =~ /\A[a-zA-Z0-9_-]+\z/
+          raise ArgumentError.new("NATS KV bucket names can only contain alphanumeric characers, underscores, and dashes")
+        end
+
         stream = @nats.jetstream.stream.create(
-          name: "KV_#{bucket}",
+          name: "KV_#{name}",
           description: description,
-          subjects: ["$KV.#{bucket}.>"],
+          subjects: ["$KV.#{name}.>"],
           max_msgs_per_subject: history.try(&.to_i64),
           max_bytes: max_bytes,
           max_age: ttl,
