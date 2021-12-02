@@ -101,6 +101,29 @@ describe NATS do
     end
   end
 
+  it "assigns replies to the original requesters" do
+    subject = "temp.#{UUID.random}"
+    # Echoing requests back to their requesters
+    nats.subscribe subject do |msg|
+      sleep rand.microseconds
+      nats.reply msg, msg.body
+    end
+
+    channel = Channel(Nil).new
+    replies = Array.new(100) { -1 }
+    100.times do |i|
+      spawn do
+        if response = nats.request(subject, i.to_s)
+          replies[i] = String.new(response.body).to_i
+        end
+        channel.send nil
+      end
+    end
+    100.times { channel.receive }
+
+    replies.should eq Array.new(100, &.itself)
+  end
+
   it "receives a reply from only a single subscriber" do
     subject = "temp.#{UUID.random}"
 
