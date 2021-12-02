@@ -28,7 +28,7 @@ require "log"
 # ])
 # ```
 module NATS
-  VERSION = "1.0.2"
+  VERSION = "1.1.0"
 
   alias Headers = Message::Headers
   alias Data = String | Bytes

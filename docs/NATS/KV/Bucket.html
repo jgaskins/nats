@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Crystal Docs 1.2.0">
+<meta name="crystal_docs.project_version" content="1.1.0">
+<meta name="crystal_docs.project_name" content="nats">
+
+
+
+<link href="../../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../js/doc.js"></script>
+
+  <meta name="repository-name" content="nats">
+  <title>NATS::KV::Bucket - nats 1.1.0</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../../index.html">
+          nats
+        </a>
+      </h1>
+
+      <span class="project-version">
+        1.1.0
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="nats/NATS" data-name="nats">
+      <a href="../../NATS.html">NATS</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="nats/NATS/Client" data-name="nats::client">
+      <a href="../../NATS/Client.html">Client</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Client/ClientClosed" data-name="nats::client::clientclosed">
+      <a href="../../NATS/Client/ClientClosed.html">ClientClosed</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Client/Data" data-name="nats::client::data">
+      <a href="../../NATS/Client/Data.html">Data</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Client/State" data-name="nats::client::state">
+      <a href="../../NATS/Client/State.html">State</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Data" data-name="nats::data">
+      <a href="../../NATS/Data.html">Data</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Error" data-name="nats::error">
+      <a href="../../NATS/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Headers" data-name="nats::headers">
+      <a href="../../NATS/Headers.html">Headers</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream" data-name="nats::jetstream">
+      <a href="../../NATS/JetStream.html">JetStream</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API" data-name="nats::jetstream::api">
+      <a href="../../NATS/JetStream/API.html">API</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/Message" data-name="nats::jetstream::api::message">
+      <a href="../../NATS/JetStream/API/Message.html">Message</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1" data-name="nats::jetstream::api::v1">
+      <a href="../../NATS/JetStream/API/V1.html">V1</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/APIError" data-name="nats::jetstream::api::v1::apierror">
+      <a href="../../NATS/JetStream/API/V1/APIError.html">APIError</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ClusterInfo" data-name="nats::jetstream::api::v1::clusterinfo">
+      <a href="../../NATS/JetStream/API/V1/ClusterInfo.html">ClusterInfo</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1/Consumer" data-name="nats::jetstream::api::v1::consumer">
+      <a href="../../NATS/JetStream/API/V1/Consumer.html">Consumer</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Consumer/Sequence" data-name="nats::jetstream::api::v1::consumer::sequence">
+      <a href="../../NATS/JetStream/API/V1/Consumer/Sequence.html">Sequence</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1/ConsumerConfig" data-name="nats::jetstream::api::v1::consumerconfig">
+      <a href="../../NATS/JetStream/API/V1/ConsumerConfig.html">ConsumerConfig</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ConsumerConfig/AckPolicy" data-name="nats::jetstream::api::v1::consumerconfig::ackpolicy">
+      <a href="../../NATS/JetStream/API/V1/ConsumerConfig/AckPolicy.html">AckPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ConsumerConfig/DeliverPolicy" data-name="nats::jetstream::api::v1::consumerconfig::deliverpolicy">
+      <a href="../../NATS/JetStream/API/V1/ConsumerConfig/DeliverPolicy.html">DeliverPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ConsumerConfig/ReplayPolicy" data-name="nats::jetstream::api::v1::consumerconfig::replaypolicy">
+      <a href="../../NATS/JetStream/API/V1/ConsumerConfig/ReplayPolicy.html">ReplayPolicy</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ConsumerListResponse" data-name="nats::jetstream::api::v1::consumerlistresponse">
+      <a href="../../NATS/JetStream/API/V1/ConsumerListResponse.html">ConsumerListResponse</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Consumers" data-name="nats::jetstream::api::v1::consumers">
+      <a href="../../NATS/JetStream/API/V1/Consumers.html">Consumers</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1/ErrorResponse" data-name="nats::jetstream::api::v1::errorresponse">
+      <a href="../../NATS/JetStream/API/V1/ErrorResponse.html">ErrorResponse</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ErrorResponse/Error" data-name="nats::jetstream::api::v1::errorresponse::error">
+      <a href="../../NATS/JetStream/API/V1/ErrorResponse/Error.html">Error</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ExternalStream" data-name="nats::jetstream::api::v1::externalstream">
+      <a href="../../NATS/JetStream/API/V1/ExternalStream.html">ExternalStream</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/NanosecondsConverter" data-name="nats::jetstream::api::v1::nanosecondsconverter">
+      <a href="../../NATS/JetStream/API/V1/NanosecondsConverter.html">NanosecondsConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/PeerInfo" data-name="nats::jetstream::api::v1::peerinfo">
+      <a href="../../NATS/JetStream/API/V1/PeerInfo.html">PeerInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/PubAck" data-name="nats::jetstream::api::v1::puback">
+      <a href="../../NATS/JetStream/API/V1/PubAck.html">PubAck</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Stream" data-name="nats::jetstream::api::v1::stream">
+      <a href="../../NATS/JetStream/API/V1/Stream.html">Stream</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1/StreamConfig" data-name="nats::jetstream::api::v1::streamconfig">
+      <a href="../../NATS/JetStream/API/V1/StreamConfig.html">StreamConfig</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamConfig/DiscardPolicy" data-name="nats::jetstream::api::v1::streamconfig::discardpolicy">
+      <a href="../../NATS/JetStream/API/V1/StreamConfig/DiscardPolicy.html">DiscardPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamConfig/Placement" data-name="nats::jetstream::api::v1::streamconfig::placement">
+      <a href="../../NATS/JetStream/API/V1/StreamConfig/Placement.html">Placement</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamConfig/RetentionPolicy" data-name="nats::jetstream::api::v1::streamconfig::retentionpolicy">
+      <a href="../../NATS/JetStream/API/V1/StreamConfig/RetentionPolicy.html">RetentionPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamConfig/Storage" data-name="nats::jetstream::api::v1::streamconfig::storage">
+      <a href="../../NATS/JetStream/API/V1/StreamConfig/Storage.html">Storage</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1/StreamGetMsgResponse" data-name="nats::jetstream::api::v1::streamgetmsgresponse">
+      <a href="../../NATS/JetStream/API/V1/StreamGetMsgResponse.html">StreamGetMsgResponse</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1/StreamGetMsgResponse/Message" data-name="nats::jetstream::api::v1::streamgetmsgresponse::message">
+      <a href="../../NATS/JetStream/API/V1/StreamGetMsgResponse/Message.html">Message</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamGetMsgResponse/Message/Base64Data" data-name="nats::jetstream::api::v1::streamgetmsgresponse::message::base64data">
+      <a href="../../NATS/JetStream/API/V1/StreamGetMsgResponse/Message/Base64Data.html">Base64Data</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamGetMsgResponse/Message/HeadersConverter" data-name="nats::jetstream::api::v1::streamgetmsgresponse::message::headersconverter">
+      <a href="../../NATS/JetStream/API/V1/StreamGetMsgResponse/Message/HeadersConverter.html">HeadersConverter</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamListResponse" data-name="nats::jetstream::api::v1::streamlistresponse">
+      <a href="../../NATS/JetStream/API/V1/StreamListResponse.html">StreamListResponse</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Streams" data-name="nats::jetstream::api::v1::streams">
+      <a href="../../NATS/JetStream/API/V1/Streams.html">Streams</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamSourceInfo" data-name="nats::jetstream::api::v1::streamsourceinfo">
+      <a href="../../NATS/JetStream/API/V1/StreamSourceInfo.html">StreamSourceInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamState" data-name="nats::jetstream::api::v1::streamstate">
+      <a href="../../NATS/JetStream/API/V1/StreamState.html">StreamState</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/Client" data-name="nats::jetstream::client">
+      <a href="../../NATS/JetStream/Client.html">Client</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Client/PullSubscription" data-name="nats::jetstream::client::pullsubscription">
+      <a href="../../NATS/JetStream/Client/PullSubscription.html">PullSubscription</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Consumers" data-name="nats::jetstream::consumers">
+      <a href="../../NATS/JetStream/Consumers.html">Consumers</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Error" data-name="nats::jetstream::error">
+      <a href="../../NATS/JetStream/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Errors" data-name="nats::jetstream::errors">
+      <a href="../../NATS/JetStream/Errors.html">Errors</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/Message" data-name="nats::jetstream::message">
+      <a href="../../NATS/JetStream/Message.html">Message</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Message/InvalidNATSMessage" data-name="nats::jetstream::message::invalidnatsmessage">
+      <a href="../../NATS/JetStream/Message/InvalidNATSMessage.html">InvalidNATSMessage</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Streams" data-name="nats::jetstream::streams">
+      <a href="../../NATS/JetStream/Streams.html">Streams</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent open current" data-id="nats/NATS/KV" data-name="nats::kv">
+      <a href="../../NATS/KV.html">KV</a>
+      
+        <ul>
+  
+  <li class=" current" data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
+      <a href="../../NATS/KV/Bucket.html">Bucket</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/KV/Client" data-name="nats::kv::client">
+      <a href="../../NATS/KV/Client.html">Client</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/KV/Entry" data-name="nats::kv::entry">
+      <a href="../../NATS/KV/Entry.html">Entry</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Entry/Operation" data-name="nats::kv::entry::operation">
+      <a href="../../NATS/KV/Entry/Operation.html">Operation</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/KV/Error" data-name="nats::kv::error">
+      <a href="../../NATS/KV/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/KV/InvalidKeyname" data-name="nats::kv::invalidkeyname">
+      <a href="../../NATS/KV/InvalidKeyname.html">InvalidKeyname</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/KV/KeyEmptyError" data-name="nats::kv::keyemptyerror">
+      <a href="../../NATS/KV/KeyEmptyError.html">KeyEmptyError</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/KV/KeyError" data-name="nats::kv::keyerror">
+      <a href="../../NATS/KV/KeyError.html">KeyError</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/KV/Watch" data-name="nats::kv::watch">
+      <a href="../../NATS/KV/Watch.html">Watch</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Message" data-name="nats::message">
+      <a href="../../NATS/Message.html">Message</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Message/Headers" data-name="nats::message::headers">
+      <a href="../../NATS/Message/Headers.html">Headers</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/NotAReply" data-name="nats::notareply">
+      <a href="../../NATS/NotAReply.html">NotAReply</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/ServerInfo" data-name="nats::serverinfo">
+      <a href="../../NATS/ServerInfo.html">ServerInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/ServerNotRespondingToPings" data-name="nats::servernotrespondingtopings">
+      <a href="../../NATS/ServerNotRespondingToPings.html">ServerNotRespondingToPings</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Subscription" data-name="nats::subscription">
+      <a href="../../NATS/Subscription.html">Subscription</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Subscription/MessageChannel" data-name="nats::subscription::messagechannel">
+      <a href="../../NATS/Subscription/MessageChannel.html">MessageChannel</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/UnknownCommand" data-name="nats::unknowncommand">
+      <a href="../../NATS/UnknownCommand.html">UnknownCommand</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">struct</span> NATS::KV::Bucket
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../NATS/KV/Bucket.html">NATS::KV::Bucket</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      kv.cr
+    
+    <br/>
+  
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#%5B%5D%3D%28key%3AString%2Cvalue%3AData%29-instance-method" class="signature"><strong>#[]=</strong>(key : String, value : Data)</a>
+        
+          <div class="summary"><p>Set the value of a key</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#%5B%5D%3F%28key%3AString%29%3ABytes%3F-instance-method" class="signature"><strong>#[]?</strong>(key : String) : Bytes?</a>
+        
+          <div class="summary"><p>Get the value of a key, if it exists (not counting <code>Delete</code> operations), stripping away all metadata to return only the value.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#create%28key%3AString%2Cvalue%3AString%29-instance-method" class="signature"><strong>#create</strong>(key : String, value : String)</a>
+        
+          <div class="summary"><p>Creates the given <code>key</code> with the given <code>value</code> if and only if the key does not yet exist.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#delete%28key%3AString%29-instance-method" class="signature"><strong>#delete</strong>(key : String)</a>
+        
+          <div class="summary"><p>Deletes the given <code>key</code> from the KV store.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get%28key%3AString%2C%2A%2Cignore_deletes%3Dfalse%29%3AEntry%3F-instance-method" class="signature"><strong>#get</strong>(key : String, *, ignore_deletes = <span class="n">false</span>) : Entry?</a>
+        
+          <div class="summary"><p>Get the entry for a key as a <code><a href="../../NATS/KV/Entry.html">KV::Entry</a></code> - returns <code>nil</code> if the key does not exist or if it's been deleted with <code>ignore_deletes</code> set to <code>true</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get%21%28key%3AString%2Cignore_deletes%3Dfalse%29%3AEntry-instance-method" class="signature"><strong>#get!</strong>(key : String, ignore_deletes = <span class="n">false</span>) : Entry</a>
+        
+          <div class="summary"><p>Get the value of a key as a <code><a href="../../NATS/KV/Entry.html">KV::Entry</a></code> - raises <code><a href="../../NATS/KV/KeyError.html">KeyError</a></code> if the key does not exist or if it's been deleted with <code>ignore_deletes</code> set to <code>true</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#history%28key%3AString%29-instance-method" class="signature"><strong>#history</strong>(key : String)</a>
+        
+          <div class="summary"><p>Get the history</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#keys-instance-method" class="signature"><strong>#keys</strong></a>
+        
+          <div class="summary"><p>List all known keys for this bucket, returned as a <code>Set(String)</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#name%3AString-instance-method" class="signature"><strong>#name</strong> : String</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#purge%28key%3AString%29-instance-method" class="signature"><strong>#purge</strong>(key : String)</a>
+        
+          <div class="summary"><p>Purges the given <code>key</code> from the KV store.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#put%28key%3AString%2Cvalue%3AData%29-instance-method" class="signature"><strong>#put</strong>(key : String, value : Data)</a>
+        
+          <div class="summary"><p>Set the value of a key</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#set%28key%3AString%2Cvalue%3AData%29-instance-method" class="signature"><strong>#set</strong>(key : String, value : Data)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#stream_name%3AString-instance-method" class="signature"><strong>#stream_name</strong> : String</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#update%28key%3AString%2Cvalue%3AString%2Crevision%3AInt64%29-instance-method" class="signature"><strong>#update</strong>(key : String, value : String, revision : Int64)</a>
+        
+          <div class="summary"><p>Updates the given <code>key</code> with the given <code>value</code> if and only if it exists and is currently at the given <code>revision</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#watch%28key%3AString%2C%2A%2Cignore_deletes%3Dfalse%2C%26block%3AEntry%2CWatch-%3E%29-instance-method" class="signature"><strong>#watch</strong>(key : String, *, ignore_deletes = <span class="n">false</span>, &block : Entry, Watch -> )</a>
+        
+          <div class="summary"><p>Watch the given key (or wildcard) for changes and yielding them to the block.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="[]=(key:String,value:Data)-instance-method">
+      <div class="signature">
+        
+        def <strong>[]=</strong>(key : String, value : <a href="../../NATS/Data.html">Data</a>)
+
+        <a class="method-permalink" href="#%5B%5D%3D%28key%3AString%2Cvalue%3AData%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Set the value of a key</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="[]?(key:String):Bytes?-instance-method">
+      <div class="signature">
+        
+        def <strong>[]?</strong>(key : String) : Bytes?
+
+        <a class="method-permalink" href="#%5B%5D%3F%28key%3AString%29%3ABytes%3F-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Get the value of a key, if it exists (not counting <code>Delete</code> operations),
+stripping away all metadata to return only the value. If you need
+metadata such as <code>revision</code>, <code>timestamp</code>, or <code>operation</code>, or if you need
+to be able to get deleted keys, you should use <code><a href="../../NATS/KV/Bucket.html#get%28key%3AString%2C%2A%2Cignore_deletes%3Dfalse%29%3AEntry%3F-instance-method">Bucket#get</a></code> instead.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="create(key:String,value:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>create</strong>(key : String, value : String)
+
+        <a class="method-permalink" href="#create%28key%3AString%2Cvalue%3AString%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates the given <code>key</code> with the given <code>value</code> if and only if the key
+does not yet exist.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="delete(key:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>delete</strong>(key : String)
+
+        <a class="method-permalink" href="#delete%28key%3AString%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Deletes the given <code>key</code> from the KV store. Inside the NATS server, this
+is implemented as adding another message to the stream that signifies
+deletion.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get(key:String,*,ignore_deletes=false):Entry?-instance-method">
+      <div class="signature">
+        
+        def <strong>get</strong>(key : String, *, ignore_deletes = <span class="n">false</span>) : <a href="../../NATS/KV/Entry.html">Entry</a>?
+
+        <a class="method-permalink" href="#get%28key%3AString%2C%2A%2Cignore_deletes%3Dfalse%29%3AEntry%3F-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Get the entry for a key as a <code><a href="../../NATS/KV/Entry.html">KV::Entry</a></code> - returns <code>nil</code> if the key does
+not exist or if it's been deleted with <code>ignore_deletes</code> set to <code>true</code>.</p>
+<p><em>Important</em>: If you do not set <code>ignore_deletes</code>, you may get a deleted
+key. This is because the keys are stored in a stream and deleting the
+key sets an <code>operation</code> flag (implemented in the NATS server as a
+<code><a href="../../NATS/KV.html">KV</a>-Operation</code> message header) and this method retrieves the last entry
+in the stream for this key. <code>ignore_deletes</code> simply tells the client to
+ignore deleted messages.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get!(key:String,ignore_deletes=false):Entry-instance-method">
+      <div class="signature">
+        
+        def <strong>get!</strong>(key : String, ignore_deletes = <span class="n">false</span>) : <a href="../../NATS/KV/Entry.html">Entry</a>
+
+        <a class="method-permalink" href="#get%21%28key%3AString%2Cignore_deletes%3Dfalse%29%3AEntry-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Get the value of a key as a <code><a href="../../NATS/KV/Entry.html">KV::Entry</a></code> - raises <code><a href="../../NATS/KV/KeyError.html">KeyError</a></code> if the key
+does not exist or if it's been deleted with <code>ignore_deletes</code> set to
+<code>true</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="history(key:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>history</strong>(key : String)
+
+        <a class="method-permalink" href="#history%28key%3AString%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Get the history</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="keys-instance-method">
+      <div class="signature">
+        
+        def <strong>keys</strong>
+
+        <a class="method-permalink" href="#keys-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>List all known keys for this bucket, returned as a <code>Set(String)</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="name:String-instance-method">
+      <div class="signature">
+        
+        def <strong>name</strong> : String
+
+        <a class="method-permalink" href="#name%3AString-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="purge(key:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>purge</strong>(key : String)
+
+        <a class="method-permalink" href="#purge%28key%3AString%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Purges the given <code>key</code> from the KV store. Inside the NATS server, this
+is implemented as rolling up all versions of this key into a single
+message with its <code><a href="../../NATS/KV/Entry.html#operation%3AOperation-instance-method">KV::Entry#operation</a></code> value (<code><a href="../../NATS/KV.html">KV</a>-Operation</code> header)
+set to <code><a href="../../NATS/KV/Entry/Operation.html#Purge">KV::Entry::Operation::Purge</a></code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="put(key:String,value:Data)-instance-method">
+      <div class="signature">
+        
+        def <strong>put</strong>(key : String, value : <a href="../../NATS/Data.html">Data</a>)
+
+        <a class="method-permalink" href="#put%28key%3AString%2Cvalue%3AData%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Set the value of a key</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="set(key:String,value:Data)-instance-method">
+      <div class="signature">
+        
+        def <strong>set</strong>(key : String, value : <a href="../../NATS/Data.html">Data</a>)
+
+        <a class="method-permalink" href="#set%28key%3AString%2Cvalue%3AData%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="stream_name:String-instance-method">
+      <div class="signature">
+        
+        def <strong>stream_name</strong> : String
+
+        <a class="method-permalink" href="#stream_name%3AString-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="update(key:String,value:String,revision:Int64)-instance-method">
+      <div class="signature">
+        
+        def <strong>update</strong>(key : String, value : String, revision : Int64)
+
+        <a class="method-permalink" href="#update%28key%3AString%2Cvalue%3AString%2Crevision%3AInt64%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Updates the given <code>key</code> with the given <code>value</code> if and only if it exists
+and is currently at the given <code>revision</code>. If you do not have the latest
+revision, this method returns <code>nil</code> so you can perform domain-specific
+conflict resolution. If you need to set the key regardless of revision,
+use <code><a href="../../NATS/KV/Bucket.html#put%28key%3AString%2Cvalue%3AData%29-instance-method">Bucket#put</a></code> instead.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="watch(key:String,*,ignore_deletes=false,&amp;block:Entry,Watch-&gt;)-instance-method">
+      <div class="signature">
+        
+        def <strong>watch</strong>(key : String, *, ignore_deletes = <span class="n">false</span>, &block : <a href="../../NATS/KV/Entry.html">Entry</a>, <a href="../../NATS/KV/Watch.html">Watch</a> -> )
+
+        <a class="method-permalink" href="#watch%28key%3AString%2C%2A%2Cignore_deletes%3Dfalse%2C%26block%3AEntry%2CWatch-%3E%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Watch the given key (or wildcard) for changes and yielding them to the
+block. By default, this will also yield deleted messages. To avoid that,
+pass <code>ignore_deletes: true</code>.</p>
+<pre><code class="language-crystal">bucket.watch(<span class="s">&quot;session.*&quot;</span>) <span class="k">do</span> <span class="o">|</span>entry<span class="o">|</span>
+  _prefix, session_id <span class="o">=</span> entry.subject.split(<span class="s">&#39;.&#39;</span>, <span class="n">2</span>)
+  <span class="k">if</span> entry.operation.deleted?
+    <span class="c"># do deleted things</span>
+  <span class="k">else</span>
+    <span class="c"># the session was updated</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre>
+<p>This method blocks until the yielded <code><a href="../../NATS/KV/Watch.html">Watch</a></code> is stopped (use
+<code>watch.stop</code>), so if you want to run it in the background, you will need
+to run this method inside a <code>spawn</code> block.</p>
+<p>You can also use this method to wait for a specific key to change once:</p>
+<pre><code class="language-crystal">bucket.watch my_key <span class="k">do</span> <span class="o">|</span>entry, watch<span class="o">|</span>
+  <span class="c"># react to the key change</span>
+<span class="k">ensure</span>
+  watch.stop <span class="c"># exit the block</span>
+<span class="k">end</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+
+
+</div>
+
+</body>
+</html>
