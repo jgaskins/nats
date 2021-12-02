@@ -41,15 +41,18 @@ describe NATS::JetStream do
     end
   end
 
-  it "publishes to streams and reads from consumers" do
+  it "publishes to streams and reads with push consumers" do
     write_subject = UUID.random.to_s
     stream = create_stream([write_subject])
 
     consumer_name = UUID.random.to_s
     read_subject = UUID.random.to_s
+    deliver_group = UUID.random.to_s
+
     consumer = nats.jetstream.consumer.create(
       stream_name: stream.config.name,
       durable_name: consumer_name,
+      deliver_group: deliver_group,
       deliver_subject: read_subject,
     )
 
