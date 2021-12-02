@@ -125,7 +125,9 @@ module NATS
       # does not exist or if it's been deleted with `ignore_deletes` set to
       # `true`.
       def get!(key : String, ignore_deletes = false) : Entry
-        unless get(key, ignore_deletes)
+        if value = get(key, ignore_deletes: ignore_deletes)
+          value
+        else
           raise KeyError.new("Key #{key.inspect} expected, but not found")
         end
       end
