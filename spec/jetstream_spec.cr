@@ -81,4 +81,53 @@ describe NATS::JetStream do
       nats.jetstream.stream.delete stream
     end
   end
+
+  it "reads from pull consumers" do
+    write_subject = UUID.random.to_s
+    stream = create_stream([write_subject])
+
+    consumer_name = UUID.random.to_s
+    deliver_group = UUID.random.to_s
+
+    consumer = nats.jetstream.consumer.create(
+      stream_name: stream.config.name,
+      durable_name: consumer_name,
+      deliver_group: deliver_group,
+    )
+
+    pull = nats.jetstream.pull_subscribe(consumer)
+    # 50.times { nats.jetstream.pull_subscribe(consumer) }
+
+    begin
+      spawn do
+        3.times { |i| nats.publish write_subject, i.to_s }
+        nats.flush
+      end
+
+      if msg = pull.fetch(timeout: 2.seconds)
+        msg.subject.should eq write_subject
+        msg.body.should eq "0".to_slice
+
+        nats.jetstream.ack msg
+      else
+        raise "Did not receive a message within 2 seconds"
+      end
+
+      # Fetch the remaining 2 messages, but wait up to 500ms for a 3rd. We're
+      # specifying a short timeout because we know there is no 3rd message
+      # (we've already consumed 1 of 3 total messages, so there are only 2 left)
+      # and we don't want to wait the full 2 seconds for it to timeout. Plus,
+      # it also lets us exercise the timeout functionality.
+      msgs = pull.fetch(3, timeout: 500.milliseconds)
+      msgs.map(&.body).should eq [
+        "1".to_slice,
+        "2".to_slice,
+      ]
+
+      msgs.each { |msg| nats.jetstream.ack msg }
+      nats.flush
+    ensure
+      nats.jetstream.stream.delete stream
+    end
+  end
 end

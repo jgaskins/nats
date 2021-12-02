@@ -72,6 +72,51 @@ module NATS
         end
       end
 
+      @[Experimental("NATS JetStream pull subscriptions may be unstable")]
+      def pull_subscribe(consumer : API::V1::Consumer, backlog : Int = 64)
+        uuid = UUID.random
+        subject = "#{consumer.config.durable_name}.#{uuid}"
+        channel = Channel(Message).new(backlog)
+
+        subscription = @nats.subscribe(subject, queue_group: consumer.config.deliver_group) do |msg|
+          channel.send Message.new(msg)
+        end
+
+        PullSubscription.new(subscription, consumer, channel, @nats)
+      end
+
+      class PullSubscription
+        getter nats_subscription : ::NATS::Subscription
+        getter consumer : API::V1::Consumer
+        @channel : Channel(Message)
+        @nats : NATS::Client
+
+        def initialize(@nats_subscription, @consumer, @channel, @nats)
+        end
+
+        def fetch(timeout : Time::Span = 2.seconds)
+          fetch(1, timeout: timeout).first?
+        end
+
+        def fetch(message_count : Int, timeout : Time::Span = 2.seconds) : Enumerable(Message)
+          @nats.publish "$JS.API.CONSUMER.MSG.NEXT.#{consumer.stream_name}.#{consumer.config.durable_name}",
+            message: message_count.to_s,
+            reply_to: @nats_subscription.subject
+
+          msgs = Array(Message).new(initial_capacity: message_count)
+          message_count.times do
+            select
+            when msg = @channel.receive
+              msgs << msg
+            when timeout(timeout)
+              break
+            end
+          end
+
+          msgs
+        end
+      end
+
       # Acknowledge success processing the specified message, usually called at
       # the end of your subscription block.
       #
