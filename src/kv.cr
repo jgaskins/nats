@@ -89,6 +89,10 @@ module NATS
         @kv.put name, key, value
       end
 
+      def set(key : String, value : Data)
+        @kv.set name, key, value
+      end
+
       # Set the value of a key
       def []=(key : String, value : Data)
         put key, value
@@ -251,6 +255,10 @@ module NATS
         in Nil
           raise Error.new("No response received from the NATS server when setting #{key.inspect} on KV #{bucket.inspect}")
         end
+      end
+
+      def set(bucket : String, key : String, value : Data)
+        @nats.publish("$KV.#{bucket}.#{key}", value)
       end
 
       # Get the value associated with the current
