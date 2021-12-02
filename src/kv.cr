@@ -540,6 +540,7 @@ module NATS
   class Client
     # Returns a `NATS::KV::Client` that uses this client's connection to
     # the NATS server.
+    @[Experimental("NATS KV support is experimental and subject to change as NATS support for it changes")]
     def kv
       @kv ||= KV::Client.new(self)
     end
