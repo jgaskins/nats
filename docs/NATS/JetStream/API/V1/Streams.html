@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 1.2.0">
-<meta name="crystal_docs.project_version" content="1.1.0">
+<meta name="crystal_docs.project_version" content="1.2.0-dev">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../../../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::API::V1::Streams - nats 1.1.0</title>
+  <title>NATS::JetStream::API::V1::Streams - nats 1.2.0-dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../../../";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        1.1.0
+        1.2.0-dev
       </span>
     </div>
   </div>
@@ -281,8 +281,18 @@
       
     </li>
   
-  <li class=" current" data-id="nats/NATS/JetStream/API/V1/Streams" data-name="nats::jetstream::api::v1::streams">
+  <li class="parent open current" data-id="nats/NATS/JetStream/API/V1/Streams" data-name="nats::jetstream::api::v1::streams">
       <a href="../../../../NATS/JetStream/API/V1/Streams.html">Streams</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Streams/PurgeStreamResponse" data-name="nats::jetstream::api::v1::streams::purgestreamresponse">
+      <a href="../../../../NATS/JetStream/API/V1/Streams/PurgeStreamResponse.html">PurgeStreamResponse</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -441,6 +451,51 @@
       
     </li>
   
+  <li class=" " data-id="nats/NATS/NUID" data-name="nats::nuid">
+      <a href="../../../../NATS/NUID.html">NUID</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Objects" data-name="nats::objects">
+      <a href="../../../../NATS/Objects.html">Objects</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Objects/Bucket" data-name="nats::objects::bucket">
+      <a href="../../../../NATS/Objects/Bucket.html">Bucket</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Objects/Client" data-name="nats::objects::client">
+      <a href="../../../../NATS/Objects/Client.html">Client</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Objects/Client/ObjectInfo" data-name="nats::objects::client::objectinfo">
+      <a href="../../../../NATS/Objects/Client/ObjectInfo.html">ObjectInfo</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Objects/Error" data-name="nats::objects::error">
+      <a href="../../../../NATS/Objects/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Objects/KeyError" data-name="nats::objects::keyerror">
+      <a href="../../../../NATS/Objects/KeyError.html">KeyError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
   <li class=" " data-id="nats/NATS/ServerInfo" data-name="nats::serverinfo">
       <a href="../../../../NATS/ServerInfo.html">ServerInfo</a>
       
@@ -573,7 +628,7 @@ history in the order it was published.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#create%28storage%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3AStorage%2Cretention%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3ARetentionPolicy%3F%3Dnil%2C%2A%2Akwargs%29-instance-method" class="signature"><strong>#create</strong>(storage : API::V1::StreamConfig::Storage, retention : API::V1::StreamConfig::RetentionPolicy? = <span class="n">nil</span>, **kwargs)</a>
+        <a href="#create%28storage%3AStreamConfig%3A%3AStorage%2Cretention%3AStreamConfig%3A%3ARetentionPolicy%3F%3Dnil%2Cdiscard%3AStreamConfig%3A%3ADiscardPolicy%3F%3Dnil%2C%2A%2Akwargs%29-instance-method" class="signature"><strong>#create</strong>(storage : StreamConfig::Storage, retention : StreamConfig::RetentionPolicy? = <span class="n">nil</span>, discard : StreamConfig::DiscardPolicy? = <span class="n">nil</span>, **kwargs)</a>
         
           <div class="summary"><p>Create a stream of the given storage type and with the given properties, which are passed unmodified to <code><a href="../../../../NATS/JetStream/API/V1/StreamConfig.html#new%28name%2Csubjects%2Cdescription%3Dnil%2Cmax_age%3Dnil%2Cmax_bytes%3Dnil%2Cmax_msg_size%3Dnil%2Cmax_msgs%3Dnil%2Cmax_msgs_per_subject%3Dnil%2Cmax_consumers%3Dnil%2Cno_ack%3Dfalse%2Creplicas%3Dnil%2Cretention%3ARetentionPolicy%3F%3Dnil%2Callow_rollup_headers%3Dnil%2Cdeny_delete%3Dnil%2Cdiscard%3ADiscardPolicy%3F%3Dnil%2Cstorage%3AStorage%3D%3Afile%29-class-method">NATS::JetStream::API::V1::StreamConfig.new</a></code>.</p></div>
         
@@ -599,7 +654,7 @@ history in the order it was published.</p>
       </li>
     
       <li class="entry-summary">
-        <a href="#get_msg%28stream%3AString%2C%2A%2Csequence%3AString%29-instance-method" class="signature"><strong>#get_msg</strong>(stream : String, *, sequence : String)</a>
+        <a href="#get_msg%28stream%3AString%2C%2A%2Csequence%3AInt%29-instance-method" class="signature"><strong>#get_msg</strong>(stream : String, *, sequence : Int)</a>
         
       </li>
     
@@ -614,6 +669,11 @@ history in the order it was published.</p>
         <a href="#list-instance-method" class="signature"><strong>#list</strong></a>
         
           <div class="summary"><p>List all available streams</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#purge%28stream%3AString%2Csubject%3AString%29%3AInt64-instance-method" class="signature"><strong>#purge</strong>(stream : String, subject : String) : Int64</a>
         
       </li>
     
@@ -695,12 +755,12 @@ history in the order it was published.</p>
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="create(storage:API::V1::StreamConfig::Storage,retention:API::V1::StreamConfig::RetentionPolicy?=nil,**kwargs)-instance-method">
+    <div class="entry-detail" id="create(storage:StreamConfig::Storage,retention:StreamConfig::RetentionPolicy?=nil,discard:StreamConfig::DiscardPolicy?=nil,**kwargs)-instance-method">
       <div class="signature">
         
-        def <strong>create</strong>(storage : <a href="../../../../NATS/JetStream/API/V1/StreamConfig/Storage.html">API::V1::StreamConfig::Storage</a>, retention : <a href="../../../../NATS/JetStream/API/V1/StreamConfig/RetentionPolicy.html">API::V1::StreamConfig::RetentionPolicy</a>? = <span class="n">nil</span>, **kwargs)
+        def <strong>create</strong>(storage : <a href="../../../../NATS/JetStream/API/V1/StreamConfig/Storage.html">StreamConfig::Storage</a>, retention : <a href="../../../../NATS/JetStream/API/V1/StreamConfig/RetentionPolicy.html">StreamConfig::RetentionPolicy</a>? = <span class="n">nil</span>, discard : <a href="../../../../NATS/JetStream/API/V1/StreamConfig/DiscardPolicy.html">StreamConfig::DiscardPolicy</a>? = <span class="n">nil</span>, **kwargs)
 
-        <a class="method-permalink" href="#create%28storage%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3AStorage%2Cretention%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3ARetentionPolicy%3F%3Dnil%2C%2A%2Akwargs%29-instance-method">#</a>
+        <a class="method-permalink" href="#create%28storage%3AStreamConfig%3A%3AStorage%2Cretention%3AStreamConfig%3A%3ARetentionPolicy%3F%3Dnil%2Cdiscard%3AStreamConfig%3A%3ADiscardPolicy%3F%3Dnil%2C%2A%2Akwargs%29-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -768,12 +828,12 @@ properties, which are passed unmodified to
       </div>
     </div>
   
-    <div class="entry-detail" id="get_msg(stream:String,*,sequence:String)-instance-method">
+    <div class="entry-detail" id="get_msg(stream:String,*,sequence:Int)-instance-method">
       <div class="signature">
         
-        def <strong>get_msg</strong>(stream : String, *, sequence : String)
+        def <strong>get_msg</strong>(stream : String, *, sequence : Int)
 
-        <a class="method-permalink" href="#get_msg%28stream%3AString%2C%2A%2Csequence%3AString%29-instance-method">#</a>
+        <a class="method-permalink" href="#get_msg%28stream%3AString%2C%2A%2Csequence%3AInt%29-instance-method">#</a>
       </div>
       
       <br/>
@@ -813,6 +873,20 @@ properties, which are passed unmodified to
           
           <p>List all available streams</p>
         </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="purge(stream:String,subject:String):Int64-instance-method">
+      <div class="signature">
+        
+        def <strong>purge</strong>(stream : String, subject : String) : Int64
+
+        <a class="method-permalink" href="#purge%28stream%3AString%2Csubject%3AString%29%3AInt64-instance-method">#</a>
+      </div>
       
       <br/>
       <div>

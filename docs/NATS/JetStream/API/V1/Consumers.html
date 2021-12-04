@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 1.2.0">
-<meta name="crystal_docs.project_version" content="1.1.0">
+<meta name="crystal_docs.project_version" content="1.2.0-dev">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../../../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::API::V1::Consumers - nats 1.1.0</title>
+  <title>NATS::JetStream::API::V1::Consumers - nats 1.2.0-dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../../../";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        1.1.0
+        1.2.0-dev
       </span>
     </div>
   </div>
@@ -281,8 +281,18 @@
       
     </li>
   
-  <li class=" " data-id="nats/NATS/JetStream/API/V1/Streams" data-name="nats::jetstream::api::v1::streams">
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1/Streams" data-name="nats::jetstream::api::v1::streams">
       <a href="../../../../NATS/JetStream/API/V1/Streams.html">Streams</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Streams/PurgeStreamResponse" data-name="nats::jetstream::api::v1::streams::purgestreamresponse">
+      <a href="../../../../NATS/JetStream/API/V1/Streams/PurgeStreamResponse.html">PurgeStreamResponse</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -441,6 +451,51 @@
       
     </li>
   
+  <li class=" " data-id="nats/NATS/NUID" data-name="nats::nuid">
+      <a href="../../../../NATS/NUID.html">NUID</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Objects" data-name="nats::objects">
+      <a href="../../../../NATS/Objects.html">Objects</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Objects/Bucket" data-name="nats::objects::bucket">
+      <a href="../../../../NATS/Objects/Bucket.html">Bucket</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Objects/Client" data-name="nats::objects::client">
+      <a href="../../../../NATS/Objects/Client.html">Client</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Objects/Client/ObjectInfo" data-name="nats::objects::client::objectinfo">
+      <a href="../../../../NATS/Objects/Client/ObjectInfo.html">ObjectInfo</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Objects/Error" data-name="nats::objects::error">
+      <a href="../../../../NATS/Objects/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Objects/KeyError" data-name="nats::objects::keyerror">
+      <a href="../../../../NATS/Objects/KeyError.html">KeyError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
   <li class=" " data-id="nats/NATS/ServerInfo" data-name="nats::serverinfo">
       <a href="../../../../NATS/ServerInfo.html">ServerInfo</a>
       
@@ -572,7 +627,7 @@ acknowledged, etc, at the consumer layer.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#create%28stream_name%3AString%2Cdeliver_policy%3AConsumerConfig%3A%3ADeliverPolicy%3D%3Aall%2C%2A%2Aproperties%29%3AConsumer-instance-method" class="signature"><strong>#create</strong>(stream_name : String, deliver_policy : ConsumerConfig::DeliverPolicy = <span class="n">:all</span>, **properties) : Consumer</a>
+        <a href="#create%28stream_name%3AString%2Cdeliver_policy%3AConsumerConfig%3A%3ADeliverPolicy%3D%3Aall%2Cack_policy%3AConsumerConfig%3A%3AAckPolicy%3D%3Aexplicit%2C%2A%2Aproperties%29%3AConsumer-instance-method" class="signature"><strong>#create</strong>(stream_name : String, deliver_policy : ConsumerConfig::DeliverPolicy = <span class="n">:all</span>, ack_policy : ConsumerConfig::AckPolicy = <span class="n">:explicit</span>, **properties) : Consumer</a>
         
           <div class="summary"><p>Create a consumer for the given stream with the given properties, which are passed unmodified to <code><a href="../../../../NATS/JetStream/API/V1/Consumer.html#new%28pull%3AJSON%3A%3APullParser%29-class-method">NATS::JetStream::API::V1::Consumer.new</a></code>.</p></div>
         
@@ -587,6 +642,13 @@ acknowledged, etc, at the consumer layer.</p>
     
       <li class="entry-summary">
         <a href="#delete%28stream%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStream%2Cconsumer%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AConsumer%29-instance-method" class="signature"><strong>#delete</strong>(stream : JetStream::API::V1::Stream, consumer : JetStream::API::V1::Consumer)</a>
+        
+          <div class="summary"><p>Delete the given consumer for the given stream</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#delete%28consumer%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AConsumer%29-instance-method" class="signature"><strong>#delete</strong>(consumer : JetStream::API::V1::Consumer)</a>
         
           <div class="summary"><p>Delete the given consumer for the given stream</p></div>
         
@@ -691,12 +753,12 @@ acknowledged, etc, at the consumer layer.</p>
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="create(stream_name:String,deliver_policy:ConsumerConfig::DeliverPolicy=:all,**properties):Consumer-instance-method">
+    <div class="entry-detail" id="create(stream_name:String,deliver_policy:ConsumerConfig::DeliverPolicy=:all,ack_policy:ConsumerConfig::AckPolicy=:explicit,**properties):Consumer-instance-method">
       <div class="signature">
         
-        def <strong>create</strong>(stream_name : String, deliver_policy : <a href="../../../../NATS/JetStream/API/V1/ConsumerConfig/DeliverPolicy.html">ConsumerConfig::DeliverPolicy</a> = <span class="n">:all</span>, **properties) : <a href="../../../../NATS/JetStream/API/V1/Consumer.html">Consumer</a>
+        def <strong>create</strong>(stream_name : String, deliver_policy : <a href="../../../../NATS/JetStream/API/V1/ConsumerConfig/DeliverPolicy.html">ConsumerConfig::DeliverPolicy</a> = <span class="n">:all</span>, ack_policy : <a href="../../../../NATS/JetStream/API/V1/ConsumerConfig/AckPolicy.html">ConsumerConfig::AckPolicy</a> = <span class="n">:explicit</span>, **properties) : <a href="../../../../NATS/JetStream/API/V1/Consumer.html">Consumer</a>
 
-        <a class="method-permalink" href="#create%28stream_name%3AString%2Cdeliver_policy%3AConsumerConfig%3A%3ADeliverPolicy%3D%3Aall%2C%2A%2Aproperties%29%3AConsumer-instance-method">#</a>
+        <a class="method-permalink" href="#create%28stream_name%3AString%2Cdeliver_policy%3AConsumerConfig%3A%3ADeliverPolicy%3D%3Aall%2Cack_policy%3AConsumerConfig%3A%3AAckPolicy%3D%3Aexplicit%2C%2A%2Aproperties%29%3AConsumer-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -737,6 +799,25 @@ with the given name.</p>
         def <strong>delete</strong>(stream : <a href="../../../../NATS/JetStream/API/V1/Stream.html">JetStream::API::V1::Stream</a>, consumer : <a href="../../../../NATS/JetStream/API/V1/Consumer.html">JetStream::API::V1::Consumer</a>)
 
         <a class="method-permalink" href="#delete%28stream%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStream%2Cconsumer%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AConsumer%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Delete the given consumer for the given stream</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="delete(consumer:JetStream::API::V1::Consumer)-instance-method">
+      <div class="signature">
+        
+        def <strong>delete</strong>(consumer : <a href="../../../../NATS/JetStream/API/V1/Consumer.html">JetStream::API::V1::Consumer</a>)
+
+        <a class="method-permalink" href="#delete%28consumer%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AConsumer%29-instance-method">#</a>
       </div>
       
         <div class="doc">

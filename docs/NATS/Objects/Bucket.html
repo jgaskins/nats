@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::KV::Watch - nats 1.2.0-dev</title>
+  <title>NATS::Objects::Bucket - nats 1.2.0-dev</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -371,7 +371,7 @@
       
     </li>
   
-  <li class="parent open current" data-id="nats/NATS/KV" data-name="nats::kv">
+  <li class="parent " data-id="nats/NATS/KV" data-name="nats::kv">
       <a href="../../NATS/KV.html">KV</a>
       
         <ul>
@@ -421,7 +421,7 @@
       
     </li>
   
-  <li class=" current" data-id="nats/NATS/KV/Watch" data-name="nats::kv::watch">
+  <li class=" " data-id="nats/NATS/KV/Watch" data-name="nats::kv::watch">
       <a href="../../NATS/KV/Watch.html">Watch</a>
       
     </li>
@@ -456,12 +456,12 @@
       
     </li>
   
-  <li class="parent " data-id="nats/NATS/Objects" data-name="nats::objects">
+  <li class="parent open current" data-id="nats/NATS/Objects" data-name="nats::objects">
       <a href="../../NATS/Objects.html">Objects</a>
       
         <ul>
   
-  <li class=" " data-id="nats/NATS/Objects/Bucket" data-name="nats::objects::bucket">
+  <li class=" current" data-id="nats/NATS/Objects/Bucket" data-name="nats::objects::bucket">
       <a href="../../NATS/Objects/Bucket.html">Bucket</a>
       
     </li>
@@ -540,12 +540,12 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">class</span> NATS::KV::Watch
+  <span class="kind">struct</span> NATS::Objects::Bucket
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../NATS/KV/Watch.html">NATS::KV::Watch</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../NATS/Objects/Bucket.html">NATS::Objects::Bucket</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
 
 
 
@@ -573,7 +573,7 @@
   </h2>
   
     
-      kv.cr
+      objects.cr
     
     <br/>
   
@@ -593,7 +593,12 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28stop_channel%3AChannel%28Nil%29%29-class-method" class="signature"><strong>.new</strong>(stop_channel : Channel(Nil))</a>
+        <a href="#new%28name%2Cstream_name%2Cclient%29-class-method" class="signature"><strong>.new</strong>(name, stream_name, client)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#new%28stream%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStream%2Cclient%3AObjects%3A%3AClient%29-class-method" class="signature"><strong>.new</strong>(stream : JetStream::API::V1::Stream, client : Objects::Client)</a>
         
       </li>
     
@@ -614,7 +619,42 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#stop-instance-method" class="signature"><strong>#stop</strong></a>
+        <a href="#get%28key%3AString%29-instance-method" class="signature"><strong>#get</strong>(key : String)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get%21%28key%3AString%29-instance-method" class="signature"><strong>#get!</strong>(key : String)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_info%28key%3AString%29-instance-method" class="signature"><strong>#get_info</strong>(key : String)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_info%21%28key%3AString%29-instance-method" class="signature"><strong>#get_info!</strong>(key : String)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#name%3AString-instance-method" class="signature"><strong>#name</strong> : String</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#put%28key%3AString%2Cvalue%3AIO%2C%2A%2Cdescription%3AString%3F%3Dnil%2Cheaders%3AHeaders%3DHeaders.new%2Cchunk_size%3AInt%3DDEFAULT_CHUNK_SIZE%29-instance-method" class="signature"><strong>#put</strong>(key : String, value : IO, *, description : String? = <span class="n">nil</span>, headers : Headers = <span class="t">Headers</span>.<span class="k">new</span>, chunk_size : Int = <span class="t">DEFAULT_CHUNK_SIZE</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#put%28key%3AString%2Cvalue%3AString%7CBytes%2C%2A%2Akwargs%29-instance-method" class="signature"><strong>#put</strong>(key : String, value : String | Bytes, **kwargs)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#stream_name%3AString-instance-method" class="signature"><strong>#stream_name</strong> : String</a>
         
       </li>
     
@@ -625,6 +665,16 @@
 
 
 <div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
   
     
 
@@ -658,12 +708,26 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(stop_channel:Channel(Nil))-class-method">
+    <div class="entry-detail" id="new(name,stream_name,client)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(stop_channel : Channel(Nil))
+        def self.<strong>new</strong>(name, stream_name, client)
 
-        <a class="method-permalink" href="#new%28stop_channel%3AChannel%28Nil%29%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28name%2Cstream_name%2Cclient%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new(stream:JetStream::API::V1::Stream,client:Objects::Client)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(stream : <a href="../../NATS/JetStream/API/V1/Stream.html">JetStream::API::V1::Stream</a>, client : <a href="../../NATS/Objects/Client.html">Objects::Client</a>)
+
+        <a class="method-permalink" href="#new%28stream%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStream%2Cclient%3AObjects%3A%3AClient%29-class-method">#</a>
       </div>
       
       <br/>
@@ -686,12 +750,110 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="stop-instance-method">
+    <div class="entry-detail" id="get(key:String)-instance-method">
       <div class="signature">
         
-        def <strong>stop</strong>
+        def <strong>get</strong>(key : String)
 
-        <a class="method-permalink" href="#stop-instance-method">#</a>
+        <a class="method-permalink" href="#get%28key%3AString%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get!(key:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>get!</strong>(key : String)
+
+        <a class="method-permalink" href="#get%21%28key%3AString%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_info(key:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>get_info</strong>(key : String)
+
+        <a class="method-permalink" href="#get_info%28key%3AString%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_info!(key:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>get_info!</strong>(key : String)
+
+        <a class="method-permalink" href="#get_info%21%28key%3AString%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="name:String-instance-method">
+      <div class="signature">
+        
+        def <strong>name</strong> : String
+
+        <a class="method-permalink" href="#name%3AString-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="put(key:String,value:IO,*,description:String?=nil,headers:Headers=Headers.new,chunk_size:Int=DEFAULT_CHUNK_SIZE)-instance-method">
+      <div class="signature">
+        
+        def <strong>put</strong>(key : String, value : IO, *, description : String? = <span class="n">nil</span>, headers : <a href="../../NATS/Headers.html">Headers</a> = <span class="t">Headers</span>.<span class="k">new</span>, chunk_size : Int = <span class="t">DEFAULT_CHUNK_SIZE</span>)
+
+        <a class="method-permalink" href="#put%28key%3AString%2Cvalue%3AIO%2C%2A%2Cdescription%3AString%3F%3Dnil%2Cheaders%3AHeaders%3DHeaders.new%2Cchunk_size%3AInt%3DDEFAULT_CHUNK_SIZE%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="put(key:String,value:String|Bytes,**kwargs)-instance-method">
+      <div class="signature">
+        
+        def <strong>put</strong>(key : String, value : String | Bytes, **kwargs)
+
+        <a class="method-permalink" href="#put%28key%3AString%2Cvalue%3AString%7CBytes%2C%2A%2Akwargs%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="stream_name:String-instance-method">
+      <div class="signature">
+        
+        def <strong>stream_name</strong> : String
+
+        <a class="method-permalink" href="#stream_name%3AString-instance-method">#</a>
       </div>
       
       <br/>
