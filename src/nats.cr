@@ -270,7 +270,7 @@ module NATS
     #   # ...
     # end
     # ```
-    def subscribe(subject : String, queue_group : String? = nil, sid = @current_sid.add(1), &block : Message, Subscription ->) : Subscription
+    def subscribe(subject : String, queue_group : String? = nil, sid = @current_sid.add(1), max_in_flight = 64_000, &block : Message, Subscription ->) : Subscription
       LOG.debug { "Subscribing to #{subject.inspect}, queue_group: #{queue_group.inspect}, sid: #{sid}" }
       write do
         @io << "SUB " << subject << ' '
@@ -280,7 +280,7 @@ module NATS
         @io << sid << "\r\n"
       end
 
-      @subscriptions[sid] = Subscription.new(subject, sid, queue_group, &block).tap(&.start)
+      @subscriptions[sid] = Subscription.new(subject, sid, queue_group, max_in_flight: max_in_flight, &block).tap(&.start)
     end
 
     private def resubscribe(subscription : Subscription)
