@@ -5,6 +5,8 @@ require "uuid"
 require "openssl"
 require "log"
 
+require "./nuid"
+
 # NATS is a pub/sub message bus.
 #
 # ```
@@ -341,7 +343,7 @@ module NATS
     # ```
     def request(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil) : Message?
       channel = Channel(Message).new(1)
-      inbox = Random::Secure.hex(4)
+      inbox = NUID.next
       key = "#{@inbox_prefix}.#{inbox}"
       @inbox_handlers[key] = ->(msg : Message) { channel.send msg }
       publish subject, message, reply_to: key, headers: headers
@@ -363,7 +365,7 @@ module NATS
     # waiting for a response. The first message to come back will be passed to
     # the block.
     def request(subject : String, message : Data = "", timeout = 2.seconds, &block : Message ->) : Nil
-      inbox = Random::Secure.hex(4)
+      inbox = NUID.next
       key = "#{@inbox_prefix}.#{inbox}"
       @inbox_handlers[key] = ->(msg : Message) do
         block.call msg
