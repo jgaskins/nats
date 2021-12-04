@@ -50,7 +50,7 @@ module NATS
         expected_last_message_id : String? = nil,
         expected_last_sequence : Int64? = nil,
         expected_stream : String? = nil,
-        expected_last_subject_sequence : Int64? = nil,
+        expected_last_subject_sequence : Int64? = nil
       )
         headers["Nats-Msg-Id"] = message_id if message_id
         headers["Nats-Expected-Last-Msg-Id"] = expected_last_message_id if expected_last_message_id
@@ -338,14 +338,16 @@ module NATS
           # properties, which are passed unmodified to
           # `NATS::JetStream::API::V1::StreamConfig.new`.
           def create(
-            storage : API::V1::StreamConfig::Storage,
-            retention : API::V1::StreamConfig::RetentionPolicy? = nil,
+            storage : StreamConfig::Storage,
+            retention : StreamConfig::RetentionPolicy? = nil,
+            discard : StreamConfig::DiscardPolicy? = nil,
             **kwargs
           )
             create_stream = JetStream::API::V1::StreamConfig.new(
               **kwargs,
               storage: storage,
               retention: retention,
+              discard: discard,
             )
 
             if create_stream.name.includes? '.'
@@ -407,7 +409,7 @@ module NATS
             get_msg stream, {last_by_subj: last_by_subject}
           end
 
-          def get_msg(stream : String, *, sequence : String)
+          def get_msg(stream : String, *, sequence : Int)
             get_msg stream, {seq: sequence}
           end
 
@@ -427,6 +429,25 @@ module NATS
               raise Error.new("Did not receive a response when getting message from stream #{stream.inspect} with options #{params}")
             end
           end
+
+          def purge(stream : String, subject : String) : Int64
+            if response = @nats.request("$JS.API.STREAM.PURGE.#{stream}", {filter: subject}.to_json)
+              case parsed = (PurgeStreamResponse | ErrorResponse).from_json String.new(response.body)
+              in PurgeStreamResponse
+                parsed.purged
+              in ErrorResponse
+                raise Error.new(parsed.error.description)
+              end
+            else
+              raise Error.new("Did not receive a response when purging stream #{stream.inspect} of subject #{subject.inspect}")
+            end
+          end
+
+          struct PurgeStreamResponse
+            include JSON::Serializable
+
+            getter purged : Int64
+          end
         end
 
         # A NATS JetStream consumer is a message index sourced from a stream.
@@ -441,9 +462,14 @@ module NATS
           def create(
             stream_name : String,
             deliver_policy : ConsumerConfig::DeliverPolicy = :all,
+            ack_policy : ConsumerConfig::AckPolicy = :explicit,
             **properties
           ) : Consumer
-            consumer_config = NATS::JetStream::API::V1::ConsumerConfig.new(**properties, deliver_policy: deliver_policy)
+            consumer_config = NATS::JetStream::API::V1::ConsumerConfig.new(
+              **properties,
+              deliver_policy: deliver_policy,
+              ack_policy: ack_policy,
+            )
             create_consumer = {stream_name: stream_name, config: consumer_config}
             if durable_name = consumer_config.durable_name
               create_consumer_subject = "$JS.API.CONSUMER.DURABLE.CREATE.#{stream_name}.#{durable_name}"
@@ -486,6 +512,11 @@ module NATS
             else
               raise "no info for #{name.inspect} (stream #{stream_name.inspect})"
             end
+          end
+
+          # Delete the given consumer for the given stream
+          def delete(consumer : JetStream::API::V1::Consumer)
+            delete consumer.stream_name, consumer.name
           end
 
           # Delete the given consumer for the given stream
@@ -712,10 +743,10 @@ module NATS
 
         struct Consumer < Message
           # The name of the stream this consumer sources its messages from
-          getter stream_name : String?
+          getter stream_name : String
 
           # The name of this consumer
-          getter name : String?
+          getter name : String
 
           # The timestamp when this consumer was created
           getter created : Time
@@ -811,6 +842,7 @@ module NATS
             max_ack_pending : Int? = nil,
             max_waiting : Int? = nil,
             @idle_heartbeat = nil,
+            @flow_control = false,
             @deliver_group = durable_name
           )
             @max_deliver = max_deliver.try(&.to_i64)

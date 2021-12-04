@@ -97,7 +97,6 @@ describe NATS::JetStream do
     )
 
     pull = nats.jetstream.pull_subscribe(consumer)
-    # 50.times { nats.jetstream.pull_subscribe(consumer) }
 
     begin
       spawn do
@@ -129,6 +128,28 @@ describe NATS::JetStream do
       nats.flush
     ensure
       nats.jetstream.stream.delete stream
+    end
+  end
+
+  describe "purging a stream" do
+    it "purges by subject" do
+      first, second = Array.new(2) { UUID.random.to_s }
+      stream = create_stream(subjects: [first, second])
+      name = stream.config.name
+
+      js.publish first, "test"
+      js.publish first, "another test"
+      js.publish second, "yet another"
+
+      js.stream.get_msg(name, sequence: 1).not_nil!.message.data.should eq "test".to_slice
+      js.stream.get_msg(name, sequence: 2).not_nil!.message.data.should eq "another test".to_slice
+      js.stream.get_msg(name, sequence: 3).not_nil!.message.data.should eq "yet another".to_slice
+
+      js.stream.purge name, subject: first
+
+      js.stream.info(name).not_nil!.state.messages.should eq 1
+    ensure
+      js.stream.delete stream if stream
     end
   end
 end

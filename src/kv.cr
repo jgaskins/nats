@@ -22,6 +22,7 @@ module NATS
   # String.new(msg.data) # => "value"
   # msg.seq              # => 1
   # ```
+  @[Experimental("NATS KV support is experimental and subject to change as NATS support for it changes")]
   module KV
     class Error < ::NATS::Error
     end
