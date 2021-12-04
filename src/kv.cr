@@ -270,8 +270,6 @@ module NATS
 
       # Get the value associated with the current
       def get(bucket : String, key : String, ignore_deletes = false) : Entry?
-        validate_key! key unless key == ">"
-
         if response = @nats.jetstream.stream.get_msg("KV_#{bucket}", last_by_subject: "$KV.#{bucket}.#{key}")
           operation = Entry::Operation::Put
 
