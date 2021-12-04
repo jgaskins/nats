@@ -347,20 +347,16 @@ module NATS
       end
 
       # Get all of the keys for the given bucket name
-      def keys(bucket : String) : Set(String)
+      def keys(bucket : String, pattern : String = ">") : Set(String)
         keys = Set(String).new
 
-        if stream = @nats.jetstream.stream.info("KV_#{bucket}")
-          # If there are no messages in the stream just return the empty set of
-          # keys. Otherwise, we will end up sitting here waiting for keys to
-          # come streaming in.
-          if stream.state.messages == 0
-            return keys
-          end
-        end
+        # If there are no messages in the stream with this pattern, just return
+        # the empty set of keys. Otherwise, we will end up sitting here waiting
+        # for keys to come streaming in.
+        return keys if get(bucket, pattern).nil?
 
         # Look at all the keys in the current bucket
-        watch bucket, ">" do |msg, watch|
+        watch bucket, pattern do |msg, watch|
           case msg.operation
           when .delete?, .purge?
             keys.delete msg.key
@@ -376,14 +372,7 @@ module NATS
       def history(bucket : String, key : String) : Array(Entry)
         history = [] of Entry
 
-        if stream = @nats.jetstream.stream.info("KV_#{bucket}")
-          # If there are no messages in the stream just return the empty list of
-          # entries. Otherwise, we will end up sitting here waiting for entries
-          # to come streaming in.
-          if stream.state.messages == 0
-            return history
-          end
-        end
+        return history if get(bucket, key).nil?
 
         watch bucket, key, include_history: true do |msg, watch|
           history << msg
