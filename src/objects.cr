@@ -101,7 +101,7 @@ module NATS
       def put(bucket : String, key : String, value : IO, description : String? = nil, headers : Headers = Headers.new, chunk_size : Int = DEFAULT_CHUNK_SIZE)
         existing = get_info(bucket, key)
         id = NUID.next
-        chunk_subject = "$O.#{bucket}.C.#{key}"
+        chunk_subject = "$O.#{bucket}.C.#{sanitize_key(key)}"
         meta_subject = "$O.#{bucket}.M.#{sanitize_key(key)}"
         chunk = Bytes.new(chunk_size)
         sha = Digest::SHA256.new
@@ -144,8 +144,7 @@ module NATS
       end
 
       def get_info(bucket : String, key : String)
-        key = sanitize_key(key)
-        meta = "$O.#{bucket}.M.#{key}"
+        meta = "$O.#{bucket}.M.#{sanitize_key(key)}"
         stream = "OBJ_#{bucket}"
         if response = @nats.jetstream.stream.get_msg(stream, last_by_subject: meta)
           info = ObjectInfo.from_json(String.new(response.message.data))
@@ -155,13 +154,12 @@ module NATS
       end
 
       def get(bucket : String, key : String) : IO?
-        unless info = get_info(bucket, key)
-          return
-        end
+        return unless info = get_info(bucket, key)
+
         subject = "NATS.Objects.#{bucket}.data.#{key}.get.#{NUID.next}"
         consumer = @nats.jetstream.consumer.create(
           stream_name: "OBJ_#{bucket}",
-          filter_subject: "$O.#{bucket}.C.#{key}",
+          filter_subject: "$O.#{bucket}.C.#{sanitize_key(key)}",
           deliver_subject: subject,
           ack_policy: :none,
           max_deliver: 1,
