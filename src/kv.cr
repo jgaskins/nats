@@ -407,10 +407,10 @@ module NATS
           deliver_group: deliver_group,
           deliver_policy: deliver_policy,
           filter_subject: "$KV.#{bucket}.#{key}",
+          ack_policy: :none,
         )
         subscription = @nats.subscribe inbox, queue_group: deliver_group do |msg|
           js_msg = JetStream::Message.new(msg)
-          @nats.jetstream.ack js_msg
 
           operation = Entry::Operation::Put
           case msg.headers.try { |h| h["KV-Operation"]? }
