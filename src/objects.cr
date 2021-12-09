@@ -94,6 +94,12 @@ module NATS
         Bucket.new(stream, self)
       end
 
+      def get_bucket(name : String)
+        if stream = @nats.jetstream.stream.info("OBJ_#{name}")
+          Bucket.new(stream, self)
+        end
+      end
+
       def delete_bucket(name : String)
         @nats.jetstream.stream.delete "OBJ_#{name}"
       end
