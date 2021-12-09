@@ -173,16 +173,93 @@ module NATS
           idle_heartbeat: 5.seconds, # Required for flow control
         )
         read, write = IO.pipe
-        @nats.jetstream.subscribe(subject) do |msg|
-          write.write msg.body
-
+        chunks = 0
+        @nats.subscribe(subject) do |msg, subscription|
+          @nats.reply msg, "" if msg.reply_to
           # TODO: ensure we get *all* chunks
-          if msg.pending == 0
-            write.close
-            @nats.jetstream.consumer.delete consumer
+          if msg.body.size > 0
+            write.write msg.body
+            chunks += 1
+            if chunks >= info.chunks
+              write.close
+              @nats.jetstream.consumer.delete consumer
+              @nats.unsubscribe subscription
+            end
           end
+        rescue ex : IO::Error
+          write.close
+          @nats.jetstream.consumer.delete consumer
+          @nats.unsubscribe subscription
         end
         read
+      end
+
+      def keys(bucket : String, pattern : String = ">") : Set(String)
+        keys = Set(String).new
+
+        # If there are no messages in the stream with this pattern, just return
+        # the empty set of keys. Otherwise, we will end up sitting here waiting
+        # for keys to come streaming in.
+        return keys if get_info(bucket, pattern).nil?
+
+        # Look at all the keys in the current bucket
+        watch bucket, pattern do |msg, watch|
+          keys << msg.name
+
+          watch.stop if watch.pending == 0
+        end
+
+        keys
+      end
+
+      def watch(
+        bucket : String,
+        key : String,
+        &block : ObjectInfo, Watch ->
+      )
+        stop_channel = Channel(Nil).new
+        watch = Watch.new(stop_channel)
+        inbox = "$WATCH_INBOX.#{NUID.next}"
+        deliver_group = NUID.next
+
+        stream_name = "OBJ_#{bucket}"
+        consumer = @nats.jetstream.consumer.create(
+          stream_name: stream_name,
+          deliver_subject: inbox,
+          deliver_group: deliver_group,
+          deliver_policy: :last_per_subject,
+          filter_subject: "$O.#{bucket}.M.#{sanitize_key(key)}",
+          ack_policy: :none,
+        )
+        subscription = @nats.subscribe inbox, queue_group: deliver_group do |msg|
+          js_msg = JetStream::Message.new(msg)
+          watch.pending = js_msg.pending
+
+          _, bucket_name, _, key_name = msg.subject.split('.', 4)
+          info = ObjectInfo.from_json String.new msg.body
+
+          block.call info, watch
+        end
+
+        stop_channel.receive
+      ensure
+        if subscription
+          @nats.unsubscribe subscription
+        end
+        if stream_name && consumer && (name = consumer.name)
+          @nats.jetstream.consumer.delete stream_name, name
+        end
+      end
+
+      struct Watch
+        property pending : Int64 = 0
+
+        def initialize(@stop_channel : Channel(Nil))
+        end
+
+        def stop
+          @stop_channel.send nil
+        end
       end
 
       struct ObjectInfo
