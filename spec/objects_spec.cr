@@ -55,6 +55,18 @@ module NATS
     ensure
       file.delete if file
     end
+
+    test "gets keys for a bucket" do
+      bucket.put "key", "value", headers: Headers{"foo" => "bar"}
+
+      obj.keys(bucket.name).should contain "key"
+    end
+
+    test "gets info for a key that has dots in it" do
+      bucket.put "key.value", "value"
+
+      obj.get_info(bucket.name, "key.value").should_not be_nil
+    end
   end
 end
 
