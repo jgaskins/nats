@@ -257,7 +257,7 @@ module NATS
       # Any headers that were published with this message, including ones
       # interpreted by the NATS server, such as `Nats-Msg-Id` for message
       # deduplication.
-      getter headers : Headers?
+      getter headers : Headers { Headers.new }
 
       # Instantiate a `NATS::JetStream::Message` based on a `NATS::Message`.
       # Used by JetStream subscriptions to build `JetStream::Message`
@@ -583,7 +583,7 @@ module NATS
             @[JSON::Field(converter: ::NATS::JetStream::API::V1::StreamGetMsgResponse::Message::Base64Data)]
             getter data : Bytes = Bytes.empty
             @[JSON::Field(key: "hdrs", converter: ::NATS::JetStream::API::V1::StreamGetMsgResponse::Message::HeadersConverter)]
-            getter headers : Headers?
+            getter headers : Headers { Headers.new }
             getter time : Time
 
             module Base64Data
