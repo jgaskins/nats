@@ -201,8 +201,8 @@ module NATS
       #   watch.stop # exit the block
       # end
       # ```
-      def watch(key : String, *, ignore_deletes = false, &block : Entry, Watch ->)
-        @kv.watch(name, key, ignore_deletes: ignore_deletes, &block)
+      def watch(key : String, *, ignore_deletes = false, include_history = true, &block : Entry, Watch ->)
+        @kv.watch(name, key, ignore_deletes: ignore_deletes, include_history: include_history, &block)
       end
     end
 
