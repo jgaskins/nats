@@ -191,8 +191,44 @@ describe NATS do
 
     data.should eq "yep".to_slice
   end
+
+  it "connects to a server using NKeys" do
+    port = rand(50_000..60_000)
+    subject = UUID.random.to_s
+
+    run_nats_on port, config: "nats_nkeys" do |client|
+      client.subscribe(subject) { |msg| client.reply msg, String.new(msg.body).upcase }
+
+      response = client.request(subject, "hello").not_nil!
+      response.body.should eq "HELLO".to_slice
+    end
+  end
 end
 
 private def no_response!
   raise "No response received"
+end
+
+private def run_nats_on(port : Int32, config : String)
+  Process.run "nats-server", args: "-js --port #{port} --config #{__DIR__}/support/#{config}.conf".split do |process|
+    wait_for_nats port
+    client = NATS::Client.new(
+      uri: URI.parse("nats://:#{port}"),
+      nkeys_file: "#{__DIR__}/support/#{config}.seed",
+    )
+    yield client
+  ensure
+    process.signal :term
+  end
+end
+
+private def wait_for_nats(port : Int32, host : String = "127.0.0.1")
+  loop do
+    if socket = TCPSocket.new(host, port)
+      socket.close
+      return
+    end
+  rescue ex : IO::Error
+    sleep 10.milliseconds
+  end
 end

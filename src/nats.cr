@@ -6,6 +6,7 @@ require "openssl"
 require "log"
 
 require "./nuid"
+require "./nkeys"
 
 # NATS is a pub/sub message bus.
 #
@@ -124,7 +125,7 @@ module NATS
     getter server_info : ServerInfo
     private getter? data_waiting = false
 
-    def self.new(*, ping_interval = 2.minutes, max_pings_out = 2)
+    def self.new(*, ping_interval = 2.minutes, max_pings_out = 2, nkeys_file : String? = nil)
       new(
         servers: ENV
           .fetch("NATS_SERVERS", "nats:///")
@@ -132,6 +133,7 @@ module NATS
           .map { |url| URI.parse url },
         ping_interval: ping_interval,
         max_pings_out: max_pings_out,
+        nkeys_file: nkeys_file,
       )
     end
 
@@ -143,9 +145,10 @@ module NATS
     def self.new(
       uri : URI,
       ping_interval = 2.minutes,
-      max_pings_out = 2
+      max_pings_out = 2,
+      nkeys_file : String? = nil,
     )
-      new([uri], ping_interval: ping_interval, max_pings_out: max_pings_out)
+      new([uri], ping_interval: ping_interval, max_pings_out: max_pings_out, nkeys_file: nkeys_file)
     end
 
     # Connect to a NATS cluster at the given URIs
@@ -160,7 +163,8 @@ module NATS
     def initialize(
       @servers : Array(URI),
       @ping_interval : Time::Span = 2.minutes,
-      @max_pings_out = 2
+      @max_pings_out = 2,
+      @nkeys_file : String? = nil,
     )
       uri = @servers.sample
       @ping_count = Atomic.new(0)
@@ -216,12 +220,27 @@ module NATS
         user:     uri.user,
         pass:     uri.password,
       }
+      if @server_info.auth_required? && (nonce = @server_info.nonce)
+        if nkeys_file.nil?
+          raise Error.new("Server requires auth and supplied a nonce, but no NKEYS file specified")
+        end
+
+        nkey = NKeys.new(File.read(nkeys_file.strip))
+
+        connect = connect.merge({
+          sig: Base64.urlsafe_encode(nkey.keypair.sign(nonce), padding: false),
+          nkey: Base32.encode(nkey.keypair.public_key, pad: false),
+        })
+      end
       connect.to_json @io
       @io << "\r\n"
       ping
       @socket.flush
-      until (line = @socket.gets) == "PONG"
-        # TODO: Handle errors
+      until (line = @socket.read_line) == "PONG"
+        LOG.debug { line }
+        if line.starts_with? "-ERR "
+          raise Error.new(line.lchop("-ERR "))
+        end
       end
       @pings.receive
 
@@ -769,6 +788,7 @@ module NATS
         servers: @servers,
         ping_interval: @ping_interval,
         max_pings_out: @max_pings_out,
+        nkeys_file: @nkeys_file,
       )
       @on_reconnect.call
     end
