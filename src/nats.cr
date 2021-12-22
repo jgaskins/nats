@@ -366,6 +366,14 @@ module NATS
       key = "#{@inbox_prefix}.#{inbox}"
       @inbox_handlers[key] = ->(msg : Message) { channel.send msg }
       publish subject, message, reply_to: key, headers: headers
+
+      # TODO: Track how often we're making requests. If we're making requests
+      # often enough, we don't need to flush the buffer after every request, and
+      # can instead rely on the buffer being flushed as a result of the sheer
+      # volume of data going through it. For example, if the socket buffer is
+      # 8KB and we send more than 8KB every millisecond, this mutex lock and
+      # socket flush are unnecessary and we could potentially coalesce multiple
+      # requests within the same socket flush, reducing the number of syscalls.
       @out.synchronize { @socket.flush }
 
       begin
