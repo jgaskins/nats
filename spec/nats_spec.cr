@@ -29,11 +29,11 @@ describe NATS do
       body = msg.body
     end
 
-    nats.publish subject, "asdf", headers: NATS::Message::Headers { "foo" => "bar" }
+    nats.publish subject, "asdf", headers: NATS::Message::Headers{"foo" => "bar"}
     nats.flush
 
     String.new(body).should eq "asdf"
-    headers.should eq NATS::Message::Headers { "foo" => "bar" }
+    headers.should eq NATS::Message::Headers{"foo" => "bar"}
   end
 
   it "can set message headers with a reply-to" do
@@ -48,12 +48,12 @@ describe NATS do
       reply_to = msg.reply_to
     end
 
-    nats.publish subject, "asdf", reply_to: "my-reply-to", headers: NATS::Message::Headers { "foo" => "bar" }
+    nats.publish subject, "asdf", reply_to: "my-reply-to", headers: NATS::Message::Headers{"foo" => "bar"}
     nats.flush
 
     String.new(body).should eq "asdf"
     reply_to.should eq "my-reply-to"
-    headers.should eq NATS::Message::Headers { "foo" => "bar" }
+    headers.should eq NATS::Message::Headers{"foo" => "bar"}
   end
 
   it "can publish to multiple subscribers" do
@@ -155,8 +155,8 @@ describe NATS do
     nats.request(subject, "") do |response|
       count += 1
     end
-    nats.flush # Send the request
-    nats.flush # Give the response time to come back
+    nats.flush              # Send the request
+    nats.flush              # Give the response time to come back
     10.times { nats.flush } # Just to see if we're gonna get back any more
 
     count.should eq 1
