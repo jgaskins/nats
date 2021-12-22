@@ -20,7 +20,7 @@ describe NATS::KV do
   nats = NATS::Client.new
   kv = nats.kv
 
-  if ENV["CLEAN_OUT_BUCKETS"]? == "true" || true
+  if ENV["CLEAN_OUT_BUCKETS"]? == "true"
     nats.jetstream.stream.list.each do |stream|
       if stream.config.name =~ /\AKV_[[:xdigit:]]{8}-([[:xdigit:]]{4}-){3}[[:xdigit:]]{12}\z/
         nats.jetstream.stream.delete stream
