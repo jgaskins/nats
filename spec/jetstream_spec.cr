@@ -14,20 +14,34 @@ nats = NATS::Client.new
 js = nats.jetstream
 
 describe NATS::JetStream do
-  it "creates and deletes streams" do
-    stream = nats.jetstream.stream.create(
-      name: "test-stream-#{UUID.random}",
-      subjects: %w[test.jetstream.#{UUID.random}.*],
+  it "creates, lists, and deletes streams" do
+    uuid = UUID.random
+    included = nats.jetstream.stream.create(
+      name: "included-#{uuid}",
+      subjects: ["test.jetstream.included.#{uuid}.*"],
+      storage: :memory,
+    )
+    excluded = nats.jetstream.stream.create(
+      name: "excluded-#{uuid}",
+      subjects: ["test.jetstream.excluded.#{uuid}.*"],
       storage: :memory,
     )
 
     begin
-      stream.config.name.should match /test-stream-[[:xdigit:]]{8}(-[[:xdigit:]]{4}){3}-[[:xdigit:]]{12}/
-      nats.jetstream.stream.list.streams.should contain stream
-    ensure
-      nats.jetstream.stream.delete stream
+      included.config.name.should eq "included-#{uuid}"
+      all = nats.jetstream.stream.list.streams
+      filtered = nats.jetstream.stream.list(subject: "test.jetstream.included.#{uuid}.*").streams
+      all.should contain included
+      all.should contain excluded
 
-      nats.jetstream.stream.list.streams.should_not contain stream
+      filtered.should contain included
+      filtered.should_not contain excluded
+    ensure
+      nats.jetstream.stream.delete included
+      nats.jetstream.stream.delete excluded
+
+      nats.jetstream.stream.list.streams.should_not contain included
+      nats.jetstream.stream.list.streams.should_not contain excluded
     end
   end
 

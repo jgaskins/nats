@@ -369,8 +369,8 @@ module NATS
           end
 
           # List all available streams
-          def list
-            if response = @nats.request "$JS.API.STREAM.LIST"
+          def list(subject : String? = nil)
+            if response = @nats.request "$JS.API.STREAM.LIST", {subject: subject}.to_json
               NATS::JetStream::API::V1::StreamListResponse.from_json(String.new(response.body))
             else
               raise "whoops"
