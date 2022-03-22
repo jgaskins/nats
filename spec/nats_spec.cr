@@ -8,15 +8,18 @@ describe NATS do
   it "can publish and subscribe to messages" do
     subject = "temp.#{UUID.random}"
     string = ""
+    raw_data = Bytes.empty
 
     nats.subscribe subject do |msg|
       string = msg.data
+      raw_data = msg.raw_data
     end
 
     nats.publish subject, "foo"
     nats.flush
 
     string.should eq "foo"
+    raw_data.should eq "foo".to_slice
   end
 
   it "can set message headers without a reply-to" do

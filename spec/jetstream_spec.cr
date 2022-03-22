@@ -155,9 +155,11 @@ describe NATS::JetStream do
       js.publish first, "another test"
       js.publish second, "yet another"
 
-      js.stream.get_msg(name, sequence: 1).not_nil!.message.data.should eq "test".to_slice
-      js.stream.get_msg(name, sequence: 2).not_nil!.message.data.should eq "another test".to_slice
-      js.stream.get_msg(name, sequence: 3).not_nil!.message.data.should eq "yet another".to_slice
+      seq_1_msg = js.stream.get_msg(name, sequence: 1).not_nil!.message
+      seq_1_msg.data.should eq "test"
+      seq_1_msg.raw_data.should eq "test".to_slice
+      js.stream.get_msg(name, sequence: 2).not_nil!.message.data.should eq "another test"
+      js.stream.get_msg(name, sequence: 3).not_nil!.message.data.should eq "yet another"
 
       js.stream.purge name, subject: first
 
