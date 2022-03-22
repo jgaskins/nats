@@ -606,7 +606,7 @@ module NATS
               #
               #   My Payload Goes Here
               #
-              # Total size includes header size, so data_size = total_size - header_size
+              # Total size includes header size, so payload_size = total_size - header_size
               if reply_to_boundary = reply_to_with_byte_size.index(' ')
                 # 3 tokens: REPLY_TO HEADER_SIZE TOTAL_SIZE
                 if header_length_boundary = reply_to_with_byte_size.index(' ', reply_to_boundary + 1)
