@@ -24,6 +24,8 @@ module NATS
   # ```
   @[Experimental("NATS KV support is experimental and subject to change as NATS support for it changes")]
   module KV
+    alias Data = String | Bytes
+
     class Error < ::NATS::Error
     end
 
@@ -197,6 +199,8 @@ module NATS
       # ```
       # bucket.watch my_key do |entry, watch|
       #   # react to the key change
+      #
+      #
       # ensure
       #   watch.stop # exit the block
       # end
@@ -285,7 +289,7 @@ module NATS
           get = Entry.new(
             bucket: bucket_name,
             key: key_name,
-            value: response.message.data,
+            value: response.message.raw_data,
             revision: response.message.seq,
             created_at: response.message.time,
             operation: operation,
@@ -425,7 +429,7 @@ module NATS
             get = Entry.new(
               bucket: bucket_name,
               key: key_name,
-              value: msg.body,
+              value: msg.raw_data,
               revision: js_msg.stream_seq,
               created_at: js_msg.timestamp,
               delta: js_msg.pending,

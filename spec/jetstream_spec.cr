@@ -79,7 +79,7 @@ describe NATS::JetStream do
       msg_body = nil
       nats.jetstream.subscribe consumer do |msg|
         msg_subject = msg.subject
-        msg_body = msg.body
+        msg_body = msg.raw_data
         js.ack msg
         channel.send nil
       end
@@ -120,7 +120,7 @@ describe NATS::JetStream do
 
       if msg = pull.fetch(timeout: 2.seconds)
         msg.subject.should eq write_subject
-        msg.body.should eq "0".to_slice
+        msg.raw_data.should eq "0".to_slice
 
         nats.jetstream.ack msg
       else
@@ -133,7 +133,7 @@ describe NATS::JetStream do
       # and we don't want to wait the full 2 seconds for it to timeout. Plus,
       # it also lets us exercise the timeout functionality.
       msgs = pull.fetch(3, timeout: 500.milliseconds)
-      msgs.map(&.body).should eq [
+      msgs.map(&.raw_data).should eq [
         "1".to_slice,
         "2".to_slice,
       ]

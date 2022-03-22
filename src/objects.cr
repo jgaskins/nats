@@ -153,7 +153,7 @@ module NATS
         meta = "$O.#{bucket}.M.#{sanitize_key(key)}"
         stream = "OBJ_#{bucket}"
         if response = @nats.jetstream.stream.get_msg(stream, last_by_subject: meta)
-          info = ObjectInfo.from_json(String.new(response.message.data))
+          info = ObjectInfo.from_json(response.message.data)
           info.mtime = response.message.time
           info
         end
@@ -177,8 +177,8 @@ module NATS
         @nats.subscribe(subject) do |msg, subscription|
           @nats.reply msg, "" if msg.reply_to
           # TODO: ensure we get *all* chunks
-          if msg.body.size > 0
-            write.write msg.body
+          if msg.raw_data.size > 0
+            write.write msg.raw_data
             chunks += 1
             if chunks >= info.chunks
               write.close
@@ -236,7 +236,7 @@ module NATS
           watch.pending = js_msg.pending
 
           _, bucket_name, _, key_name = msg.subject.split('.', 4)
-          info = ObjectInfo.from_json String.new msg.body
+          info = ObjectInfo.from_json msg.data
 
           block.call info, watch
         end
