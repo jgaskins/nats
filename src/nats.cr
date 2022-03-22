@@ -462,7 +462,7 @@ module NATS
     # }
     # ```
     def publish(subject : String, data : Payload = Bytes.empty, reply_to : String? = nil, headers : Message::Headers? = nil) : Nil
-      if message.bytesize > MAX_PUBLISH_SIZE
+      if data.bytesize > MAX_PUBLISH_SIZE
         raise Error.new("Attempted to publish message of size #{data.bytesize}. Cannot publish messages larger than #{MAX_PUBLISH_SIZE}.")
       end
 
