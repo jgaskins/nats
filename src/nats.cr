@@ -34,7 +34,7 @@ module NATS
   VERSION = "1.1.0"
 
   alias Headers = Message::Headers
-  alias Data = String | Bytes
+  alias Payload = String | Bytes
 
   # Generic error
   class Error < ::Exception
@@ -80,8 +80,6 @@ module NATS
   # Instantiating a `NATS::Client` makes a connection to one of the given NATS
   # servers.
   class Client
-    alias Data = String | Bytes
-
     BUFFER_SIZE      = 1 << 15
     MEGABYTE         = 1 << 20
     MAX_PUBLISH_SIZE = 1 * MEGABYTE
@@ -360,7 +358,7 @@ module NATS
     #   response.status = :service_unavailable
     # end
     # ```
-    def request(subject : String, payload : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil) : Message?
+    def request(subject : String, payload : Payload = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil) : Message?
       channel = Channel(Message).new(1)
       inbox = NUID.next
       key = "#{@inbox_prefix}.#{inbox}"
@@ -391,7 +389,7 @@ module NATS
     # Make an asynchronous request to subscribers of the given `subject`, not
     # waiting for a response. The first message to come back will be passed to
     # the block.
-    def request(subject : String, payload : Data = "", timeout = 2.seconds, &block : Message ->) : Nil
+    def request(subject : String, payload : Payload = "", timeout = 2.seconds, &block : Message ->) : Nil
       inbox = NUID.next
       key = "#{@inbox_prefix}.#{inbox}"
       @inbox_handlers[key] = ->(msg : Message) do
@@ -422,7 +420,7 @@ module NATS
     #   end
     # end
     # ```
-    def reply(msg : Message, payload : Data) : Nil
+    def reply(msg : Message, payload : Payload) : Nil
       if subject = msg.reply_to
         publish subject, payload
       else
@@ -463,7 +461,7 @@ module NATS
     #   "Nats-Msg-Id" => "order-submitted-#{order.id}-#{order.updated_at.to_json}",
     # }
     # ```
-    def publish(subject : String, payload : Data = Bytes.empty, reply_to : String? = nil, headers : Message::Headers? = nil) : Nil
+    def publish(subject : String, payload : Payload = Bytes.empty, reply_to : String? = nil, headers : Message::Headers? = nil) : Nil
       if message.bytesize > MAX_PUBLISH_SIZE
         raise Error.new("Attempted to publish message of size #{payload.bytesize}. Cannot publish messages larger than #{MAX_PUBLISH_SIZE}.")
       end
