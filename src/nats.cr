@@ -826,6 +826,10 @@ module NATS
     def initialize(@subject, @raw_data, @reply_to = nil, @headers = nil)
     end
 
+    def initialize(@subject, @data : String, @reply_to = nil, @headers = nil)
+      @raw_data = data.to_slice
+    end
+
     @[Deprecated("Instantiating a new IO::Memory for each message made them heavier than intended, so we're now recommending using `String.new(msg.raw_data)`")]
     def body_io
       @body_io ||= IO::Memory.new(@body)
