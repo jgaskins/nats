@@ -192,6 +192,47 @@ describe NATS do
     data.should eq "yep".to_slice
   end
 
+  it "drains subscriptions" do
+    n = NATS::Client.new
+    begin
+      first = UUID.random.to_s
+      second = UUID.random.to_s
+      msgs = Hash(String, Array(String)).new { |h, k| h[k] = [] of String }
+      n.subscribe first do |msg|
+        msgs[first] << String.new(msg.body)
+      end
+      n.subscribe second do |msg|
+        msgs[second] << String.new(msg.body)
+      end
+      n.publish first, "one"
+      n.publish first, "two"
+      n.publish second, "1"
+      n.publish second, "2"
+
+      n.drain
+
+      msgs.should eq({
+        first => %w[one two],
+        second => %w[1 2],
+      })
+    ensure
+      n.close
+    end
+  end
+
+  it "drains subscriptions before closing" do
+    n = NATS::Client.new
+    subject = UUID.random.to_s
+    greeting = nil
+    n.subscribe(subject) { |msg| greeting = String.new(msg.body) }
+    n.flush
+    1_000.times { |i| n.publish subject, "hi #{i}" }
+
+    n.close
+
+    greeting.should eq "hi 999"
+  end
+
   it "connects to a server using NKeys" do
     port = rand(50_000..60_000)
     subject = UUID.random.to_s
