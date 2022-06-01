@@ -133,13 +133,10 @@ describe NATS do
       end
     end
 
-    if response = nats.request(subject, "")
-      # We have no guarantee which subscriber responds first, so we'll just make
-      # sure that *one* of them did.
-      (0...10).should contain String.new(response.body).to_i
-    else
-      no_response!
-    end
+    response = nats.request(subject, "") || raise "no response"
+    # We have no guarantee which subscriber responds first, so we'll just make
+    # sure that *one* of them did.
+    (0...10).should contain String.new(response.body).to_i
   end
 
   it "receives a single reply when requested asynchronously with a block" do
@@ -224,13 +221,17 @@ describe NATS do
     n = NATS::Client.new
     subject = UUID.random.to_s
     greeting = nil
-    n.subscribe(subject) { |msg| greeting = String.new(msg.body) }
+    n.subscribe(subject) do |msg|
+      sleep 1.millisecond
+      greeting = String.new(msg.body)
+    end
     n.flush
-    1_000.times { |i| n.publish subject, "hi #{i}" }
+    10.times { |i| n.publish subject, "hi #{i}" }
 
     n.close
 
-    greeting.should eq "hi 999"
+    # 10 messages, 0..9
+    greeting.should eq "hi 9"
   end
 
   it "connects to a server using NKeys" do

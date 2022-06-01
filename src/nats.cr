@@ -849,6 +849,7 @@ module NATS
     getter queue_group : String?
     getter messages_remaining : Int32?
     private getter message_channel : MessageChannel
+    private getter? processing = false
 
     def initialize(@subject, @sid, @queue_group, max_in_flight : Int = 10, &@block : Message, Subscription ->)
       @message_channel = MessageChannel.new(max_in_flight)
@@ -862,9 +863,14 @@ module NATS
         remaining = @messages_remaining
         while remaining.nil? || remaining > 0
           message, on_error = message_channel.receive
+          @processing = true
 
           LOG.debug { "Calling subscription handler for sid #{sid} (subscription to #{subject.inspect}, message subject #{message.subject.inspect})" }
-          call message, on_error
+          begin
+            call message, on_error
+          ensure
+            @processing = false
+          end
 
           remaining = @messages_remaining
         end
@@ -873,7 +879,7 @@ module NATS
     end
 
     def drain
-      until @message_channel.@queue.not_nil!.empty?
+      until @message_channel.@queue.not_nil!.empty? && !processing?
         sleep 1.millisecond
       end
     end
