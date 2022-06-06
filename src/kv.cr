@@ -37,17 +37,32 @@ module NATS
     end
 
     struct Bucket
+      # The name of this bucket
       getter name : String
+
+      # The name of the underlying `JetStream` stream.
       getter stream_name : String
-      @description : String?
-      @max_value_size : Int32?
-      @history : Int64?
-      @ttl : Time::Span?
-      @max_bytes : Int64?
-      @storage : JetStream::API::V1::StreamConfig::Storage
-      @replicas : Int32?
-      @allow_rollup : Bool?
-      @deny_delete : Bool?
+
+      # An optional description of the purpose of this bucket
+      getter description : String?
+
+      # The maximum number of bytes in a value
+      getter max_value_size : Int32?
+
+      # The number of revisions NATS will retain for this key
+      getter history : Int64?
+
+      # The maximum length of time NATS will retain a value or revision for a key
+      getter ttl : Time::Span?
+
+      # The maximum size in bytes of this bucket in memory or on disk
+      getter max_bytes : Int64?
+
+      # Where NATS stores the data for this bucket
+      getter storage : JetStream::API::V1::StreamConfig::Storage
+
+      # The number of NATS nodes to which this KV bucket will be replicated
+      getter replicas : Int32?
 
       # :nodoc:
       def self.new(stream : JetStream::API::V1::Stream, kv : Client)
@@ -62,8 +77,6 @@ module NATS
           max_bytes: config.max_bytes,
           storage: config.storage,
           replicas: config.replicas,
-          allow_rollup: config.allow_rollup_headers?,
-          deny_delete: config.deny_delete?,
           kv: kv,
         )
       end
@@ -79,8 +92,6 @@ module NATS
         @max_bytes : Int64?,
         @storage : JetStream::API::V1::StreamConfig::Storage,
         @replicas : Int32?,
-        @allow_rollup : Bool?,
-        @deny_delete : Bool?,
         @kv : Client
       )
       end
@@ -215,7 +226,15 @@ module NATS
       def initialize(@nats : ::NATS::Client)
       end
 
-      # https://github.com/nats-io/nats.go/blob/d7c1d78a50fc9cded3814ae7d7176fa66b73a4b0/kv.go#L295-L307
+      # Create a `NATS::KV::Bucket` to store key/value mappings in with the
+      # specified `name`. Options are:
+      #
+      # - `storage`: where to store the data for this bucket, either `:file` or `:memory`
+      # - `max_value_size`: the largest number of bytes a key/value entry can hold
+      # - `history`: how many revisions of a key to retain
+      # - `ttl`: how long until a value or revision expires
+      # - `max_bytes`: maximum size of this bucket on disk or in memory
+      # - `replicas`: how many NATS nodes to store this bucket's data on
       def create_bucket(
         name : String,
         description : String = "",
@@ -225,14 +244,13 @@ module NATS
         ttl : Time::Span? = nil,
         max_bytes : Int64? = nil,
         storage : JetStream::API::V1::StreamConfig::Storage = :file,
-        replicas : Int32 = 1,
-        allow_rollup : Bool = true,
-        deny_delete : Bool = true
-      )
+        replicas : Int32 = 1
+      ) : Bucket
         unless name =~ /\A[a-zA-Z0-9_-]+\z/
-          raise ArgumentError.new("NATS KV bucket names can only contain alphanumeric characers, underscores, and dashes")
+          raise ArgumentError.new("NATS KV bucket names can only contain alphanumeric characters, underscores, and dashes")
         end
 
+        # https://github.com/nats-io/nats.go/blob/d7c1d78a50fc9cded3814ae7d7176fa66b73a4b0/kv.go#L295-L307
         stream = @nats.jetstream.stream.create(
           name: "KV_#{name}",
           description: description,
@@ -243,20 +261,21 @@ module NATS
           max_msg_size: max_value_size,
           storage: storage,
           replicas: {replicas, 1}.max,
-          allow_rollup_headers: allow_rollup,
-          deny_delete: deny_delete,
+          allow_rollup_headers: true,
+          deny_delete: true,
         )
 
         Bucket.new(stream, self)
       end
 
+      # Get the `Bucket` with the given name, or `nil` if that bucket does not exist.
       def get_bucket(name : String) : Bucket?
         if stream = @nats.jetstream.stream.info("KV_#{name}")
           Bucket.new(stream, self)
         end
       end
 
-      # Assign `value` to `key` in `bucket`.
+      # Assign `value` to `key` in `bucket`, returning an acknowledgement or error if the key could not be set.
       def put(bucket : String, key : String, value : String | Bytes) : Int64
         validate_key! key
         case response = @nats.jetstream.publish("$KV.#{bucket}.#{key}", value)
@@ -269,16 +288,19 @@ module NATS
         end
       end
 
+      # Assign `value` to `key` in `bucket` without waiting for acknowledgement
+      # from the NATS server.
       def set(bucket : String, key : String, value : Data)
         @nats.publish("$KV.#{bucket}.#{key}", value)
       end
 
-      # Get the value associated with the current
+      # Get the `KV::Entry` for the given `key` in `bucket`, or `nil` if the key
+      # does not exist.
       def get(bucket : String, key : String, ignore_deletes = false) : Entry?
         if response = @nats.jetstream.stream.get_msg("KV_#{bucket}", last_by_subject: "$KV.#{bucket}.#{key}")
           operation = Entry::Operation::Put
 
-          case response.message.headers.try { |h| h["KV-Operation"]? }
+          case response.message.headers.try(&.["KV-Operation"]?)
           when "DEL"
             operation = Entry::Operation::Delete
           when "PURGE"
@@ -287,7 +309,7 @@ module NATS
           return nil if ignore_deletes && !operation.put?
 
           _, bucket_name, key_name = response.message.subject.split('.', 3)
-          get = Entry.new(
+          Entry.new(
             bucket: bucket_name,
             key: key_name,
             value: response.message.data,
@@ -351,7 +373,7 @@ module NATS
         end
       end
 
-      # Get all of the keys for the given bucket name
+      # Get all of the keys matching `pattern` for the given `bucket` name.
       def keys(bucket : String, pattern : String = ">") : Set(String)
         keys = Set(String).new
 
@@ -383,6 +405,12 @@ module NATS
         end
       end
 
+      # Get all of the currently retained history for the given `key` in the given `bucket` name. Note that some of the history could have expired due to `Bucket#ttl` or `Bucket#history`.
+      #
+      # ```
+      # kv.set "config", "name", "1"
+      # kv.history("config", "name")
+      # ```
       def history(bucket : String, key : String) : Array(Entry)
         history = [] of Entry
 
