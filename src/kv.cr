@@ -168,6 +168,10 @@ module NATS
         @kv.keys(name)
       end
 
+      def each_key
+        @kv.each_key(name) { |key| yield key }
+      end
+
       # Get the history
       def history(key : String)
         @kv.history(name, key)
@@ -195,13 +199,14 @@ module NATS
       # You can also use this method to wait for a specific key to change once:
       #
       # ```
-      # bucket.watch my_key do |entry, watch|
+      # watch = bucket.watch(my_key)
+      # watch.each do |entry|
       #   # react to the key change
-      # ensure
-      #   watch.stop # exit the block
+      #
+      #   watch.stop if entry.latest? # exit the block
       # end
       # ```
-      def watch(key : String, *, ignore_deletes = false, include_history = true, &block : Entry, Watch ->)
+      def watch(key : String, *, ignore_deletes = false, include_history = true, &block : Entry ->)
         @kv.watch(name, key, ignore_deletes: ignore_deletes, include_history: include_history, &block)
       end
     end
@@ -356,17 +361,26 @@ module NATS
         return keys if get(bucket, pattern).nil?
 
         # Look at all the keys in the current bucket
-        watch bucket, pattern do |msg, watch|
-          case msg.operation
+        watch = watch(bucket, pattern)
+        watch.each do |entry|
+          case entry.operation
           when .delete?, .purge?
-            keys.delete msg.key
+            keys.delete entry.key
           else
-            keys << msg.key
+            keys << entry.key
           end
-          watch.stop if msg.delta == 0
+          watch.stop if entry.delta == 0
         end
 
         keys
+      end
+
+      def each_key(bucket : String, pattern : String = ">") : Nil
+        watch = watch(bucket, pattern, include_history: false)
+        watch.each do |entry|
+          yield entry.key if entry.operation.put?
+          watch.stop if entry.latest?
+        end
       end
 
       def history(bucket : String, key : String) : Array(Entry)
@@ -374,7 +388,8 @@ module NATS
 
         return history if get(bucket, key).nil?
 
-        watch bucket, key, include_history: true do |msg, watch|
+        watch = watch(bucket, key, include_history: true)
+        watch.each do |msg|
           history << msg
           watch.stop if msg.delta == 0
         end
@@ -387,13 +402,10 @@ module NATS
         key : String,
         *,
         ignore_deletes = false,
-        include_history = false,
-        &block : Entry, Watch ->
+        include_history = false
       )
-        stop_channel = Channel(Nil).new
-        watch = Watch.new(stop_channel)
-        inbox = "$WATCH_INBOX.#{Random::Secure.hex}"
-        deliver_group = Random::Secure.hex
+        inbox = "$KV_WATCH_INBOX.#{NUID.next}"
+        deliver_group = NUID.next
         if include_history
           deliver_policy = JetStream::API::V1::ConsumerConfig::DeliverPolicy::All
         else
@@ -409,41 +421,13 @@ module NATS
           filter_subject: "$KV.#{bucket}.#{key}",
           ack_policy: :none,
         )
-        subscription = @nats.subscribe inbox, queue_group: deliver_group do |msg|
-          js_msg = JetStream::Message.new(msg)
-
-          operation = Entry::Operation::Put
-          case msg.headers.try { |h| h["KV-Operation"]? }
-          when "DEL"
-            operation = Entry::Operation::Delete
-          when "PURGE"
-            operation = Entry::Operation::Purge
-          end
-
-          if !ignore_deletes || operation.put?
-            _, bucket_name, key_name = msg.subject.split('.', 3)
-            get = Entry.new(
-              bucket: bucket_name,
-              key: key_name,
-              value: msg.body,
-              revision: js_msg.stream_seq,
-              created_at: js_msg.timestamp,
-              delta: js_msg.pending,
-              operation: operation,
-            )
-
-            block.call get, watch
-          end
-        end
-
-        stop_channel.receive
-      ensure
-        if subscription
-          @nats.unsubscribe subscription
-        end
-        if stream_name && consumer && (name = consumer.name)
-          @nats.jetstream.consumer.delete stream_name, name
-        end
+        Watch.new(
+          bucket: bucket,
+          key: key,
+          nats: @nats,
+          consumer: consumer,
+          ignore_deletes: ignore_deletes,
+        )
       end
 
       def delete(bucket : String, key : String)
@@ -513,14 +497,94 @@ module NATS
 
       def initialize(@bucket, @key, @value, @revision, @created_at, @operation, @delta = 0i64)
       end
+
+      def value_string
+        String.new value
+      end
+
+      def latest?
+        delta == 0
+      end
     end
 
     class Watch
-      def initialize(@stop_channel : Channel(Nil))
+      include Iterable(Entry)
+      include Enumerable(Entry)
+
+      private OPERATIONS = {
+        "DEL"   => Entry::Operation::Delete,
+        "PURGE" => Entry::Operation::Purge,
+      }
+
+      @subscription : NATS::Subscription
+
+      def initialize(
+        @bucket : String,
+        @key : String,
+        @nats : ::NATS::Client,
+        @consumer : JetStream::API::V1::Consumer,
+        ignore_deletes : Bool
+      )
+        @channel = Channel(Entry).new
+        @subscription = @nats.subscribe consumer.config.deliver_subject.not_nil!, queue_group: consumer.config.deliver_group do |msg|
+          js_msg = JetStream::Message.new(msg)
+
+          operation = OPERATIONS.fetch(
+            msg.headers.try(&.["KV-Operation"]?),
+            Entry::Operation::Put,
+          )
+
+          if !ignore_deletes || operation.put?
+            _, bucket_name, key_name = msg.subject.split('.', 3)
+            entry = Entry.new(
+              bucket: bucket_name,
+              key: key_name,
+              value: msg.body,
+              revision: js_msg.stream_seq,
+              created_at: js_msg.timestamp,
+              delta: js_msg.pending,
+              operation: operation,
+            )
+
+            @channel.send entry
+          else
+            _, bucket_name, key_name = msg.subject.split('.', 3)
+            pp ignored: Entry.new(
+              bucket: bucket_name,
+              key: key_name,
+              value: msg.body,
+              revision: js_msg.stream_seq,
+              created_at: js_msg.timestamp,
+              delta: js_msg.pending,
+              operation: operation,
+            )
+          end
+        end
+      end
+
+      def each
+        Iterator.new(@channel)
+      end
+
+      def each
+        each.each { |entry| yield entry }
       end
 
       def stop
-        @stop_channel.send nil
+        @channel.close
+        @nats.unsubscribe @subscription
+        @nats.jetstream.consumer.delete @consumer.stream_name, @consumer.name
+      end
+
+      struct Iterator
+        include ::Iterator(Entry)
+
+        def initialize(@channel : Channel(Entry))
+        end
+
+        def next
+          @channel.receive? || stop
+        end
       end
     end
   end
