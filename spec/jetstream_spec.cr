@@ -10,6 +10,15 @@ private macro create_stream(subjects)
   )
 end
 
+private macro create_consumer(stream)
+  nats.jetstream.consumer.create(
+    stream_name: stream.config.name,
+    durable_name: UUID.random.to_s,
+    deliver_group: UUID.random.to_s,
+    deliver_subject: UUID.random.to_s,
+  )
+end
+
 nats = NATS::Client.new
 js = nats.jetstream
 
@@ -94,6 +103,100 @@ describe NATS::JetStream do
       msg_body.should eq "hello".to_slice
     ensure
       nats.jetstream.stream.delete stream
+    end
+  end
+
+  describe "acknowledging" do
+    it "acknowledges messages" do
+      write_subject = UUID.random.to_s
+      stream = create_stream([write_subject])
+      consumer = create_consumer(stream)
+      channel = Channel(NATS::JetStream::Message).new
+      nats.jetstream.publish write_subject, "omg"
+
+      begin
+        nats.jetstream.subscribe consumer do |msg|
+          nats.jetstream.ack msg
+          nats.flush
+          channel.send msg
+          channel.close
+        end
+
+        msg = channel.receive
+        consumer = nats.jetstream.consumer.info!(consumer.stream_name, consumer.name)
+        consumer.ack_floor.consumer_seq.should eq 1
+      ensure
+        nats.jetstream.stream.delete stream
+      end
+    end
+
+    it "can wait for double-acknowledgement from the server" do
+      write_subject = UUID.random.to_s
+      stream = create_stream([write_subject])
+      consumer = create_consumer(stream)
+      nats.jetstream.publish write_subject, "omg"
+      channel = Channel(NATS::JetStream::Message).new
+
+      begin
+        nats.jetstream.subscribe consumer do |msg|
+          nats.jetstream.ack_sync msg
+          channel.send msg
+        end
+
+        msg = channel.receive
+        consumer = nats.jetstream.consumer.info!(consumer.stream_name, consumer.name)
+        consumer.ack_floor.consumer_seq.should eq 1
+      ensure
+        nats.jetstream.stream.delete stream
+      end
+    end
+
+    it "can negatively acknowledge (reject) a message" do
+      write_subject = UUID.random.to_s
+      stream = create_stream([write_subject])
+      consumer = create_consumer(stream)
+      nats.jetstream.publish write_subject, "omg"
+      channel = Channel(NATS::JetStream::Message).new
+
+      begin
+        nats.jetstream.subscribe consumer do |msg|
+          nats.jetstream.nack msg
+          nats.flush
+          channel.send msg
+        end
+
+        msg = channel.receive
+        consumer = nats.jetstream.consumer.info!(consumer.stream_name, consumer.name)
+        consumer.ack_floor.consumer_seq.should eq 0
+        consumer.num_ack_pending.should eq 1
+        consumer.num_redelivered.should eq 1
+      ensure
+        nats.jetstream.stream.delete stream
+      end
+    end
+
+    it "can tell the server it needs more time with a WIP ack" do
+      write_subject = UUID.random.to_s
+      stream = create_stream([write_subject])
+      consumer = create_consumer(stream)
+      nats.jetstream.publish write_subject, "omg"
+      channel = Channel(NATS::JetStream::Message).new
+
+      begin
+        nats.jetstream.subscribe consumer do |msg|
+          nats.jetstream.in_progress msg
+          nats.flush
+          channel.send msg
+        end
+
+        msg = channel.receive
+        consumer = nats.jetstream.consumer.info!(consumer.stream_name, consumer.name)
+        consumer.ack_floor.consumer_seq.should eq 0
+        consumer.num_ack_pending.should eq 1
+        consumer.num_redelivered.should eq 0
+      ensure
+        nats.jetstream.stream.delete stream
+      end
     end
   end
 
