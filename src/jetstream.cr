@@ -109,12 +109,19 @@ module NATS
 
       @[Experimental("NATS JetStream pull subscriptions may be unstable")]
       def pull_subscribe(consumer : API::V1::Consumer, backlog : Int = 64)
-        uuid = UUID.random
-        subject = "#{consumer.config.durable_name}.#{uuid}"
+        if consumer.config.deliver_subject
+          raise ArgumentError.new("Cannot set up a pull-based subscription to a push-based consumer: #{consumer.config.durable_name.inspect} on stream #{consumer.stream_name.inspect}")
+        end
+
+        subject = "#{consumer.stream_name}.#{consumer.config.durable_name}.pull.#{NUID.next}"
         channel = Channel(Message).new(backlog)
 
+        start = Time.monotonic
+        first_heartbeat = nil
         subscription = @nats.subscribe(subject, queue_group: consumer.config.deliver_group) do |msg|
-          channel.send Message.new(msg)
+          if msg.reply_to.presence
+            channel.send Message.new(msg)
+          end
         end
 
         PullSubscription.new(subscription, consumer, channel, @nats)
@@ -134,16 +141,23 @@ module NATS
         end
 
         def fetch(message_count : Int, timeout : Time::Span = 2.seconds) : Enumerable(Message)
+          # We have to reimplement request/reply here because we get N replies
+          # for 1 request, which NATS request/reply does not support.
           @nats.publish "$JS.API.CONSUMER.MSG.NEXT.#{consumer.stream_name}.#{consumer.config.durable_name}",
-            message: message_count.to_s,
+            message: {
+              expires: timeout.total_nanoseconds.to_i64,
+              batch:   message_count,
+            }.to_json,
             reply_to: @nats_subscription.subject
 
           msgs = Array(Message).new(initial_capacity: message_count)
-          message_count.times do
+          total_timeout = timeout
+          start = Time.monotonic
+          message_count.times do |i|
             select
             when msg = @channel.receive
               msgs << msg
-            when timeout(timeout)
+            when timeout(i == 0 ? total_timeout : 100.microseconds)
               break
             end
           end
@@ -463,7 +477,7 @@ module NATS
           end
 
           # Get the current state of the stream with the given `name`
-          def info(name : String) : ::NATS::JetStream::API::V1::Stream?
+          def info(name : String) : Stream?
             if response = @nats.request "$JS.API.STREAM.INFO.#{name}"
               case parsed = (Stream | ErrorResponse).from_json(String.new(response.body))
               in Stream
