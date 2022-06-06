@@ -107,7 +107,8 @@ module NATS
       def put(bucket : String, key : String, value : IO, description : String? = nil, headers : Headers = Headers.new, chunk_size : Int = DEFAULT_CHUNK_SIZE)
         existing = get_info(bucket, key)
         id = NUID.next
-        chunk_subject = "$O.#{bucket}.C.#{sanitize_key(key)}"
+        stream_name = "OBJ_#{bucket}"
+        chunk_subject = "$O.#{bucket}.C.#{id}"
         meta_subject = "$O.#{bucket}.M.#{sanitize_key(key)}"
         chunk = Bytes.new(chunk_size)
         sha = Digest::SHA256.new
@@ -137,12 +138,12 @@ module NATS
           )
           @nats.jetstream.publish meta_subject, msg.to_json, headers: Headers{"Nats-Rollup" => "sub"}
         rescue ex
-          @nats.jetstream.stream.purge bucket, subject: chunk_subject
+          @nats.jetstream.stream.purge stream_name, subject: chunk_subject
           raise ex
         end
 
         if existing
-          @nats.jetstream.stream.purge bucket, subject: existing.nuid
+          @nats.jetstream.stream.purge stream_name, subject: "$O.#{bucket}.C.#{existing.nuid}"
         end
 
         @nats.flush
@@ -165,7 +166,7 @@ module NATS
         subject = "NATS.Objects.#{bucket}.data.#{key}.get.#{NUID.next}"
         consumer = @nats.jetstream.consumer.create(
           stream_name: "OBJ_#{bucket}",
-          filter_subject: "$O.#{bucket}.C.#{sanitize_key(key)}",
+          filter_subject: "$O.#{bucket}.C.#{info.nuid}",
           deliver_subject: subject,
           ack_policy: :none,
           max_deliver: 1,
@@ -175,16 +176,18 @@ module NATS
         read, write = IO.pipe
         chunks = 0
         @nats.subscribe(subject) do |msg, subscription|
-          @nats.reply msg, "" if msg.reply_to
           # TODO: ensure we get *all* chunks
-          if msg.body.size > 0
+          if msg.body.empty?
+            @nats.reply msg, "" if msg.reply_to
+          else
             write.write msg.body
             chunks += 1
-            if chunks >= info.chunks
-              write.close
-              @nats.jetstream.consumer.delete consumer
-              @nats.unsubscribe subscription
-            end
+          end
+
+          if chunks >= info.chunks
+            write.close
+            @nats.jetstream.consumer.delete consumer
+            @nats.unsubscribe subscription
           end
         rescue ex : IO::Error
           write.close
@@ -331,6 +334,10 @@ module NATS
 
       def get(key : String)
         @client.get name, key
+      end
+
+      def keys(pattern : String = ">")
+        @client.keys name, pattern
       end
     end
   end
