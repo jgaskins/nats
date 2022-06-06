@@ -575,17 +575,6 @@ module NATS
             )
 
             @channel.send entry
-          else
-            _, bucket_name, key_name = msg.subject.split('.', 3)
-            pp ignored: Entry.new(
-              bucket: bucket_name,
-              key: key_name,
-              value: msg.body,
-              revision: js_msg.stream_seq,
-              created_at: js_msg.timestamp,
-              delta: js_msg.pending,
-              operation: operation,
-            )
           end
         end
       end
