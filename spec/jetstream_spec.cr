@@ -88,7 +88,7 @@ describe NATS::JetStream do
       msg_body = nil
       nats.jetstream.subscribe consumer do |msg|
         msg_subject = msg.subject
-        msg_body = msg.body
+        msg_body = msg.raw_data
         js.ack msg
         channel.send nil
       end
@@ -223,7 +223,7 @@ describe NATS::JetStream do
 
       if msg = pull.fetch(timeout: 2.seconds)
         msg.subject.should eq write_subject
-        msg.body.should eq "0".to_slice
+        msg.raw_data.should eq "0".to_slice
 
         nats.jetstream.ack msg
       else
@@ -236,7 +236,7 @@ describe NATS::JetStream do
       # and we don't want to wait the full 2 seconds for it to timeout. Plus,
       # it also lets us exercise the timeout functionality.
       msgs = pull.fetch(3, timeout: 500.milliseconds)
-      msgs.map(&.body).should eq [
+      msgs.map(&.raw_data).should eq [
         "1".to_slice,
         "2".to_slice,
       ]
@@ -258,9 +258,11 @@ describe NATS::JetStream do
       js.publish first, "another test"
       js.publish second, "yet another"
 
-      js.stream.get_msg(name, sequence: 1).not_nil!.message.data.should eq "test".to_slice
-      js.stream.get_msg(name, sequence: 2).not_nil!.message.data.should eq "another test".to_slice
-      js.stream.get_msg(name, sequence: 3).not_nil!.message.data.should eq "yet another".to_slice
+      seq_1_msg = js.stream.get_msg(name, sequence: 1).not_nil!.message
+      seq_1_msg.data.should eq "test"
+      seq_1_msg.raw_data.should eq "test".to_slice
+      js.stream.get_msg(name, sequence: 2).not_nil!.message.data.should eq "another test"
+      js.stream.get_msg(name, sequence: 3).not_nil!.message.data.should eq "yet another"
 
       js.stream.purge name, subject: first
 

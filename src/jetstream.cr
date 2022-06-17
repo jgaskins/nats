@@ -44,7 +44,7 @@ module NATS
 
       def publish(
         subject : String,
-        body : Data,
+        data : Payload,
         timeout : Time::Span = 2.seconds,
         headers : Headers = Headers.new,
         message_id : String? = nil,
@@ -59,8 +59,8 @@ module NATS
         headers["Nats-Expected-Last-Sequence"] = expected_last_sequence if expected_last_sequence
         headers["Nats-Expected-Last-Subject-Sequence"] = expected_last_subject_sequence if expected_last_subject_sequence
 
-        if response = @nats.request(subject, body, timeout: timeout, headers: headers)
-          (API::V1::PubAck | API::V1::ErrorResponse).from_json(String.new(response.body))
+        if response = @nats.request(subject, data, timeout: timeout, headers: headers)
+          (API::V1::PubAck | API::V1::ErrorResponse).from_json(response.data)
         end
       end
 
@@ -144,7 +144,7 @@ module NATS
           # We have to reimplement request/reply here because we get N replies
           # for 1 request, which NATS request/reply does not support.
           @nats.publish "$JS.API.CONSUMER.MSG.NEXT.#{consumer.stream_name}.#{consumer.config.durable_name}",
-            message: {
+            data: {
               expires: timeout.total_nanoseconds.to_i64,
               batch:   message_count,
             }.to_json,
@@ -334,17 +334,28 @@ module NATS
       # How many messages follow this message for this consumer
       getter pending : Int64
 
-      # The original body of the message, encoded as binary. If you need text,
-      # wrap the body in a `String`.
+      # The string encoded body of the message.
       #
       # ```
       # jetstream.subscribe consumer do |msg|
-      #   body_string = String.new(msg.body)
+      #   puts msg.data
       #
       #   # ...
       # end
       # ```
-      getter body : Bytes
+      getter data : String { String.new raw_data }
+
+      # The original body of the message, encoded as binary. If you need text,
+      # use `data`.
+      #
+      # ```
+      # jetstream.subscribe consumer do |msg|
+      #   String.new(msg.raw_data) == msg.data # => true
+      #
+      #   # ...
+      # end
+      # ```
+      getter raw_data : Bytes
 
       # The original subject this message was published to, which can be (and
       # most likely is) different from the subject it was delivered to
@@ -375,7 +386,7 @@ module NATS
             consumer_seq: consumer_seq.to_i64,
             timestamp: Time::UNIX_EPOCH + timestamp.to_i64.nanoseconds,
             pending: pending_messages.to_i64,
-            body: msg.body,
+            raw_data: msg.raw_data,
             subject: msg.subject,
             reply_to: reply_to,
             headers: msg.headers,
@@ -385,7 +396,7 @@ module NATS
         end
       end
 
-      def initialize(@stream, @consumer, @delivered_count, @stream_seq, @consumer_seq, @timestamp, @pending, @body, @subject, @reply_to, @headers)
+      def initialize(@stream, @consumer, @delivered_count, @stream_seq, @consumer_seq, @timestamp, @pending, @raw_data, @subject, @reply_to, @headers)
       end
 
       class InvalidNATSMessage < Exception
@@ -454,7 +465,7 @@ module NATS
             end
 
             if response = @nats.request "$JS.API.STREAM.CREATE.#{create_stream.name}", create_stream.to_json
-              case parsed = (JetStream::API::V1::Stream | ErrorResponse).from_json String.new(response.body)
+              case parsed = (JetStream::API::V1::Stream | ErrorResponse).from_json response.data
               when ErrorResponse
                 raise JetStream::Error.new("#{parsed.error.description} (#{parsed.error.code})")
               else
@@ -470,7 +481,7 @@ module NATS
           # List all available streams
           def list(subject : String? = nil)
             if response = @nats.request "$JS.API.STREAM.LIST", {subject: subject}.to_json
-              NATS::JetStream::API::V1::StreamListResponse.from_json(String.new(response.body))
+              NATS::JetStream::API::V1::StreamListResponse.from_json response.data
             else
               raise "whoops"
             end
@@ -479,7 +490,7 @@ module NATS
           # Get the current state of the stream with the given `name`
           def info(name : String) : Stream?
             if response = @nats.request "$JS.API.STREAM.INFO.#{name}"
-              case parsed = (Stream | ErrorResponse).from_json(String.new(response.body))
+              case parsed = (Stream | ErrorResponse).from_json response.data
               in Stream
                 parsed
               in ErrorResponse
@@ -512,9 +523,9 @@ module NATS
             get_msg stream, {seq: sequence}
           end
 
-          private def get_msg(stream : String, params)
+          private def get_msg(stream : String, params) : StreamGetMsgResponse?
             if response = @nats.request "$JS.API.STREAM.MSG.GET.#{stream}", params.to_json
-              case parsed = (StreamGetMsgResponse | ErrorResponse).from_json String.new(response.body)
+              case parsed = (StreamGetMsgResponse | ErrorResponse).from_json response.data
               in StreamGetMsgResponse
                 parsed
               in ErrorResponse
@@ -531,7 +542,7 @@ module NATS
 
           def purge(stream : String, subject : String) : Int64
             if response = @nats.request("$JS.API.STREAM.PURGE.#{stream}", {filter: subject}.to_json)
-              case parsed = (PurgeStreamResponse | ErrorResponse).from_json String.new(response.body)
+              case parsed = (PurgeStreamResponse | ErrorResponse).from_json response.data
               in PurgeStreamResponse
                 parsed.purged
               in ErrorResponse
@@ -580,7 +591,7 @@ module NATS
               raise JetStream::Error.new("Did not receive a response from NATS JetStream")
             end
 
-            case parsed = (Consumer | ErrorResponse).from_json String.new(response.body)
+            case parsed = (Consumer | ErrorResponse).from_json response.data
             in Consumer
               parsed
             in ErrorResponse
@@ -597,7 +608,7 @@ module NATS
           # specified name.
           def list(stream_name : String)
             if consumers_response = @nats.request "$JS.API.CONSUMER.LIST.#{stream_name}"
-              NATS::JetStream::API::V1::ConsumerListResponse.from_json(String.new(consumers_response.body))
+              NATS::JetStream::API::V1::ConsumerListResponse.from_json consumers_response.data
             else
               raise "whoops"
             end
@@ -619,7 +630,7 @@ module NATS
           # given stream, yielding to the block if the consumer does not exist
           def info(stream_name : String, name : String)
             if consumer_response = @nats.request "$JS.API.CONSUMER.INFO.#{stream_name}.#{name}"
-              case parsed = (Consumer | ErrorResponse).from_json(String.new(consumer_response.body))
+              case parsed = (Consumer | ErrorResponse).from_json(consumer_response.data)
               in Consumer
                 parsed
               in ErrorResponse
@@ -700,11 +711,19 @@ module NATS
             include JSON::Serializable
             getter subject : String
             getter seq : Int64
-            @[JSON::Field(converter: ::NATS::JetStream::API::V1::StreamGetMsgResponse::Message::Base64Data)]
-            getter data : Bytes = Bytes.empty
+            @[JSON::Field(key: "data", ignore_serialize: true, converter: ::NATS::JetStream::API::V1::StreamGetMsgResponse::Message::Base64Data)]
+            getter raw_data : Bytes = Bytes.empty
+            @[JSON::Field(ignore: true)]
+            getter data : String { String.new raw_data }
             @[JSON::Field(key: "hdrs", converter: ::NATS::JetStream::API::V1::StreamGetMsgResponse::Message::HeadersConverter)]
             getter headers : Headers { Headers.new }
             getter time : Time
+
+            def on_to_json(builder : JSON::Builder) : Nil
+              # `data` was ignored, and `raw_data` (which is mapped to `data`) was ignored just for
+              # serialization, so we add it manually
+              builder.field "data", data
+            end
 
             module Base64Data
               def self.from_json(json : JSON::PullParser)

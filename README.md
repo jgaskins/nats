@@ -50,7 +50,7 @@ nats = NATS::Client.new(URI.parse(ENV["NATS_URL"]))
 # group. A message will only be delivered to a single client in a given queue
 # group.
 nats.subscribe "customers.registration", queue_group: "cart-service" do |msg|
-  new_user = UserRegisteredEvent.from_json(msg.body_io)
+  new_user = UserRegisteredEvent.from_json(msg.data)
 
   # This message represents that a new customer has registered, presumably sent
   # by our identity/authentication/user service. We create a record for this
@@ -85,7 +85,7 @@ nats.publish "customers.registration", UserRegisteredEvent.new(
   id: UUID.random,
   name: "Jolene",
   email: "jolene@gonnatakeyourman.com",
-)
+).to_json
 
 nats.close
 ```
@@ -132,7 +132,7 @@ nats = NATS::Client.new(URI.parse(ENV["NATS_URL"]))
 
 # Subscribe to the subject that the request will be sent to
 nats.subscribe "orders.get", do |msg|
-  request = Orders::Get.from_json(msg.body_io)
+  request = Orders::Get.from_json(msg.data)
 
   order = OrderQuery.new.with_id(request.id)
 

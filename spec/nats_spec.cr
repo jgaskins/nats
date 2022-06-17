@@ -8,15 +8,18 @@ describe NATS do
   it "can publish and subscribe to messages" do
     subject = "temp.#{UUID.random}"
     string = ""
+    raw_data = Bytes.empty
 
     nats.subscribe subject do |msg|
-      string = String.new(msg.body)
+      string = msg.data
+      raw_data = msg.raw_data
     end
 
     nats.publish subject, "foo"
     nats.flush
 
     string.should eq "foo"
+    raw_data.should eq "foo".to_slice
   end
 
   it "can set message headers without a reply-to" do
@@ -26,7 +29,7 @@ describe NATS do
 
     nats.subscribe subject do |msg|
       headers = msg.headers
-      body = msg.body
+      body = msg.raw_data
     end
 
     nats.publish subject, "asdf", headers: NATS::Message::Headers{"foo" => "bar"}
@@ -44,7 +47,7 @@ describe NATS do
 
     nats.subscribe subject do |msg|
       headers = msg.headers
-      body = msg.body
+      body = msg.raw_data
       reply_to = msg.reply_to
     end
 
@@ -91,11 +94,11 @@ describe NATS do
     subject = "temp.#{UUID.random}"
 
     nats.subscribe subject do |msg|
-      nats.reply msg, String.new(msg.body).upcase
+      nats.reply msg, msg.data.upcase
     end
 
     if response = nats.request(subject, "foo")
-      response.body.should eq "FOO".to_slice
+      response.raw_data.should eq "FOO".to_slice
     else
       raise "No response received"
     end
@@ -106,7 +109,7 @@ describe NATS do
     # Echoing requests back to their requesters
     nats.subscribe subject do |msg|
       sleep rand.microseconds
-      nats.reply msg, msg.body
+      nats.reply msg, msg.raw_data
     end
 
     channel = Channel(Nil).new
@@ -114,7 +117,7 @@ describe NATS do
     100.times do |i|
       spawn do
         if response = nats.request(subject, i.to_s)
-          replies[i] = String.new(response.body).to_i
+          replies[i] = String.new(response.raw_data).to_i
         end
         channel.send nil
       end
@@ -136,7 +139,7 @@ describe NATS do
     response = nats.request(subject, "") || raise "no response"
     # We have no guarantee which subscriber responds first, so we'll just make
     # sure that *one* of them did.
-    (0...10).should contain String.new(response.body).to_i
+    (0...10).should contain String.new(response.raw_data).to_i
   end
 
   it "receives a single reply when requested asynchronously with a block" do
@@ -165,7 +168,7 @@ describe NATS do
     data = nil
 
     nats.subscribe subject do |msg|
-      data = msg.body
+      data = msg.raw_data
     end
 
     nats.publish subject, "yep"
@@ -179,7 +182,7 @@ describe NATS do
     data = nil
 
     nats.subscribe subject do |msg|
-      data = msg.body
+      data = msg.raw_data
     end
     nats.@socket.close # OOPS WE BROKE THE INTERNET
 
@@ -239,10 +242,10 @@ describe NATS do
     subject = UUID.random.to_s
 
     run_nats_on port, config: "nats_nkeys" do |client|
-      client.subscribe(subject) { |msg| client.reply msg, String.new(msg.body).upcase }
+      client.subscribe(subject) { |msg| client.reply msg, msg.data.upcase }
 
       response = client.request(subject, "hello").not_nil!
-      response.body.should eq "HELLO".to_slice
+      response.raw_data.should eq "HELLO".to_slice
     end
   end
 end
