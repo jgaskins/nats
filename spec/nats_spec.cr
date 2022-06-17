@@ -136,13 +136,10 @@ describe NATS do
       end
     end
 
-    if response = nats.request(subject, "")
-      # We have no guarantee which subscriber responds first, so we'll just make
-      # sure that *one* of them did.
-      (0...10).should contain String.new(response.raw_data).to_i
-    else
-      no_response!
-    end
+    response = nats.request(subject, "") || raise "no response"
+    # We have no guarantee which subscriber responds first, so we'll just make
+    # sure that *one* of them did.
+    (0...10).should contain String.new(response.raw_data).to_i
   end
 
   it "receives a single reply when requested asynchronously with a block" do
@@ -193,6 +190,51 @@ describe NATS do
     nats.flush
 
     data.should eq "yep".to_slice
+  end
+
+  it "drains subscriptions" do
+    n = NATS::Client.new
+    begin
+      first = UUID.random.to_s
+      second = UUID.random.to_s
+      msgs = Hash(String, Array(String)).new { |h, k| h[k] = [] of String }
+      n.subscribe first do |msg|
+        msgs[first] << String.new(msg.body)
+      end
+      n.subscribe second do |msg|
+        msgs[second] << String.new(msg.body)
+      end
+      n.publish first, "one"
+      n.publish first, "two"
+      n.publish second, "1"
+      n.publish second, "2"
+
+      n.drain
+
+      msgs.should eq({
+        first => %w[one two],
+        second => %w[1 2],
+      })
+    ensure
+      n.close
+    end
+  end
+
+  it "drains subscriptions before closing" do
+    n = NATS::Client.new
+    subject = UUID.random.to_s
+    greeting = nil
+    n.subscribe(subject) do |msg|
+      sleep 1.millisecond
+      greeting = String.new(msg.body)
+    end
+    n.flush
+    10.times { |i| n.publish subject, "hi #{i}" }
+
+    n.close
+
+    # 10 messages, 0..9
+    greeting.should eq "hi 9"
   end
 
   it "connects to a server using NKeys" do

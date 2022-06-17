@@ -165,6 +165,19 @@ describe NATS::KV do
       bucket.keys.should_not contain "deleted"
       bucket.keys.should_not contain "purged"
     end
+
+    test "iterates over keys, ignoring history and deleted keys" do
+      bucket["deleted"] = "delete me now plz"
+      bucket.delete "deleted"
+      bucket["a"] = "a"
+      bucket["b"] = "b"
+      bucket["purged"] = "purge me"
+      bucket.purge "purged"
+
+      bucket.each_key do |key|
+        %w[a b].should contain key
+      end
+    end
   end
 
   describe "getting the history of a key" do

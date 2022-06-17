@@ -13,6 +13,7 @@ module NATS
     # https://github.com/nats-io/nats-server/blob/main/server/errors.json
     enum Errors : Int32 # Should be wide enough?
       None                    =     0
+      ConsumerNotFound        = 10014
       NoMessageFound          = 10037
       StreamNotFound          = 10059
       StreamWrongLastSequence = 10071
@@ -108,12 +109,19 @@ module NATS
 
       @[Experimental("NATS JetStream pull subscriptions may be unstable")]
       def pull_subscribe(consumer : API::V1::Consumer, backlog : Int = 64)
-        uuid = UUID.random
-        subject = "#{consumer.config.durable_name}.#{uuid}"
+        if consumer.config.deliver_subject
+          raise ArgumentError.new("Cannot set up a pull-based subscription to a push-based consumer: #{consumer.config.durable_name.inspect} on stream #{consumer.stream_name.inspect}")
+        end
+
+        subject = "#{consumer.stream_name}.#{consumer.config.durable_name}.pull.#{NUID.next}"
         channel = Channel(Message).new(backlog)
 
+        start = Time.monotonic
+        first_heartbeat = nil
         subscription = @nats.subscribe(subject, queue_group: consumer.config.deliver_group) do |msg|
-          channel.send Message.new(msg)
+          if msg.reply_to.presence
+            channel.send Message.new(msg)
+          end
         end
 
         PullSubscription.new(subscription, consumer, channel, @nats)
@@ -133,16 +141,23 @@ module NATS
         end
 
         def fetch(message_count : Int, timeout : Time::Span = 2.seconds) : Enumerable(Message)
+          # We have to reimplement request/reply here because we get N replies
+          # for 1 request, which NATS request/reply does not support.
           @nats.publish "$JS.API.CONSUMER.MSG.NEXT.#{consumer.stream_name}.#{consumer.config.durable_name}",
-            data: message_count.to_s,
+            data: {
+              expires: timeout.total_nanoseconds.to_i64,
+              batch:   message_count,
+            }.to_json,
             reply_to: @nats_subscription.subject
 
           msgs = Array(Message).new(initial_capacity: message_count)
-          message_count.times do
+          total_timeout = timeout
+          start = Time.monotonic
+          message_count.times do |i|
             select
             when msg = @channel.receive
               msgs << msg
-            when timeout(timeout)
+            when timeout(i == 0 ? total_timeout : 100.microseconds)
               break
             end
           end
@@ -153,6 +168,9 @@ module NATS
 
       # Acknowledge success processing the specified message, usually called at
       # the end of your subscription block.
+      #
+      # NOTE: This method is asynchronous. If you need a guarantee that NATS has
+      # received your acknowledgement, use `ack_sync` instead.
       #
       # ```
       # jetstream.subscribe consumer do |msg|
@@ -165,6 +183,44 @@ module NATS
         @nats.publish msg.reply_to, "+ACK"
       end
 
+      # Acknowledge the given message, waiting on the NATS server to acknowledge
+      # your acknowledgement so that you can be sure it was delivered to the
+      # server and not simply caught up in the output buffer.
+      #
+      # ```
+      # jetstream.subscribe consumer do |msg|
+      #   # ...
+      #
+      #   jetstream.ack_sync msg
+      #   # By the time you get here, the NATS server knows you've acknowledged.
+      # end
+      # ```
+      def ack_sync(msg : Message, timeout : Time::Span = 2.seconds)
+        @nats.request msg.reply_to, "+ACK", timeout: timeout
+      end
+
+      # Notify the NATS server that you need more time to process this message,
+      # usually used when a consumer requires that you acknowledge a message
+      # within a certain amount of time but a given message is taking longer
+      # than expected.
+      #
+      # ```
+      # jetstream.subscribe consumer do |msg|
+      #   start = Time.monotonic
+      #   users.each do |user|
+      #     # If we're running out of time, reset the timer.
+      #     if Time.monotonic - start > 25.seconds
+      #       jetstream.in_progress msg
+      #     end
+      #
+      #     process(msg)
+      #   end
+      # end
+      # ```
+      def in_progress(msg : Message)
+        @nats.publish msg.reply_to, "+WPI"
+      end
+
       # Negatively acknowledge the processing of a message, typically called
       # when an exception is raised while processing.
       #
@@ -173,39 +229,80 @@ module NATS
       #   # doing some work
       #
       #   jetstream.ack msg # Successfully processed
-      #
-      #
       # rescue ex
       #   jetstream.nack msg # Processing was unsuccessful, try again.
       # end
       # ```
-      #
-      # You can also implement exponential backoff by pushing the nack into a
-      # fiber that sleeps for some time before:
+      def nack(msg : Message)
+        @nats.publish msg.reply_to, "-NAK"
+      end
+
+      # Deliver a negative acknowledgement for the given message and tell the
+      # NATS server to delay sending it based on the `NAKBackoff` pattern
+      # specified.
       #
       # ```
       # jetstream.subscribe consumer do |msg|
-      #   # ...
-      #
-      #
-      # rescue ex
-      #   # Very important to do this in a `spawn`. Do not block the `subscribe`
-      #   # handler for more than 1-2 seconds or the NATS server will see you as
-      #   # a slow client and terminate the connection.
-      #   spawn do
-      #     # Sleep at most for the amount of time that NATS will wait to redeliver
-      #     backoff = {
-      #       (2 ** msg.delivered_count).milliseconds,
-      #       # Cap backoff because NATS will redeliver it before this time anyway
-      #       consumer.config.ack_wait || 30.seconds,
-      #     }.min
-      #     sleep backoff
-      #     jetstream.nack msg
-      #   end
+      #   # do some work
+      #   jetstream.ack msg
+      # rescue
+      #   # Use exponential backoff of up to an hour for retries
+      #   jetstream.nack msg, backoff: :exponential, max: 1.hour
       # end
       # ```
-      def nack(msg : Message)
-        @nats.publish msg.reply_to, "-NAK"
+      def nack(msg : Message, *, backoff : NAKBackoff, max : Time::Span = 1.day)
+        case backoff
+        in .exponential?
+          delay = {(2.0**(msg.delivered_count - 5)).seconds, max}.min
+        in .linear?
+          delay = {msg.delivered_count.seconds, max}.min
+        end
+
+        nack msg, delay: delay
+      end
+
+      # Deliver a negative acknowledgement for the given message and tell the
+      # NATS server to delay sending it for the given time span.
+      #
+      # ```
+      # jetstream.subscribe consumer do |msg|
+      #   # do some work
+      #   jetstream.ack msg
+      # rescue
+      #   # Use exponential backoff of up to an hour for retries
+      #   jetstream.nack msg, delay: 30.seconds
+      # end
+      # ```
+      def nack(msg : Message, *, delay : Time::Span)
+        @nats.publish msg.reply_to, %(-NAK {"delay":#{delay.total_nanoseconds.to_i64}})
+      end
+
+      # Common `nack` backoff strategies give a simple shorthand for setting the
+      # delays on subsequent delivery attempts.
+      #
+      # ```
+      # nats = NATS::Client.new
+      #
+      # jetstream.subscribe consumer do |msg|
+      #   # do some work
+      #   jetstream.ack msg
+      # rescue ex
+      #   jetstream.nack msg, backoff: :exponential
+      #   raise ex
+      # end
+      # ```
+      enum NAKBackoff
+        # Exponential backoff starts at a delay of 1/16th of a second and
+        # doubles every time the message is nacked with this strategy. This has
+        # the effect of running the first 3 attempts roughly immediately so that
+        # an uncommon but not unexpected failure (API call in a downstream
+        # service returns a 500) doesn't need to wait several seconds unless it
+        # truly needs to.
+        Exponential
+
+        # Linear backoff delays for 1 second for each time the message is nacked
+        # with this strategy.
+        Linear
       end
     end
 
@@ -391,7 +488,7 @@ module NATS
           end
 
           # Get the current state of the stream with the given `name`
-          def info(name : String) : ::NATS::JetStream::API::V1::Stream?
+          def info(name : String) : Stream?
             if response = @nats.request "$JS.API.STREAM.INFO.#{name}"
               case parsed = (Stream | ErrorResponse).from_json response.data
               in Stream
@@ -518,10 +615,31 @@ module NATS
           end
 
           # Return the consumer with the specified `name` associated with the
-          # given stream.
+          # given stream, yielding to the block if the consumer does not exist
+          def info!(stream_name : String, name : String) : Consumer
+            info(stream_name, name) do
+              raise ArgumentError.new("Consumer #{name.inspect} not found for stream #{stream_name.inspect}")
+            end
+          end
+
+          def info(stream_name : String, name : String) : Consumer?
+            info(stream_name, name) { nil }
+          end
+
+          # Return the consumer with the specified `name` associated with the
+          # given stream, yielding to the block if the consumer does not exist
           def info(stream_name : String, name : String)
             if consumer_response = @nats.request "$JS.API.CONSUMER.INFO.#{stream_name}.#{name}"
-              NATS::JetStream::API::V1::Consumer.from_json consumer_response.data
+              case parsed = (Consumer | ErrorResponse).from_json(consumer_response.data)
+              in Consumer
+                parsed
+              in ErrorResponse
+                if parsed.error.err_code.consumer_not_found?
+                  yield
+                else
+                  raise Error.new(parsed.error.description)
+                end
+              end
             else
               raise "no info for #{name.inspect} (stream #{stream_name.inspect})"
             end

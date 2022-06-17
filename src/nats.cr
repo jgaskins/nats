@@ -505,6 +505,22 @@ module NATS
       publish message.subject, message.raw_data, message.reply_to, message.headers
     end
 
+    def drain
+      flush
+
+      # Snapshot the list of subscriptions because we're about to remove them
+      # from the hash
+      subscriptions = @subscriptions.values
+
+      # Make sure we don't get any new messages
+      @subscriptions.each { |sid, _| unsubscribe sid }
+      flush
+
+      # Run through the snapshot of subscriptions we took above and wait until
+      # we process all of the messages in memory.
+      subscriptions.each(&.drain)
+    end
+
     # Flush the client's output buffer over the wire
     def flush(timeout = 2.seconds)
       channel = Channel(Nil).new(1)
@@ -704,8 +720,9 @@ module NATS
     # associated with this client.
     def close
       return if @state.closed?
-      LOG.debug { "Flushing before closing..." }
+      LOG.debug { "Flushing/draining before closing..." }
       flush
+      drain
       @socket.close
       @state = :closed
       LOG.debug { "Connection closed" }
@@ -849,6 +866,7 @@ module NATS
     getter queue_group : String?
     getter messages_remaining : Int32?
     private getter message_channel : MessageChannel
+    private getter? processing = false
 
     def initialize(@subject, @sid, @queue_group, max_in_flight : Int = 10, &@block : Message, Subscription ->)
       @message_channel = MessageChannel.new(max_in_flight)
@@ -862,13 +880,24 @@ module NATS
         remaining = @messages_remaining
         while remaining.nil? || remaining > 0
           message, on_error = message_channel.receive
+          @processing = true
 
           LOG.debug { "Calling subscription handler for sid #{sid} (subscription to #{subject.inspect}, message subject #{message.subject.inspect})" }
-          call message, on_error
+          begin
+            call message, on_error
+          ensure
+            @processing = false
+          end
 
           remaining = @messages_remaining
         end
       rescue ex
+      end
+    end
+
+    def drain
+      until @message_channel.@queue.not_nil!.empty? && !processing?
+        sleep 1.millisecond
       end
     end
 
