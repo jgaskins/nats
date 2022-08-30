@@ -36,7 +36,7 @@ module NATS
 
       info = bucket.get_info!("key")
 
-      info.digest.should eq sha256("value")
+      info.digest.should eq "sha-256=#{sha256("value")}"
       info.headers["foo"].should eq "bar"
       info.size.should eq 5
       info.chunks.should eq 1 # We used the default chunk size of 128KB, which easily holds 5 bytes
@@ -49,7 +49,7 @@ module NATS
       File.open(file.path) { |f| bucket.put "key", f }
 
       info = bucket.get_info!("key")
-      expected_digest = sha256("value")
+      expected_digest = "sha-256=#{sha256("value")}"
       info.digest.should eq expected_digest
       bucket.get!("key").read_string(info.size).should eq "value"
     ensure

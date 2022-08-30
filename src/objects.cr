@@ -136,7 +136,7 @@ module NATS
             size: total,
             mtime: Time.utc,
             chunks: sent,
-            digest: Base64.urlsafe_encode(sha.final),
+            digest: "sha-256=#{Base64.urlsafe_encode(sha.final)}",
           )
           @nats.jetstream.publish meta_subject, msg.to_json, headers: Headers{"Nats-Rollup" => "sub"}
         rescue ex
