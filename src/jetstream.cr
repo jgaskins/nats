@@ -357,14 +357,14 @@ module NATS
             headers: msg.headers,
           )
         else
-          raise InvalidNATSMessage.new("Message does not have a reply_to set")
+          raise InvalidJetStreamMessage.new("JetStream messages must have the reply_to field")
         end
       end
 
       def initialize(@stream, @consumer, @delivered_count, @stream_seq, @consumer_seq, @timestamp, @pending, @body, @subject, @reply_to, @headers)
       end
 
-      class InvalidNATSMessage < Exception
+      class InvalidJetStreamMessage < Exception
       end
     end
 
