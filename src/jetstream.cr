@@ -783,8 +783,22 @@ module NATS
           end
 
           struct Placement < Message
-            getter cluster : String
-            getter tags : Array(String) = %w[]
+            getter cluster : String?
+            getter tags : Array(String) { %w[] }
+
+            def initialize(@cluster, @tags)
+            end
+          end
+
+          struct Republish < Message
+            @[JSON::Field(key: "src")]
+            getter source : String?
+            @[JSON::Field(key: "dest")]
+            getter destination : String
+            getter? headers_only : Bool?
+
+            def initialize(*, @source : String? = nil, @destination, @headers_only = nil)
+            end
           end
 
           # Name of this stream
@@ -815,6 +829,8 @@ module NATS
           getter? deny_purge : Bool?
           getter? deny_delete : Bool?
           getter? sealed : Bool?
+          getter? allow_direct : Bool?
+          getter republish : Republish?
 
           def initialize(
             @name,
@@ -831,8 +847,11 @@ module NATS
             @retention : RetentionPolicy? = nil,
             @allow_rollup_headers = nil,
             @deny_delete = nil,
+            @allow_direct = nil,
+            @republish = nil,
+            @placement = nil,
             @discard : DiscardPolicy? = nil,
-            @storage : Storage = :file
+            @storage : Storage = :file,
           )
           end
         end

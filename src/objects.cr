@@ -76,7 +76,9 @@ module NATS
         *,
         ttl : Time::Span? = nil,
         storage : JetStream::API::V1::StreamConfig::Storage = :file,
-        replicas : Int? = nil
+        replicas : Int? = nil,
+        max_bytes : Int? = nil,
+        placement : JetStream::API::V1::StreamConfig::Placement? = nil
       )
         stream = @nats.jetstream.stream.create(
           name: "OBJ_#{name}",

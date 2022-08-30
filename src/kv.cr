@@ -262,7 +262,9 @@ module NATS
           storage: storage,
           replicas: {replicas, 1}.max,
           allow_rollup_headers: true,
+          allow_direct: true,
           deny_delete: true,
+          placement: placement,
         )
 
         Bucket.new(stream, self)
