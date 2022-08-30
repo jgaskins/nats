@@ -22,7 +22,7 @@ module NATS
     it "creates and deletes object stores" do
       name = UUID.random.to_s
 
-      bucket = obj.create_bucket(name)
+      bucket = obj.create_bucket(name, storage: :memory)
 
       bucket.should be_a Objects::Bucket
     ensure
