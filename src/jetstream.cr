@@ -821,7 +821,7 @@ module NATS
           getter discard : DiscardPolicy?
           getter placement : Placement?
           getter mirror : StreamSourceInfo?
-          getter sources : Array(StreamSourceInfo) = [] of StreamSourceInfo
+          getter sources : Array(StreamSourceInfo) { [] of StreamSourceInfo }
           @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
           getter duplicate_window : Time::Span?
           @[JSON::Field(key: "allow_rollup_hdrs")]
