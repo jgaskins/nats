@@ -108,12 +108,27 @@ module NATS
       end
 
       @[Experimental("NATS JetStream pull subscriptions may be unstable")]
+      def pull_each(consumer : API::V1::Consumer, *, batch_size : Int) : Nil
+        pull_subscribe consumer, batch_size: batch_size do |msgs, pull|
+          msgs.each { |msg| yield msg, pull }
+        end
+      end
+
+      @[Experimental("NATS JetStream pull subscriptions may be unstable")]
+      def pull_subscribe(consumer : API::V1::Consumer, *, batch_size : Int) : Nil
+        pull = pull_subscribe(consumer, backlog: batch_size)
+        until pull.closed?
+          yield pull.fetch(batch_size), pull
+        end
+      end
+
+      @[Experimental("NATS JetStream pull subscriptions may be unstable")]
       def pull_subscribe(consumer : API::V1::Consumer, backlog : Int = 64)
         if consumer.config.deliver_subject
           raise ArgumentError.new("Cannot set up a pull-based subscription to a push-based consumer: #{consumer.config.durable_name.inspect} on stream #{consumer.stream_name.inspect}")
         end
 
-        subject = "#{consumer.stream_name}.#{consumer.config.durable_name}.pull.#{NUID.next}"
+        subject = "pull-subscriber.#{consumer.stream_name}.#{consumer.name}.#{NUID.next}"
         channel = Channel(Message).new(backlog)
 
         start = Time.monotonic
@@ -125,45 +140,6 @@ module NATS
         end
 
         PullSubscription.new(subscription, consumer, channel, @nats)
-      end
-
-      class PullSubscription
-        getter nats_subscription : ::NATS::Subscription
-        getter consumer : API::V1::Consumer
-        @channel : Channel(Message)
-        @nats : NATS::Client
-
-        def initialize(@nats_subscription, @consumer, @channel, @nats)
-        end
-
-        def fetch(timeout : Time::Span = 2.seconds)
-          fetch(1, timeout: timeout).first?
-        end
-
-        def fetch(message_count : Int, timeout : Time::Span = 2.seconds) : Enumerable(Message)
-          # We have to reimplement request/reply here because we get N replies
-          # for 1 request, which NATS request/reply does not support.
-          @nats.publish "$JS.API.CONSUMER.MSG.NEXT.#{consumer.stream_name}.#{consumer.config.durable_name}",
-            message: {
-              expires: timeout.total_nanoseconds.to_i64,
-              batch:   message_count,
-            }.to_json,
-            reply_to: @nats_subscription.subject
-
-          msgs = Array(Message).new(initial_capacity: message_count)
-          total_timeout = timeout
-          start = Time.monotonic
-          message_count.times do |i|
-            select
-            when msg = @channel.receive
-              msgs << msg
-            when timeout(i == 0 ? total_timeout : 100.microseconds)
-              break
-            end
-          end
-
-          msgs
-        end
       end
 
       # Acknowledge success processing the specified message, usually called at
@@ -1072,6 +1048,51 @@ module NATS
             json.read_int.nanoseconds
           end
         end
+      end
+    end
+
+    class PullSubscription
+      getter nats_subscription : ::NATS::Subscription
+      getter consumer : API::V1::Consumer
+      getter? closed : Bool = false
+      @channel : Channel(Message)
+      @nats : NATS::Client
+
+      def initialize(@nats_subscription, @consumer, @channel, @nats)
+      end
+
+      def fetch(timeout : Time::Span = 2.seconds)
+        fetch(1, timeout: timeout).first?
+      end
+
+      def fetch(message_count : Int, timeout : Time::Span = 2.seconds) : Enumerable(Message)
+        # We have to reimplement request/reply here because we get N replies
+        # for 1 request, which NATS request/reply does not support.
+        @nats.publish "$JS.API.CONSUMER.MSG.NEXT.#{consumer.stream_name}.#{consumer.config.durable_name}",
+          message: {
+            expires: timeout.total_nanoseconds.to_i64,
+            batch:   message_count,
+          }.to_json,
+          reply_to: @nats_subscription.subject
+
+        msgs = Array(Message).new(initial_capacity: message_count)
+        total_timeout = timeout
+        start = Time.monotonic
+        message_count.times do |i|
+          select
+          when msg = @channel.receive
+            msgs << msg
+          when timeout(i == 0 ? total_timeout : 100.microseconds)
+            break
+          end
+        end
+
+        msgs
+      end
+
+      def close
+        @nats.unsubscribe @nats_subscription
+        @closed = true
       end
     end
   end
