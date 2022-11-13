@@ -835,7 +835,7 @@ module NATS
           getter description : String?
 
           # Which subjects this stream will listen for.
-          getter subjects : Array(String)
+          getter subjects : Array(String) { [] of String }
           getter storage : Storage
           @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
           getter max_age : Time::Span?
@@ -849,8 +849,8 @@ module NATS
           getter retention : RetentionPolicy?
           getter discard : DiscardPolicy?
           getter placement : Placement?
-          getter mirror : StreamSourceInfo?
-          getter sources : Array(StreamSourceInfo) { [] of StreamSourceInfo }
+          getter mirror : StreamSource?
+          getter sources : Array(StreamSource) { [] of StreamSource }
           @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
           getter duplicate_window : Time::Span?
           @[JSON::Field(key: "allow_rollup_hdrs")]
@@ -863,7 +863,7 @@ module NATS
 
           def initialize(
             @name,
-            @subjects,
+            @subjects = nil,
             @description = nil,
             @max_age = nil,
             @max_bytes = nil,
@@ -879,8 +879,10 @@ module NATS
             @allow_direct = nil,
             @republish = nil,
             @placement = nil,
+            @mirror = nil,
+            @sources = nil,
             @discard : DiscardPolicy? = nil,
-            @storage : Storage = :file,
+            @storage : Storage = :file
           )
           end
         end
