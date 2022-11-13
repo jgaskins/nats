@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../../../../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::API::V1::Streams::PurgeStreamResponse - nats 1.2.0</title>
+  <title>NATS::JetStream::API::V1::StreamConfig::Republish - nats 1.2.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../../../../";
   </script>
@@ -216,7 +216,7 @@
       
     </li>
   
-  <li class="parent " data-id="nats/NATS/JetStream/API/V1/StreamConfig" data-name="nats::jetstream::api::v1::streamconfig">
+  <li class="parent open current" data-id="nats/NATS/JetStream/API/V1/StreamConfig" data-name="nats::jetstream::api::v1::streamconfig">
       <a href="../../../../../NATS/JetStream/API/V1/StreamConfig.html">StreamConfig</a>
       
         <ul>
@@ -231,7 +231,7 @@
       
     </li>
   
-  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamConfig/Republish" data-name="nats::jetstream::api::v1::streamconfig::republish">
+  <li class=" current" data-id="nats/NATS/JetStream/API/V1/StreamConfig/Republish" data-name="nats::jetstream::api::v1::streamconfig::republish">
       <a href="../../../../../NATS/JetStream/API/V1/StreamConfig/Republish.html">Republish</a>
       
     </li>
@@ -286,12 +286,12 @@
       
     </li>
   
-  <li class="parent open current" data-id="nats/NATS/JetStream/API/V1/Streams" data-name="nats::jetstream::api::v1::streams">
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1/Streams" data-name="nats::jetstream::api::v1::streams">
       <a href="../../../../../NATS/JetStream/API/V1/Streams.html">Streams</a>
       
         <ul>
   
-  <li class=" current" data-id="nats/NATS/JetStream/API/V1/Streams/PurgeStreamResponse" data-name="nats::jetstream::api::v1::streams::purgestreamresponse">
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Streams/PurgeStreamResponse" data-name="nats::jetstream::api::v1::streams::purgestreamresponse">
       <a href="../../../../../NATS/JetStream/API/V1/Streams/PurgeStreamResponse.html">PurgeStreamResponse</a>
       
     </li>
@@ -585,12 +585,12 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">struct</span> NATS::JetStream::API::V1::Streams::PurgeStreamResponse
+  <span class="kind">struct</span> NATS::JetStream::API::V1::StreamConfig::Republish
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../../../../NATS/JetStream/API/V1/Streams/PurgeStreamResponse.html">NATS::JetStream::API::V1::Streams::PurgeStreamResponse</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../../../../NATS/JetStream/API/V1/StreamConfig/Republish.html">NATS::JetStream::API::V1::StreamConfig::Republish</a></li><li class="superclass"><a href="../../../../../NATS/JetStream/API/Message.html">NATS::JetStream::API::Message</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
 
 
 
@@ -598,20 +598,6 @@
 
 
 
-
-  <h2>
-    <a id="included-modules" class="anchor" href="#included-modules">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Included Modules
-  </h2>
-  <ul class="other-types-list">
-    
-      <li class="other-type">JSON::Serializable</li>
-    
-  </ul>
 
 
 
@@ -632,7 +618,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.0/src/jetstream.cr#L524" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.0/src/jetstream.cr#L822" target="_blank">
         jetstream.cr
       </a>
     
@@ -658,6 +644,11 @@
         
       </li>
     
+      <li class="entry-summary">
+        <a href="#new%28%2A%2Csource%3AString%3F%3Dnil%2Cdestination%3AString%2Cheaders_only%3ABool%3F%3Dnil%29-class-method" class="signature"><strong>.new</strong>(*, source : String? = <span class="n">nil</span>, destination : String, headers_only : Bool? = <span class="n">nil</span>)</a>
+        
+      </li>
+    
   </ul>
 
 
@@ -675,7 +666,17 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#purged%3AInt64-instance-method" class="signature"><strong>#purged</strong> : Int64</a>
+        <a href="#destination%3AString-instance-method" class="signature"><strong>#destination</strong> : String</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#headers_only%3F%3ABool%3F-instance-method" class="signature"><strong>#headers_only?</strong> : Bool?</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#source%3AString%3F-instance-method" class="signature"><strong>#source</strong> : String?</a>
         
       </li>
     
@@ -686,6 +687,25 @@
 
 
 <div class="methods-inherited">
+  
+    
+
+
+    
+
+  <h3>Constructor methods inherited from struct <code><a href="../../../../../NATS/JetStream/API/Message.html">NATS::JetStream::API::Message</a></code></h3>
+  
+  
+    <a href="../../../../../NATS/JetStream/API/Message.html#new%28pull%3AJSON%3A%3APullParser%29-class-method" class="tooltip">
+      <span>new(pull : JSON::PullParser)</span>
+    new</a>
+    
+  
+
+
+    
+
+
   
     
 
@@ -750,7 +770,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.0/src/jetstream.cr#L525" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.0/src/jetstream.cr#L822" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new(*,source:String?=nil,destination:String,headers_only:Bool?=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(*, source : String? = <span class="n">nil</span>, destination : String, headers_only : Bool? = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#new%28%2A%2Csource%3AString%3F%3Dnil%2Cdestination%3AString%2Cheaders_only%3ABool%3F%3Dnil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.0/src/jetstream.cr#L829" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -769,18 +805,50 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="purged:Int64-instance-method">
+    <div class="entry-detail" id="destination:String-instance-method">
       <div class="signature">
         
-        def <strong>purged</strong> : Int64
+        def <strong>destination</strong> : String
 
-        <a class="method-permalink" href="#purged%3AInt64-instance-method">#</a>
+        <a class="method-permalink" href="#destination%3AString-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.0/src/jetstream.cr#L527" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.0/src/jetstream.cr#L826" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="headers_only?:Bool?-instance-method">
+      <div class="signature">
+        
+        def <strong>headers_only?</strong> : Bool?
+
+        <a class="method-permalink" href="#headers_only%3F%3ABool%3F-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.0/src/jetstream.cr#L827" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="source:String?-instance-method">
+      <div class="signature">
+        
+        def <strong>source</strong> : String?
+
+        <a class="method-permalink" href="#source%3AString%3F-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.0/src/jetstream.cr#L824" target="_blank">View source</a>]
         
       </div>
     </div>
