@@ -6,7 +6,7 @@ require "uuid"
 private macro test(name)
   it {{name}} do
     name = UUID.random.to_s
-    bucket = kv.create_bucket(name)
+    bucket = kv.create_bucket(name, history: 10)
 
     begin
       {{yield}}
