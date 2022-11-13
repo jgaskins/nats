@@ -400,7 +400,7 @@ module NATS
           getter stream : String
           @[JSON::Field(key: "seq")]
           getter sequence : Int64
-          getter duplicate : Bool?
+          getter? duplicate : Bool = false
           getter domain : String?
         end
 
@@ -815,7 +815,7 @@ module NATS
             getter cluster : String?
             getter tags : Array(String) { %w[] }
 
-            def initialize(@cluster, @tags)
+            def initialize(@cluster = nil, @tags = nil)
             end
           end
 
