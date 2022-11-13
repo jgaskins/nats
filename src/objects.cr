@@ -88,9 +88,11 @@ module NATS
             "$O.#{name}.M.>", # Metadata
           ],
           max_age: ttl,
+          max_bytes: max_bytes,
           storage: storage,
           discard: :new,
           allow_rollup_headers: true,
+          placement: placement,
         )
 
         Bucket.new(stream, self)
