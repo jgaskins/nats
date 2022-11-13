@@ -222,8 +222,8 @@ module NATS
       #   watch.stop if entry.latest? # exit the block
       # end
       # ```
-      def watch(key : String, *, ignore_deletes = false, include_history = true, &block : Entry ->)
-        @kv.watch(name, key, ignore_deletes: ignore_deletes, include_history: include_history, &block)
+      def watch(key : String, *, ignore_deletes = false, include_history = true)
+        @kv.watch(name, key, ignore_deletes: ignore_deletes, include_history: include_history)
       end
     end
 
@@ -245,11 +245,12 @@ module NATS
         description : String = "",
         *,
         max_value_size : Int32? = nil,
-        history : UInt8? = nil,
+        history : UInt8 = 1,
         ttl : Time::Span? = nil,
         max_bytes : Int64? = nil,
         storage : JetStream::API::V1::StreamConfig::Storage = :file,
-        replicas : Int32 = 1
+        replicas : Int32 = 1,
+        placement : JetStream::API::V1::StreamConfig::Placement? = nil,
       ) : Bucket
         unless name =~ /\A[a-zA-Z0-9_-]+\z/
           raise ArgumentError.new("NATS KV bucket names can only contain alphanumeric characters, underscores, and dashes")
@@ -266,6 +267,7 @@ module NATS
           max_msg_size: max_value_size,
           storage: storage,
           replicas: {replicas, 1}.max,
+          discard: :new,
           allow_rollup_headers: true,
           allow_direct: true,
           deny_delete: true,
