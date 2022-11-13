@@ -101,6 +101,11 @@ module NATS
         @kv.put name, key, value
       end
 
+      # Assign `value` to `key` in `bucket` asynchronously, not waiting for
+      # acknowledgement from the NATS server.
+      #
+      # WARNING: Without acknowledgement, there is no guarantee the server
+      # received the value. Use with caution.
       def set(key : String, value : Data)
         @kv.set name, key, value
       end
