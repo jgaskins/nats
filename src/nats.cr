@@ -891,6 +891,23 @@ module NATS
       @message_channel = MessageChannel.new(max_in_flight)
     end
 
+    # This channel subclass doesn't eagerly allocate huge amounts of memory for
+    # messages to be passed through. Subscriptions default to 64k elements
+    # which results in a huge amount of memory allocated when you have a lot of
+    # NATS subscriptions.
+    private class Channel(T) < ::Channel(T)
+      def initialize(@capacity = 0)
+        @closed = false
+
+        @senders = Crystal::PointerLinkedList(Sender(T)).new
+        @receivers = Crystal::PointerLinkedList(Receiver(T)).new
+
+        if capacity > 0
+          @queue = Deque(T).new
+        end
+      end
+    end
+
     def unsubscribe_after(messages @messages_remaining : Int32)
     end
 
