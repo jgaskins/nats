@@ -78,7 +78,7 @@ module NATS
         @private_key = result
 
         if @private_key.size != SEED_SIZE
-          raise Error.new("Invalid private keu size: #{@private_key.size}")
+          raise Error.new("Invalid private key size: #{@private_key.size}")
         end
       end
 
