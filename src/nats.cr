@@ -7,6 +7,7 @@ require "log"
 
 require "./nuid"
 require "./nkeys"
+require "./version"
 
 # NATS is a pub/sub message bus.
 #
@@ -31,8 +32,6 @@ require "./nkeys"
 # ])
 # ```
 module NATS
-  VERSION = "1.1.0"
-
   alias Headers = Message::Headers
   alias Data = String | Bytes
 
@@ -66,13 +65,16 @@ module NATS
     getter port : Int32
     getter? headers : Bool = false
     getter? tls_required : Bool = false
-    getter max_payload : Int32
-    getter client_id : Int32
+    getter? tls_verify : Bool = false
+    getter max_payload : Int64
+    getter client_id : Int64
     getter client_ip : String
     getter? auth_required : Bool = false
     getter nonce : String?
     getter cluster : String?
     getter connect_urls : Array(String) = [] of String
+    @[JSON::Field(key: "ldm")]
+    getter? lame_duck_mode : Bool = false
   end
 
   LOG = ::Log.for(self)
@@ -125,7 +127,13 @@ module NATS
     getter server_info : ServerInfo
     private getter? data_waiting = false
 
-    def self.new(*, ping_interval = 2.minutes, max_pings_out = 2, nkeys_file : String? = nil)
+    def self.new(
+      *,
+      ping_interval = 2.minutes,
+      max_pings_out = 2,
+      nkeys_file : String? = nil,
+      user_credentials : String? = nil
+    )
       new(
         servers: ENV
           .fetch("NATS_SERVERS", "nats:///")
@@ -134,6 +142,7 @@ module NATS
         ping_interval: ping_interval,
         max_pings_out: max_pings_out,
         nkeys_file: nkeys_file,
+        user_credentials: user_credentials,
       )
     end
 
@@ -147,8 +156,9 @@ module NATS
       ping_interval = 2.minutes,
       max_pings_out = 2,
       nkeys_file : String? = nil,
+      user_credentials : String? = nil
     )
-      new([uri], ping_interval: ping_interval, max_pings_out: max_pings_out, nkeys_file: nkeys_file)
+      new([uri], ping_interval: ping_interval, max_pings_out: max_pings_out, nkeys_file: nkeys_file, user_credentials: user_credentials)
     end
 
     # Connect to a NATS cluster at the given URIs
@@ -165,6 +175,7 @@ module NATS
       @ping_interval : Time::Span = 2.minutes,
       @max_pings_out = 2,
       @nkeys_file : String? = nil,
+      @user_credentials : String? = nil
     )
       uri = @servers.sample
       @ping_count = Atomic.new(0)
@@ -221,16 +232,26 @@ module NATS
         pass:     uri.password,
       }
       if @server_info.auth_required? && (nonce = @server_info.nonce)
-        if nkeys_file.nil?
+        if user_credentials
+          creds_data = File.read(user_credentials).lines
+          unless jwt_begin_line = creds_data.index(&.includes?("BEGIN NATS USER JWT"))
+            raise ArgumentError.new("Could not locate JWT in credentials file #{user_credentials}")
+          end
+          jwt = creds_data[jwt_begin_line + 1].chomp
+          unless nkey_begin_line = creds_data.index(&.includes?("BEGIN USER NKEY SEED"))
+            raise ArgumentError.new("Could not locate NKEYS seed in credentials file #{user_credentials}")
+          end
+          nkey = NKeys.new(creds_data[nkey_begin_line + 1].chomp)
+          connect = connect
+            .merge({jwt: jwt})
+            .merge(sign_nonce(nkey, nonce))
+        elsif nkeys_file
+          nkey = NKeys.new(File.read(nkeys_file.strip))
+
+          connect = connect.merge(sign_nonce(nkey, nonce))
+        else
           raise Error.new("Server requires auth and supplied a nonce, but no NKEYS file specified")
         end
-
-        nkey = NKeys.new(File.read(nkeys_file.strip))
-
-        connect = connect.merge({
-          sig: Base64.urlsafe_encode(nkey.keypair.sign(nonce), padding: false),
-          nkey: Base32.encode(nkey.keypair.public_key, pad: false),
-        })
       end
       connect.to_json @io
       @io << "\r\n"
@@ -306,6 +327,13 @@ module NATS
 
     private def resubscribe(subscription : Subscription)
       subscribe subscription.subject, subscription.queue_group, subscription.sid, &subscription.@block
+    end
+
+    private def sign_nonce(nkey, nonce)
+      {
+        sig:  Base64.urlsafe_encode(nkey.keypair.sign(nonce), padding: false),
+        nkey: Base32.encode(nkey.keypair.public_key, pad: false),
+      }
     end
 
     # Unsubscribe from the given subscription
@@ -689,6 +717,13 @@ module NATS
           else
             raise Error.new("Received PONG without sending a PING")
           end
+        when .starts_with? "INFO"
+          @server_info = ServerInfo.from_json line[5..-1]
+          if (urls = @server_info.connect_urls).any?
+            @servers = urls.map do |host_with_port| # it's not a real URL :-(
+              URI.parse("tls://#{host_with_port}")
+            end
+          end
         when .starts_with? "-ERR"
           @on_error.call Error.new(line)
         else
@@ -814,6 +849,7 @@ module NATS
         ping_interval: @ping_interval,
         max_pings_out: @max_pings_out,
         nkeys_file: @nkeys_file,
+        user_credentials: @user_credentials,
       )
       @on_reconnect.call
     end
