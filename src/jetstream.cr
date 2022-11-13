@@ -370,6 +370,9 @@ module NATS
 
     alias Streams = API::V1::Streams
     alias Consumers = API::V1::Consumers
+    alias Placement = API::V1::StreamConfig::Placement
+    alias StreamSource = API::V1::StreamSource
+    alias ExternalStream = API::V1::ExternalStream
 
     module API
       abstract struct Message
@@ -636,18 +639,44 @@ module NATS
           getter sources : Array(StreamSourceInfo) = [] of StreamSourceInfo
         end
 
+        struct StreamSource < Message
+          getter name : String
+          getter opt_start_seq : UInt64?
+          getter opt_start_time : Time?
+          getter filter_subject : String?
+          getter external : ExternalStream?
+
+          def initialize(
+            @name,
+            @opt_start_seq = nil,
+            @opt_start_time = nil,
+            @filter_subject = nil,
+            @external = nil,
+          )
+          end
+        end
+
         struct StreamSourceInfo < Message
           getter name : String
           getter external : ExternalStream?
-          getter lag : UInt64
+          @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
+          getter lag : Time::Span
           @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
           getter active : Time::Span
           getter error : APIError?
+
+          def initialize(@name, @external = nil, @lag = 0.seconds, @active = 0.seconds, @error = nil)
+          end
         end
 
         struct ExternalStream < Message
-          getter api : String
-          getter deliver : String
+          @[JSON::Field(key: "api")]
+          getter api_prefix : String
+          @[JSON::Field(key: "deliver")]
+          getter deliver_prefix : String
+
+          def initialize(*, @api_prefix = "", @deliver_prefix = "")
+          end
         end
 
         struct APIError < Message
