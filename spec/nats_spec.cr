@@ -116,6 +116,7 @@ describe NATS do
         if response = nats.request(subject, i.to_s)
           replies[i] = String.new(response.body).to_i
         end
+      ensure
         channel.send nil
       end
     end
