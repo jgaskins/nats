@@ -670,8 +670,11 @@ module NATS
               end
               headers = Message::Headers.new
               if (header_decl = @socket.read_line).starts_with? "NATS/1.0" # Headers preamble, intended to look like HTTP/1.1
-                if header_decl.size > "NATS/1.0".size
-                  headers["Status"] = header_decl[-3..]
+                # If there is anything beyond the NATS/1.0  status line, that
+                # indicates the request stauts and becomes the status header of
+                # the reply message.
+                if header_decl.size > "NATS/1.0 ".size
+                  headers["Status"] = header_decl["NATS/1.0 ".size..]
                 end
                 until (header_line = @socket.read_line).empty?
                   key, value = header_line.split(/:\s*/, 2)
