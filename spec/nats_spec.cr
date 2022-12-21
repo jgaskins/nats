@@ -160,6 +160,19 @@ describe NATS do
     count.should eq 1
   end
 
+  it "returns early when there are no responders" do
+    subject = "temp.#{UUID.random}"
+    called = false
+
+    start = Time.monotonic
+    response = nats.request(subject, "", timeout: 1.second)
+    finish = Time.monotonic
+
+    called.should eq false
+    response.should eq nil
+    ((finish - start) < 1.second).should eq true
+  end
+
   it "handles disconnects" do
     subject = "temp.#{UUID.random}"
     nats.@socket.close # OOPS WE BROKE THE INTERNET

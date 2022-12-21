@@ -221,15 +221,16 @@ module NATS
 
       @io << "CONNECT "
       connect = {
-        verbose:  false,
-        pedantic: false,
-        lang:     "crystal",
-        version:  VERSION,
-        protocol: 1,
-        headers:  true,
-        name:     uri.path.sub(%r{\A/}, "").presence,
-        user:     uri.user,
-        pass:     uri.password,
+        verbose:       false,
+        pedantic:      false,
+        lang:          "crystal",
+        version:       VERSION,
+        protocol:      1,
+        headers:       true,
+        no_responders: true,
+        name:          uri.path.sub(%r{\A/}, "").presence,
+        user:          uri.user,
+        pass:          uri.password,
       }
       if @server_info.auth_required? && (nonce = @server_info.nonce)
         if user_credentials
@@ -407,7 +408,11 @@ module NATS
       begin
         select
         when msg = channel.receive?
-          msg
+          if msg
+            unless msg.body.empty? && msg.headers.try(&.["Status"]?) == "503"
+              msg
+            end
+          end
         when timeout(timeout)
           channel.close
           nil
@@ -665,6 +670,9 @@ module NATS
               end
               headers = Message::Headers.new
               if (header_decl = @socket.read_line).starts_with? "NATS/1.0" # Headers preamble, intended to look like HTTP/1.1
+                if header_decl.size > "NATS/1.0".size
+                  headers["Status"] = header_decl[-3..]
+                end
                 until (header_line = @socket.read_line).empty?
                   key, value = header_line.split(/:\s*/, 2)
                   headers[key] = value
