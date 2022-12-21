@@ -116,7 +116,7 @@ module NATS
     @current_sid = Atomic(Int64).new(0_i64)
     @subscriptions = {} of Int64 => Subscription
     @out = Mutex.new(protection: :reentrant)
-    @ping_count = Atomic(Int32).new(0)
+    @ping_count : Atomic(Int32)
     @pings = Channel(Channel(Nil)).new(3) # For flushing the connection
     @disconnect_buffer = IO::Memory.new
     @inbox_prefix = "_INBOX.#{Random::Secure.hex}"
