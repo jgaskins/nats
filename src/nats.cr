@@ -392,7 +392,7 @@ module NATS
       channel = Channel(Message).new(1)
       inbox = NUID.next
       key = "#{@inbox_prefix}.#{inbox}"
-      @inbox_handlers[key] = ->(msg : Message) { channel.send msg }
+      @inbox_handlers[key] = ->(msg : Message) { channel.send msg unless channel.closed? }
       publish subject, message, reply_to: key, headers: headers
 
       # TODO: Track how often we're making requests. If we're making requests
@@ -406,9 +406,10 @@ module NATS
 
       begin
         select
-        when msg = channel.receive
+        when msg = channel.receive?
           msg
         when timeout(timeout)
+          channel.close
           nil
         end
       ensure
