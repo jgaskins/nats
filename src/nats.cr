@@ -322,7 +322,7 @@ module NATS
         @io << sid << "\r\n"
       end
 
-      @subscriptions[sid] = Subscription.new(subject, sid, queue_group, max_in_flight: max_in_flight, &block).tap(&.start)
+      @subscriptions[sid] = Subscription.new(subject, sid, queue_group, self, max_in_flight: max_in_flight, &block).tap(&.start)
     end
 
     private def resubscribe(subscription : Subscription)
@@ -885,10 +885,11 @@ module NATS
     getter sid : Int64
     getter queue_group : String?
     getter messages_remaining : Int32?
+    private getter nats : Client
     private getter message_channel : MessageChannel
     private getter? processing = false
 
-    def initialize(@subject, @sid, @queue_group, max_in_flight : Int = 10, &@block : Message, Subscription ->)
+    def initialize(@subject, @sid, @queue_group, @nats, max_in_flight : Int = 10, &@block : Message, Subscription ->)
       @message_channel = MessageChannel.new(max_in_flight)
     end
 
@@ -912,33 +913,40 @@ module NATS
     def unsubscribe_after(messages @messages_remaining : Int32)
     end
 
-    def start
+    def start : self
       spawn do
         remaining = @messages_remaining
         while remaining.nil? || remaining > 0
-          message, on_error = message_channel.receive
-          @processing = true
+          if result = message_channel.receive?
+            message, on_error = result
+            @processing = true
 
-          LOG.debug { "Calling subscription handler for sid #{sid} (subscription to #{subject.inspect}, message subject #{message.subject.inspect})" }
-          begin
-            call message, on_error
-          ensure
-            @processing = false
+            LOG.debug { "Calling subscription handler for sid #{sid} (subscription to #{subject.inspect}, message subject #{message.subject.inspect})" }
+            begin
+              call message, on_error
+            ensure
+              @processing = false
+            end
+
+            remaining = @messages_remaining
+          else
+            break
           end
-
-          remaining = @messages_remaining
         end
       rescue ex
       end
+
+      self
     end
 
-    def drain
+    def drain : Nil
       until @message_channel.@queue.not_nil!.empty? && !processing?
         sleep 1.millisecond
       end
     end
 
     def close
+      @nats.unsubscribe self
       @message_channel.close
     end
 
