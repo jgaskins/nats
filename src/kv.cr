@@ -180,8 +180,8 @@ module NATS
       end
 
       # List all known keys for this bucket, returned as a `Set(String)`.
-      def keys
-        @kv.keys(name)
+      def keys(pattern : String = ">")
+        @kv.keys(name, pattern)
       end
 
       def each_key
