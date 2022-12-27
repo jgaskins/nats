@@ -180,10 +180,15 @@ module NATS
         read, write = IO.pipe
         chunks = 0
         @nats.subscribe(subject) do |msg, subscription|
-          # TODO: ensure we get *all* chunks
-          if msg.body.empty?
+          if msg.body.empty? && (headers = msg.headers) && headers["Status"]? == "100 FlowControl Request"
+            # Once we ack the flow-control message, we will receive more data.
+            # Because we're using IO.pipe, we don't have to implement flow
+            # control ourselves here. We get it for free because these pipes
+            # have a buffer size that will automatically block the write call
+            # below if that buffer fills up.
             @nats.reply msg, "" if msg.reply_to
           else
+            # TODO: ensure we get *all* chunks
             write.write msg.body
             chunks += 1
           end

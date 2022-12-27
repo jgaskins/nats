@@ -56,6 +56,16 @@ module NATS
       file.delete if file
     end
 
+    test "deals with objects large enough to invoke flow control" do
+      io = IO::Memory.new("*" * 10_000_000)
+
+      bucket.put "key", io
+      info = bucket.get_info!("key")
+      data = bucket.get!("key").gets_to_end
+
+      data.should eq io.to_s
+    end
+
     test "gets keys for a bucket" do
       bucket.put "key", "value", headers: Headers{"foo" => "bar"}
 
