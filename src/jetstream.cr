@@ -57,7 +57,7 @@ module NATS
         headers["Nats-Expected-Last-Msg-Id"] = expected_last_message_id if expected_last_message_id
         headers["Nats-Expected-Stream"] = expected_stream if expected_stream
         headers["Nats-Expected-Last-Sequence"] = expected_last_sequence if expected_last_sequence
-        headers["Nats-Expected-Last-Subject-Sequence"] = expected_last_subject_sequence if expected_last_subject_sequence
+        headers["Nats-Expected-Last-Subject-Sequence"] = expected_last_subject_sequence.to_s if expected_last_subject_sequence
 
         if response = @nats.request(subject, body, timeout: timeout, headers: headers)
           (API::V1::PubAck | API::V1::ErrorResponse).from_json(String.new(response.body))

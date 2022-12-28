@@ -364,10 +364,7 @@ module NATS
       def update(bucket : String, key : String, value : String | Bytes, revision : Int) : Int64?
         validate_key! key
 
-        headers = Headers{
-          "Nats-Expected-Last-Subject-Sequence" => revision.to_s,
-        }
-        case response = @nats.jetstream.publish "$KV.#{bucket}.#{key}", value, headers: headers
+        case response = @nats.jetstream.publish "$KV.#{bucket}.#{key}", value, expected_last_subject_sequence: revision
         in JetStream::API::V1::PubAck
           response.sequence
         in JetStream::API::V1::ErrorResponse
