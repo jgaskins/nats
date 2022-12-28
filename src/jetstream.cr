@@ -489,11 +489,11 @@ module NATS
             get_msg stream, {last_by_subj: last_by_subject}
           end
 
-          def get_msg(stream : String, *, sequence : Int)
-            get_msg stream, {seq: sequence}
+          def get_msg(stream : String, *, sequence : Int, next_by_subject : String? = nil)
+            get_msg stream, {seq: sequence, next_by_subj: next_by_subject}
           end
 
-          private def get_msg(stream : String, params)
+          protected def get_msg(stream : String, params)
             if response = @nats.request "$JS.API.STREAM.MSG.GET.#{stream}", params.to_json
               case parsed = (StreamGetMsgResponse | ErrorResponse).from_json String.new(response.body)
               in StreamGetMsgResponse

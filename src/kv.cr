@@ -124,8 +124,8 @@ module NATS
       # `KV-Operation` message header) and this method retrieves the last entry
       # in the stream for this key. `ignore_deletes` simply tells the client to
       # ignore deleted messages.
-      def get(key : String, *, ignore_deletes = false) : Entry?
-        @kv.get name, key, ignore_deletes: ignore_deletes
+      def get(key : String, *, revision : Int? = nil, ignore_deletes = false) : Entry?
+        @kv.get name, key, revision: revision, ignore_deletes: ignore_deletes
       end
 
       # Get the value of a key, if it exists (not counting `Delete` operations),
@@ -141,8 +141,8 @@ module NATS
       # Get the value of a key as a `KV::Entry` - raises `KeyError` if the key
       # does not exist or if it's been deleted with `ignore_deletes` set to
       # `true`.
-      def get!(key : String, ignore_deletes = false) : Entry
-        if value = get(key, ignore_deletes: ignore_deletes)
+      def get!(key : String, *, revision : Int? = nil, ignore_deletes = false) : Entry
+        if value = get(key, revision: revision, ignore_deletes: ignore_deletes)
           value
         else
           raise KeyError.new("Key #{key.inspect} expected, but not found")
@@ -305,8 +305,15 @@ module NATS
 
       # Get the `KV::Entry` for the given `key` in `bucket`, or `nil` if the key
       # does not exist.
-      def get(bucket : String, key : String, ignore_deletes = false) : Entry?
-        if response = @nats.jetstream.stream.get_msg("KV_#{bucket}", last_by_subject: "$KV.#{bucket}.#{key}")
+      def get(bucket : String, key : String, *, revision : Int? = nil, ignore_deletes : Bool = false) : Entry?
+        subject = "$KV.#{bucket}.#{key}"
+        if revision
+          response = @nats.jetstream.stream.get_msg("KV_#{bucket}", sequence: revision, next_by_subject: subject)
+        else
+          response = @nats.jetstream.stream.get_msg("KV_#{bucket}", last_by_subject: subject)
+        end
+
+        if response
           operation = Entry::Operation::Put
 
           case response.message.headers.try(&.["KV-Operation"]?)

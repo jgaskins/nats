@@ -53,6 +53,16 @@ describe NATS::KV do
     end
   end
 
+  test "gets a specific revision of a key" do
+    bucket.put "key", "value1"
+    bucket.put "key", "value2"
+    revision = bucket.put "another-key", "another value"
+    bucket.put "key", "value3"
+    bucket.put "key", "value4"
+
+    bucket.get!("key", revision: revision).value.should eq "value3".to_slice
+  end
+
   test "creates a key or returns nil if the key already exists" do
     # Passes the first time because the key does not exist. Also, since this is
     # the first key being added to this store (see `test` macro above), the
