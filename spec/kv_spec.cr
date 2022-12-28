@@ -3,10 +3,10 @@ require "./spec_helper"
 require "../src/kv"
 require "uuid"
 
-private macro test(name)
-  it {{name}} do
+private macro test(name, bucket_options = {history: 10}, **options)
+  it {{name}}{% for key, value in options %}, {{key}}: {{value}}{% end %} do
     name = UUID.random.to_s
-    bucket = kv.create_bucket(name, history: 10)
+    bucket = kv.create_bucket(name, {{bucket_options.id[1...-1]}})
 
     begin
       {{yield}}
@@ -90,6 +90,15 @@ describe NATS::KV do
         bucket.get("key").not_nil!.value.should eq "value2".to_slice
       else
         raise "No revision returned from Bucket#create"
+      end
+    end
+
+    test "does not update a key if history is exceeded and discard_new_per_key is set", bucket_options: {history: 2, discard_new_per_key: true} do
+      bucket.put "a", "1"
+      bucket.put "a", "2"
+
+      expect_raises NATS::KV::Error, "maximum messages per subject exceeded" do
+        bucket.put("a", "3")
       end
     end
 
