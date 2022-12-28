@@ -15,10 +15,10 @@ module NATS
   # kv = nats.kv
   #
   # bucket = "my-bucket"
-  # kv.add(bucket)
+  # kv.create_bucket(bucket)
   # kv.put bucket, "key", "value"
   #
-  # msg = kv.get(bucket, "key").message
+  # msg = kv.get(bucket, "key").try(&.value)
   # String.new(msg.data) # => "value"
   # msg.seq              # => 1
   # ```
