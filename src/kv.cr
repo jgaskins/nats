@@ -62,7 +62,17 @@ module NATS
       getter storage : JetStream::API::V1::StreamConfig::Storage
 
       # The number of NATS nodes to which this KV bucket will be replicated
-      getter replicas : Int32?
+      getter replicas : Int32
+
+      getter placement : JetStream::API::V1::StreamConfig::Placement?
+
+      getter size : Size
+
+      getter values : Int64
+
+      getter last_update : Time
+
+      getter created : Time
 
       # :nodoc:
       def self.new(stream : JetStream::API::V1::Stream, kv : Client)
@@ -77,8 +87,29 @@ module NATS
           max_bytes: config.max_bytes,
           storage: config.storage,
           replicas: config.replicas,
+          created: stream.created,
+          size: Size.new(stream.state.bytes),
+          values: stream.state.messages,
+          last_update: stream.state.last_ts,
           kv: kv,
         )
+      end
+
+      struct Size
+        def initialize(@size : Int64)
+        end
+
+        def inspect(io)
+          to_i64.humanize_bytes io, format: :jedec
+        end
+
+        def to_i
+          to_i64
+        end
+
+        def to_i64
+          @size
+        end
       end
 
       # :nodoc:
@@ -91,7 +122,11 @@ module NATS
         @ttl : Time::Span?,
         @max_bytes : Int64?,
         @storage : JetStream::API::V1::StreamConfig::Storage,
-        @replicas : Int32?,
+        @replicas : Int32,
+        @created,
+        @size,
+        @values,
+        @last_update,
         @kv : Client
       )
       end
@@ -250,7 +285,8 @@ module NATS
         max_bytes : Int64? = nil,
         storage : JetStream::API::V1::StreamConfig::Storage = :file,
         replicas : Int32 = 1,
-        placement : JetStream::API::V1::StreamConfig::Placement? = nil,
+        discard_new_per_key : Bool = false,
+        placement : JetStream::API::V1::StreamConfig::Placement? = nil
       ) : Bucket
         unless name =~ /\A[a-zA-Z0-9_-]+\z/
           raise ArgumentError.new("NATS KV bucket names can only contain alphanumeric characters, underscores, and dashes")
@@ -268,6 +304,7 @@ module NATS
           storage: storage,
           replicas: {replicas, 1}.max,
           discard: :new,
+          discard_new_per_subject: discard_new_per_key,
           allow_rollup_headers: true,
           allow_direct: true,
           deny_delete: true,

@@ -12,11 +12,12 @@ module NATS
 
     # https://github.com/nats-io/nats-server/blob/main/server/errors.json
     enum Errors : Int32 # Should be wide enough?
-      None                    =     0
-      ConsumerNotFound        = 10014
-      NoMessageFound          = 10037
-      StreamNotFound          = 10059
-      StreamWrongLastSequence = 10071
+      None                              =     0
+      ConsumerNotFound                  = 10014
+      NoMessageFound                    = 10037
+      StreamNotFound                    = 10059
+      StreamWrongLastSequence           = 10071
+      MaximumMessagesPerSubjectExceeded = 10077
 
       def self.new(json : JSON::PullParser)
         new json.read_int.to_i
@@ -847,7 +848,8 @@ module NATS
           getter max_msgs_per_subject : Int64?
           getter max_consumers : Int32?
           getter? no_ack : Bool?
-          getter replicas : Int32?
+          @[JSON::Field(key: "num_replicas")]
+          getter replicas : Int32
           getter retention : RetentionPolicy?
           getter discard : DiscardPolicy?
           getter placement : Placement?
@@ -861,6 +863,8 @@ module NATS
           getter? deny_delete : Bool?
           getter? sealed : Bool?
           getter? allow_direct : Bool?
+          getter? mirror_direct : Bool?
+          getter? discard_new_per_subject : Bool?
           getter republish : Republish?
 
           def initialize(
@@ -874,15 +878,17 @@ module NATS
             @max_msgs_per_subject = nil,
             @max_consumers = nil,
             @no_ack = false,
-            @replicas = nil,
+            @replicas = 1,
             @retention : RetentionPolicy? = nil,
             @allow_rollup_headers = nil,
             @deny_delete = nil,
             @allow_direct = nil,
+            @mirror_direct = nil,
             @republish = nil,
             @placement = nil,
             @mirror = nil,
             @sources = nil,
+            @discard_new_per_subject = nil,
             @discard : DiscardPolicy? = nil,
             @storage : Storage = :file
           )
@@ -934,16 +940,16 @@ module NATS
         end
 
         struct ConsumerConfig < Message
-          # AckPolicy	How messages should be acknowledged, AckNone, AckAll or AckExplicit
+          # How messages should be acknowledged: none, all, or explicit
           getter ack_policy : AckPolicy
-          # AckWait	How long to allow messages to remain un-acknowledged before attempting redelivery
+          # How long to allow messages to remain un-acknowledged before attempting redelivery
           @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
           getter ack_wait : Time::Span?
-          # DeliverPolicy	The initial starting mode of the consumer, DeliverAll, DeliverLast, DeliverNew, DeliverByStartSequence or DeliverByStartTime
+          # The initial starting mode of the consumer: all, last, new, by-start_sequence or by_start_time
           getter deliver_policy : DeliverPolicy
-          # DeliverySubject	The subject to deliver observed messages, when not set, a pull-based Consumer is created
+          # The subject to deliver observed messages, when not set, a pull-based Consumer is created
           getter deliver_subject : String?
-          # Durable	The name of the Consumer
+          # The name of the Consumer, specifying this will persist the consumer to the NATS server
           getter durable_name : String?
 
           getter deliver_group : String?
@@ -951,28 +957,49 @@ module NATS
           getter max_waiting : Int64?
           @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
           getter idle_heartbeat : Time::Span?
-          getter? flow_control : Bool = false
+          getter? flow_control : Bool { false }
+          getter? headers_only : Bool { false }
 
           # Apparently we're not supposed to use this in clients
           # See https://github.com/nats-io/nats-server/blob/3aa8e63b290ac4ba1c99193827b3f66ad5679904/server/consumer.go#L70-L71
           # getter? direct : Bool = false
 
-          # FilterSubject	When consuming from a Stream with many subjects, or wildcards, select only a specific incoming subjects, supports wildcards
+          # When consuming from a Stream with many subjects, or wildcards, select only a specific incoming subjects, supports wildcards
           getter filter_subject : String?
-          # MaxDeliver	Maximum amount times a specific message will be delivered. Use this to avoid poison pills crashing all your services forever
+          # Maximum number of times a message will be delivered via this consumer. Use this to avoid poison pills crashing all your services forever.
           getter max_deliver : Int64?
-          # OptStartSeq	When first consuming messages from the Stream start at this particular message in the set
+          # When first consuming messages from the Stream start at this particular message in the set
           getter opt_start_seq : Int64?
-          # ReplayPolicy	How messages are sent ReplayInstant or ReplayOriginal
-          getter replay_policy : ReplayPolicy
-          # SampleFrequency	What percentage of acknowledgements should be samples for observability, 0-100
-          getter sample_frequency : String?
           # OptStartTime	When first consuming messages from the Stream start with messages on or after this time
           getter opt_start_time : Time?
-          # RateLimit	The rate of message delivery in bits per second
+          # How messages are sent: `instant` (default) or `original`
+          getter replay_policy : ReplayPolicy
+          # What percentage of acknowledgements should be samples for observability, 0-100
+          getter sample_frequency : String?
+          # The rate of message delivery in bits per second
           getter rate_limit_bps : UInt64?
-          # MaxAckPending	The maximum number of messages without acknowledgement that can be outstanding, once this limit is reached message delivery will be suspended
+          # The maximum number of messages without acknowledgement that can be outstanding, once this limit is reached message delivery will be suspended
           getter max_ack_pending : Int64?
+
+          @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
+          getter inactive_threshold : Time::Span?
+
+          @[JSON::Field(key: "num_replicas")]
+          getter replicas : Int32 = 0
+          getter? memory_storage : Bool?
+
+          # // Pull based options.
+          # MaxRequestBatch    int           `json:"max_batch,omitempty"`
+          # MaxRequestExpires  time.Duration `json:"max_expires,omitempty"`
+          # MaxRequestMaxBytes int           `json:"max_bytes,omitempty"`
+          # The maximum number of messages that can be requested from a pull consumer
+          @[JSON::Field(key: "max_batch")]
+          getter max_request_batch : Int32?
+          # The
+          @[JSON::Field(key: "max_expires", converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
+          getter max_request_expires : Time::Span?
+          @[JSON::Field(key: "max_bytes")]
+          getter max_request_max_bytes : Int32?
 
           def initialize(
             @deliver_subject = nil,
@@ -990,8 +1017,14 @@ module NATS
             max_ack_pending : Int? = nil,
             max_waiting : Int? = nil,
             @idle_heartbeat = nil,
-            @flow_control = false,
-            @deliver_group = durable_name
+            @flow_control = nil,
+            @deliver_group = durable_name,
+            @max_request_batch = nil,
+            @max_request_expires = nil,
+            @max_request_max_bytes = nil,
+            @replicas = 0,
+            @memory_storage = nil,
+            @inactive_threshold = nil
           )
             @max_deliver = max_deliver.try(&.to_i64)
             @max_ack_pending = max_ack_pending.to_i64 if max_ack_pending
