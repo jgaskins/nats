@@ -136,9 +136,15 @@ module NATS
 
         start = Time.monotonic
         first_heartbeat = nil
-        subscription = @nats.subscribe(subject, queue_group: consumer.config.deliver_group) do |msg|
+        subscription = @nats.subscribe(subject, queue_group: consumer.config.deliver_group || consumer.name) do |msg, sub|
           if msg.reply_to.presence
             channel.send Message.new(msg)
+          else
+            # If there isn't a reply-to, we're probably getting an update about
+            # some logistics pertaining to this pull subscription.
+            if (headers = msg.headers) && headers["Status"]? == "409 Consumer Deleted"
+              @nats.unsubscribe sub
+            end
           end
         end
 
