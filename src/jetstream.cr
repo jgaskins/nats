@@ -552,7 +552,7 @@ module NATS
             ack_policy : ConsumerConfig::AckPolicy = :explicit,
             **properties
           ) : Consumer
-            consumer_config = NATS::JetStream::API::V1::ConsumerConfig.new(
+            consumer_config = ConsumerConfig.new(
               **properties,
               deliver_policy: deliver_policy,
               ack_policy: ack_policy,
@@ -660,7 +660,7 @@ module NATS
             @opt_start_seq = nil,
             @opt_start_time = nil,
             @filter_subject = nil,
-            @external = nil,
+            @external = nil
           )
           end
         end
