@@ -200,6 +200,27 @@ describe NATS::JetStream do
     end
   end
 
+  it "gets idle heartbeats" do
+    write_subject = UUID.random.to_s
+    stream = create_stream([write_subject])
+    consumer_name = UUID.random.to_s
+    deliver_group = UUID.random.to_s
+    consumer = nats.jetstream.consumer.create(
+      stream_name: stream.config.name,
+      deliver_subject: consumer_name,
+      deliver_group: deliver_group,
+      idle_heartbeat: 150.milliseconds,
+    )
+    10.times { nats.publish write_subject, "hi" }
+    nats.jetstream.subscribe consumer do |msg|
+      nats.jetstream.ack_sync msg
+    end
+
+    sleep 250.milliseconds
+
+    nats.jetstream.stream.delete stream
+  end
+
   it "reads from durable pull consumers" do
     write_subject = UUID.random.to_s
     stream = create_stream([write_subject])
