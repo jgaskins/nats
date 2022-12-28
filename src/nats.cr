@@ -624,11 +624,11 @@ module NATS
     end
 
     private def begin_inbound
-      backoff = 1
+      backoff = 1.millisecond
       loop do
         if @socket.closed?
           break if state.closed?
-          handle_inbound_disconnect IO::Error.new, backoff: backoff.milliseconds
+          handle_inbound_disconnect IO::Error.new, backoff: backoff
         end
 
         line = @socket.read_line
@@ -741,12 +741,16 @@ module NATS
         else
           @on_error.call UnknownCommand.new(line)
         end
-        backoff = 1
+        backoff = 1.millisecond
         Fiber.yield
       rescue ex : IO::Error
+        backoff *= 2
+        backoff = {backoff, 10.seconds}.min
         break if state.closed?
-        handle_inbound_disconnect ex, backoff: backoff.milliseconds
+        handle_inbound_disconnect ex, backoff: backoff
       end
+    ensure
+      LOG.warn { "Exited inbound message loop" }
     end
 
     private def handle_inbound_disconnect(exception, backoff : Time::Span)
@@ -758,6 +762,7 @@ module NATS
       end
       LOG.debug { "Waiting #{backoff} to reconnect" }
       sleep backoff
+      handle_disconnect!
     end
 
     # Close this NATS connection. This should be done explicitly before exiting
