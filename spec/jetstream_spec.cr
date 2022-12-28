@@ -200,7 +200,7 @@ describe NATS::JetStream do
     end
   end
 
-  it "reads from pull consumers" do
+  it "reads from durable pull consumers" do
     write_subject = UUID.random.to_s
     stream = create_stream([write_subject])
 
@@ -230,11 +230,6 @@ describe NATS::JetStream do
         raise "Did not receive a message within 2 seconds"
       end
 
-      # Fetch the remaining 2 messages, but wait up to 500ms for a 3rd. We're
-      # specifying a short timeout because we know there is no 3rd message
-      # (we've already consumed 1 of 3 total messages, so there are only 2 left)
-      # and we don't want to wait the full 2 seconds for it to timeout. Plus,
-      # it also lets us exercise the timeout functionality.
       msgs = pull.fetch(3, timeout: 500.milliseconds)
       msgs.map(&.body).should eq [
         "1".to_slice,
@@ -243,6 +238,36 @@ describe NATS::JetStream do
 
       msgs.each { |msg| nats.jetstream.ack msg }
       nats.flush
+    ensure
+      nats.jetstream.stream.delete stream
+    end
+  end
+
+  it "reads from ephemeral pull consumers" do
+    write_subject = UUID.random.to_s
+    consumer_name = UUID.random.to_s
+    stream = create_stream([write_subject])
+    consumer = nats.jetstream.consumer.create(
+      stream_name: stream.config.name,
+      max_deliver: -1
+    )
+    pull = nats.jetstream.pull_subscribe(consumer)
+
+    begin
+      3.times { |i| nats.publish write_subject, i.to_s }
+
+      if msg = pull.fetch(timeout: 5000.milliseconds)
+        msg.subject.should eq write_subject
+        msg.body.should eq "0".to_slice
+      else
+        raise "Did not receive a message within 500ms"
+      end
+
+      msgs = pull.fetch(3, timeout: 500.milliseconds)
+      msgs.map(&.body).should eq [
+        "1".to_slice,
+        "2".to_slice,
+      ]
     ensure
       nats.jetstream.stream.delete stream
     end

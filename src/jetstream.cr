@@ -1115,10 +1115,10 @@ module NATS
         fetch(1, timeout: timeout).first?
       end
 
-      def fetch(message_count : Int, timeout : Time::Span = 2.seconds) : Enumerable(Message)
+      def fetch(message_count : Int, timeout : Time::Span = 2.seconds, no_wait : Bool = false, max_bytes : Int? = nil) : Enumerable(Message)
         # We have to reimplement request/reply here because we get N replies
         # for 1 request, which NATS request/reply does not support.
-        @nats.publish "$JS.API.CONSUMER.MSG.NEXT.#{consumer.stream_name}.#{consumer.config.durable_name}",
+        @nats.publish "$JS.API.CONSUMER.MSG.NEXT.#{consumer.stream_name}.#{consumer.name}",
           message: {
             expires: timeout.total_nanoseconds.to_i64,
             batch:   message_count,
