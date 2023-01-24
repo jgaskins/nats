@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 1.5.1">
-<meta name="crystal_docs.project_version" content="1.2.2">
+<meta name="crystal_docs.project_version" content="1.2.3">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::Objects - nats 1.2.2</title>
+  <title>NATS::Objects - nats 1.2.3</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        1.2.2
+        1.2.3
       </span>
     </div>
   </div>
@@ -406,8 +406,18 @@
       
         <ul>
   
-  <li class=" " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
+  <li class="parent " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
       <a href="../NATS/KV/Bucket.html">Bucket</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Bucket/Size" data-name="nats::kv::bucket::size">
+      <a href="../NATS/KV/Bucket/Size.html">Size</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -604,9 +614,9 @@
 
   <p>The NATS object store is S3-style object storage backed by NATS JetStream.</p>
 <p>You can access the object store API with <code><a href="../NATS/Client.html#objects%3AObjects%3A%3AClient-instance-method">NATS::Client#objects</a></code>.</p>
-<p>Create a bucket with <code><a href="../NATS/Objects/Client.html#create_bucket%28name%3AString%2Cdescription%3AString%3D%22%22%2C%2A%2Cttl%3ATime%3A%3ASpan%3F%3Dnil%2Cstorage%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3AStorage%3D%3Afile%2Creplicas%3AInt%3F%3Dnil%2Cmax_bytes%3AInt%3F%3Dnil%2Cplacement%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3APlacement%3F%3Dnil%29-instance-method">Objects::Client#create_bucket</a></code>:</p>
+<p>Create a bucket with <code><a href="../NATS/Objects/Client.html#create_bucket%28name%3AString%2Cdescription%3AString%3D%22%22%2C%2A%2Cttl%3ATime%3A%3ASpan%7CNil%3Dnil%2Cstorage%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3AStorage%3D%3Afile%2Creplicas%3AInt%7CNil%3Dnil%2Cmax_bytes%3AInt%7CNil%3Dnil%2Cplacement%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3APlacement%7CNil%3Dnil%29-instance-method">Objects::Client#create_bucket</a></code>:</p>
 <pre><code class="language-crystal">bucket <span class="o">=</span> nats.objects.create_bucket(<span class="s">&quot;my-bucket&quot;</span>)</code></pre>
-<p>Add an object from a file on disk (for example, from a tempfile created from an HTTP file upload) with <code><a href="../NATS/Objects/Bucket.html#put%28key%3AString%2Cvalue%3AIO%2C%2A%2Cdescription%3AString%3F%3Dnil%2Cheaders%3AHeaders%3DHeaders.new%2Cchunk_size%3AInt%3DDEFAULT_CHUNK_SIZE%29-instance-method">Objects::Bucket#put</a></code>:</p>
+<p>Add an object from a file on disk (for example, from a tempfile created from an HTTP file upload) with <code><a href="../NATS/Objects/Bucket.html#put%28key%3AString%2Cvalue%3AIO%2C%2A%2Cdescription%3AString%7CNil%3Dnil%2Cheaders%3AHeaders%3DHeaders.new%2Cchunk_size%3AInt%3DDEFAULT_CHUNK_SIZE%29-instance-method">Objects::Bucket#put</a></code>:</p>
 <pre><code class="language-crystal"><span class="t">File</span>.open filename <span class="k">do</span> <span class="o">|</span>file<span class="o">|</span>
   bucket.put <span class="s">&quot;my-key&quot;</span>, file
 <span class="k">end</span></code></pre>
@@ -641,7 +651,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L40" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L40" target="_blank">
         objects.cr
       </a>
     

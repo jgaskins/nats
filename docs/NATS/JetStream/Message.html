@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 1.5.1">
-<meta name="crystal_docs.project_version" content="1.2.2">
+<meta name="crystal_docs.project_version" content="1.2.3">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::Message - nats 1.2.2</title>
+  <title>NATS::JetStream::Message - nats 1.2.3</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        1.2.2
+        1.2.3
       </span>
     </div>
   </div>
@@ -406,8 +406,18 @@
       
         <ul>
   
-  <li class=" " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
+  <li class="parent " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
       <a href="../../NATS/KV/Bucket.html">Bucket</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Bucket/Size" data-name="nats::kv::bucket::size">
+      <a href="../../NATS/KV/Bucket/Size.html">Size</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -633,7 +643,7 @@ it came from, how many times it's been delivered, etc.</p>
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L290" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L318" target="_blank">
         jetstream.cr
       </a>
     
@@ -655,7 +665,7 @@ it came from, how many times it's been delivered, etc.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28stream%3AString%2Cconsumer%3AString%2Cdelivered_count%3AInt64%2Cstream_seq%3AInt64%2Cconsumer_seq%3AInt64%2Ctimestamp%3ATime%2Cpending%3AInt64%2Cbody%3ASlice%28UInt8%29%2Csubject%3AString%2Creply_to%3AString%2Cheaders%3AHash%28String%2CString%29%3F%29-class-method" class="signature"><strong>.new</strong>(stream : String, consumer : String, delivered_count : Int64, stream_seq : Int64, consumer_seq : Int64, timestamp : Time, pending : Int64, body : Slice(UInt8), subject : String, reply_to : String, headers : Hash(String, String)?)</a>
+        <a href="#new%28stream%3AString%2Cconsumer%3AString%2Cdelivered_count%3AInt64%2Cstream_seq%3AInt64%2Cconsumer_seq%3AInt64%2Ctimestamp%3ATime%2Cpending%3AInt64%2Cbody%3ASlice%28UInt8%29%2Csubject%3AString%2Creply_to%3AString%2Cheaders%3ANil%7CHash%28String%2CString%29%29-class-method" class="signature"><strong>.new</strong>(stream : String, consumer : String, delivered_count : Int64, stream_seq : Int64, consumer_seq : Int64, timestamp : Time, pending : Int64, body : Slice(UInt8), subject : String, reply_to : String, headers : Nil | Hash(String, String))</a>
         
       </li>
     
@@ -809,18 +819,18 @@ it came from, how many times it's been delivered, etc.</p>
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(stream:String,consumer:String,delivered_count:Int64,stream_seq:Int64,consumer_seq:Int64,timestamp:Time,pending:Int64,body:Slice(UInt8),subject:String,reply_to:String,headers:Hash(String,String)?)-class-method">
+    <div class="entry-detail" id="new(stream:String,consumer:String,delivered_count:Int64,stream_seq:Int64,consumer_seq:Int64,timestamp:Time,pending:Int64,body:Slice(UInt8),subject:String,reply_to:String,headers:Nil|Hash(String,String))-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(stream : String, consumer : String, delivered_count : Int64, stream_seq : Int64, consumer_seq : Int64, timestamp : Time, pending : Int64, body : Slice(UInt8), subject : String, reply_to : String, headers : Hash(String, String)?)
+        def self.<strong>new</strong>(stream : String, consumer : String, delivered_count : Int64, stream_seq : Int64, consumer_seq : Int64, timestamp : Time, pending : Int64, body : Slice(UInt8), subject : String, reply_to : String, headers : Nil | Hash(String, String))
 
-        <a class="method-permalink" href="#new%28stream%3AString%2Cconsumer%3AString%2Cdelivered_count%3AInt64%2Cstream_seq%3AInt64%2Cconsumer_seq%3AInt64%2Ctimestamp%3ATime%2Cpending%3AInt64%2Cbody%3ASlice%28UInt8%29%2Csubject%3AString%2Creply_to%3AString%2Cheaders%3AHash%28String%2CString%29%3F%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28stream%3AString%2Cconsumer%3AString%2Cdelivered_count%3AInt64%2Cstream_seq%3AInt64%2Cconsumer_seq%3AInt64%2Ctimestamp%3ATime%2Cpending%3AInt64%2Cbody%3ASlice%28UInt8%29%2Csubject%3AString%2Creply_to%3AString%2Cheaders%3ANil%7CHash%28String%2CString%29%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L364" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L392" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -843,7 +853,7 @@ instances, since JetStream is a layer on top of core NATS.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L340" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L368" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -884,7 +894,7 @@ wrap the body in a <code>String</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L323" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L351" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -905,7 +915,7 @@ wrap the body in a <code>String</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L295" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L323" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -926,7 +936,7 @@ wrap the body in a <code>String</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L305" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L333" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -948,7 +958,7 @@ consumer, starting at 1</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L299" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L327" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -971,7 +981,7 @@ deduplication.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L335" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L363" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -992,7 +1002,7 @@ deduplication.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L311" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L339" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1013,7 +1023,7 @@ deduplication.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L330" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L358" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1034,7 +1044,7 @@ deduplication.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L292" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L320" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1055,7 +1065,7 @@ deduplication.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L302" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L330" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1077,7 +1087,7 @@ most likely is) different from the subject it was delivered to</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L327" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L355" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1098,7 +1108,7 @@ most likely is) different from the subject it was delivered to</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L308" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L336" target="_blank">View source</a>]
         
       </div>
     </div>

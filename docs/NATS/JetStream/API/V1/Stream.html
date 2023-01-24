@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 1.5.1">
-<meta name="crystal_docs.project_version" content="1.2.2">
+<meta name="crystal_docs.project_version" content="1.2.3">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../../../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::API::V1::Stream - nats 1.2.2</title>
+  <title>NATS::JetStream::API::V1::Stream - nats 1.2.3</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../../../";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        1.2.2
+        1.2.3
       </span>
     </div>
   </div>
@@ -406,8 +406,18 @@
       
         <ul>
   
-  <li class=" " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
+  <li class="parent " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
       <a href="../../../../NATS/KV/Bucket.html">Bucket</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Bucket/Size" data-name="nats::kv::bucket::size">
+      <a href="../../../../NATS/KV/Bucket/Size.html">Size</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -618,7 +628,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L633" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L661" target="_blank">
         jetstream.cr
       </a>
     
@@ -661,7 +671,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#cluster%3AClusterInfo%3F-instance-method" class="signature"><strong>#cluster</strong> : ClusterInfo?</a>
+        <a href="#cluster%3AClusterInfo%7CNil-instance-method" class="signature"><strong>#cluster</strong> : ClusterInfo | Nil</a>
         
       </li>
     
@@ -676,7 +686,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#mirror%3AStreamSourceInfo%3F-instance-method" class="signature"><strong>#mirror</strong> : StreamSourceInfo?</a>
+        <a href="#mirror%3AStreamSourceInfo%7CNil-instance-method" class="signature"><strong>#mirror</strong> : StreamSourceInfo | Nil</a>
         
       </li>
     
@@ -780,7 +790,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L633" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L661" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -799,18 +809,18 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="cluster:ClusterInfo?-instance-method">
+    <div class="entry-detail" id="cluster:ClusterInfo|Nil-instance-method">
       <div class="signature">
         
-        def <strong>cluster</strong> : <a href="../../../../NATS/JetStream/API/V1/ClusterInfo.html">ClusterInfo</a>?
+        def <strong>cluster</strong> : <a href="../../../../NATS/JetStream/API/V1/ClusterInfo.html">ClusterInfo</a> | Nil
 
-        <a class="method-permalink" href="#cluster%3AClusterInfo%3F-instance-method">#</a>
+        <a class="method-permalink" href="#cluster%3AClusterInfo%7CNil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L637" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L665" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -826,7 +836,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L634" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L662" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -842,23 +852,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L635" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L663" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="mirror:StreamSourceInfo?-instance-method">
+    <div class="entry-detail" id="mirror:StreamSourceInfo|Nil-instance-method">
       <div class="signature">
         
-        def <strong>mirror</strong> : <a href="../../../../NATS/JetStream/API/V1/StreamSourceInfo.html">StreamSourceInfo</a>?
+        def <strong>mirror</strong> : <a href="../../../../NATS/JetStream/API/V1/StreamSourceInfo.html">StreamSourceInfo</a> | Nil
 
-        <a class="method-permalink" href="#mirror%3AStreamSourceInfo%3F-instance-method">#</a>
+        <a class="method-permalink" href="#mirror%3AStreamSourceInfo%7CNil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L638" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L666" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -874,7 +884,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L639" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L667" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -890,7 +900,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L636" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L664" target="_blank">View source</a>]
         
       </div>
     </div>

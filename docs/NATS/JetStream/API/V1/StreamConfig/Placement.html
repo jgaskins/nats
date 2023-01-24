@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 1.5.1">
-<meta name="crystal_docs.project_version" content="1.2.2">
+<meta name="crystal_docs.project_version" content="1.2.3">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../../../../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::API::V1::StreamConfig::Placement - nats 1.2.2</title>
+  <title>NATS::JetStream::API::V1::StreamConfig::Placement - nats 1.2.3</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../../../../";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        1.2.2
+        1.2.3
       </span>
     </div>
   </div>
@@ -406,8 +406,18 @@
       
         <ul>
   
-  <li class=" " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
+  <li class="parent " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
       <a href="../../../../../NATS/KV/Bucket.html">Bucket</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Bucket/Size" data-name="nats::kv::bucket::size">
+      <a href="../../../../../NATS/KV/Bucket/Size.html">Size</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -618,7 +628,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L814" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L842" target="_blank">
         jetstream.cr
       </a>
     
@@ -645,7 +655,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#new%28cluster%3AString%3F%3Dnil%2Ctags%3AArray%28String%29%3F%3Dnil%29-class-method" class="signature"><strong>.new</strong>(cluster : String? = <span class="n">nil</span>, tags : Array(String)? = <span class="n">nil</span>)</a>
+        <a href="#new%28cluster%3ANil%7CString%3Dnil%2Ctags%3ANil%7CArray%28String%29%3Dnil%29-class-method" class="signature"><strong>.new</strong>(cluster : Nil | String = <span class="n">nil</span>, tags : Nil | Array(String) = <span class="n">nil</span>)</a>
         
       </li>
     
@@ -666,7 +676,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#cluster%3AString%3F-instance-method" class="signature"><strong>#cluster</strong> : String?</a>
+        <a href="#cluster%3AString%7CNil-instance-method" class="signature"><strong>#cluster</strong> : String | Nil</a>
         
       </li>
     
@@ -765,23 +775,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L814" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L842" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="new(cluster:String?=nil,tags:Array(String)?=nil)-class-method">
+    <div class="entry-detail" id="new(cluster:Nil|String=nil,tags:Nil|Array(String)=nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(cluster : String? = <span class="n">nil</span>, tags : Array(String)? = <span class="n">nil</span>)
+        def self.<strong>new</strong>(cluster : Nil | String = <span class="n">nil</span>, tags : Nil | Array(String) = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#new%28cluster%3AString%3F%3Dnil%2Ctags%3AArray%28String%29%3F%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28cluster%3ANil%7CString%3Dnil%2Ctags%3ANil%7CArray%28String%29%3Dnil%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L818" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L846" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -800,18 +810,18 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="cluster:String?-instance-method">
+    <div class="entry-detail" id="cluster:String|Nil-instance-method">
       <div class="signature">
         
-        def <strong>cluster</strong> : String?
+        def <strong>cluster</strong> : String | Nil
 
-        <a class="method-permalink" href="#cluster%3AString%3F-instance-method">#</a>
+        <a class="method-permalink" href="#cluster%3AString%7CNil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L815" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L843" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -827,7 +837,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L816" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L844" target="_blank">View source</a>]
         
       </div>
     </div>

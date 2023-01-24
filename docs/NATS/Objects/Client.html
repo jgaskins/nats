@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 1.5.1">
-<meta name="crystal_docs.project_version" content="1.2.2">
+<meta name="crystal_docs.project_version" content="1.2.3">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::Objects::Client - nats 1.2.2</title>
+  <title>NATS::Objects::Client - nats 1.2.3</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        1.2.2
+        1.2.3
       </span>
     </div>
   </div>
@@ -406,8 +406,18 @@
       
         <ul>
   
-  <li class=" " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
+  <li class="parent " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
       <a href="../../NATS/KV/Bucket.html">Bucket</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Bucket/Size" data-name="nats::kv::bucket::size">
+      <a href="../../NATS/KV/Bucket/Size.html">Size</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -618,7 +628,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L49" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L49" target="_blank">
         objects.cr
       </a>
     
@@ -661,7 +671,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#create_bucket%28name%3AString%2Cdescription%3AString%3D%22%22%2C%2A%2Cttl%3ATime%3A%3ASpan%3F%3Dnil%2Cstorage%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3AStorage%3D%3Afile%2Creplicas%3AInt%3F%3Dnil%2Cmax_bytes%3AInt%3F%3Dnil%2Cplacement%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3APlacement%3F%3Dnil%29-instance-method" class="signature"><strong>#create_bucket</strong>(name : String, description : String = <span class="s">&quot;&quot;</span>, *, ttl : Time::Span? = <span class="n">nil</span>, storage : JetStream::API::V1::StreamConfig::Storage = <span class="n">:file</span>, replicas : Int? = <span class="n">nil</span>, max_bytes : Int? = <span class="n">nil</span>, placement : JetStream::API::V1::StreamConfig::Placement? = <span class="n">nil</span>)</a>
+        <a href="#create_bucket%28name%3AString%2Cdescription%3AString%3D%22%22%2C%2A%2Cttl%3ATime%3A%3ASpan%7CNil%3Dnil%2Cstorage%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3AStorage%3D%3Afile%2Creplicas%3AInt%7CNil%3Dnil%2Cmax_bytes%3AInt%7CNil%3Dnil%2Cplacement%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3APlacement%7CNil%3Dnil%29-instance-method" class="signature"><strong>#create_bucket</strong>(name : String, description : String = <span class="s">&quot;&quot;</span>, *, ttl : Time::Span | Nil = <span class="n">nil</span>, storage : JetStream::API::V1::StreamConfig::Storage = <span class="n">:file</span>, replicas : Int | Nil = <span class="n">nil</span>, max_bytes : Int | Nil = <span class="n">nil</span>, placement : JetStream::API::V1::StreamConfig::Placement | Nil = <span class="n">nil</span>)</a>
         
           <div class="summary"><p>Create a bucket in the object store</p></div>
         
@@ -673,7 +683,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#get%28bucket%3AString%2Ckey%3AString%29%3AIO%3F-instance-method" class="signature"><strong>#get</strong>(bucket : String, key : String) : IO?</a>
+        <a href="#get%28bucket%3AString%2Ckey%3AString%29%3AIO%7CNil-instance-method" class="signature"><strong>#get</strong>(bucket : String, key : String) : IO | Nil</a>
         
       </li>
     
@@ -693,7 +703,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#put%28bucket%3AString%2Ckey%3AString%2Cvalue%3AIO%2Cdescription%3AString%3F%3Dnil%2Cheaders%3AHeaders%3DHeaders.new%2Cchunk_size%3AInt%3DDEFAULT_CHUNK_SIZE%29-instance-method" class="signature"><strong>#put</strong>(bucket : String, key : String, value : IO, description : String? = <span class="n">nil</span>, headers : Headers = <span class="t">Headers</span>.new, chunk_size : Int = <span class="t">DEFAULT_CHUNK_SIZE</span>)</a>
+        <a href="#put%28bucket%3AString%2Ckey%3AString%2Cvalue%3AIO%2Cdescription%3AString%7CNil%3Dnil%2Cheaders%3AHeaders%3DHeaders.new%2Cchunk_size%3AInt%3DDEFAULT_CHUNK_SIZE%29-instance-method" class="signature"><strong>#put</strong>(bucket : String, key : String, value : IO, description : String | Nil = <span class="n">nil</span>, headers : Headers = <span class="t">Headers</span>.new, chunk_size : Int = <span class="t">DEFAULT_CHUNK_SIZE</span>)</a>
         
       </li>
     
@@ -753,7 +763,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L50" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L50" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -772,12 +782,12 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="create_bucket(name:String,description:String=&quot;&quot;,*,ttl:Time::Span?=nil,storage:JetStream::API::V1::StreamConfig::Storage=:file,replicas:Int?=nil,max_bytes:Int?=nil,placement:JetStream::API::V1::StreamConfig::Placement?=nil)-instance-method">
+    <div class="entry-detail" id="create_bucket(name:String,description:String=&quot;&quot;,*,ttl:Time::Span|Nil=nil,storage:JetStream::API::V1::StreamConfig::Storage=:file,replicas:Int|Nil=nil,max_bytes:Int|Nil=nil,placement:JetStream::API::V1::StreamConfig::Placement|Nil=nil)-instance-method">
       <div class="signature">
         
-        def <strong>create_bucket</strong>(name : String, description : String = <span class="s">&quot;&quot;</span>, *, ttl : Time::Span? = <span class="n">nil</span>, storage : <a href="../../NATS/JetStream/API/V1/StreamConfig/Storage.html">JetStream::API::V1::StreamConfig::Storage</a> = <span class="n">:file</span>, replicas : Int? = <span class="n">nil</span>, max_bytes : Int? = <span class="n">nil</span>, placement : <a href="../../NATS/JetStream/API/V1/StreamConfig/Placement.html">JetStream::API::V1::StreamConfig::Placement</a>? = <span class="n">nil</span>)
+        def <strong>create_bucket</strong>(name : String, description : String = <span class="s">&quot;&quot;</span>, *, ttl : Time::Span | Nil = <span class="n">nil</span>, storage : <a href="../../NATS/JetStream/API/V1/StreamConfig/Storage.html">JetStream::API::V1::StreamConfig::Storage</a> = <span class="n">:file</span>, replicas : Int | Nil = <span class="n">nil</span>, max_bytes : Int | Nil = <span class="n">nil</span>, placement : <a href="../../NATS/JetStream/API/V1/StreamConfig/Placement.html">JetStream::API::V1::StreamConfig::Placement</a> | Nil = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#create_bucket%28name%3AString%2Cdescription%3AString%3D%22%22%2C%2A%2Cttl%3ATime%3A%3ASpan%3F%3Dnil%2Cstorage%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3AStorage%3D%3Afile%2Creplicas%3AInt%3F%3Dnil%2Cmax_bytes%3AInt%3F%3Dnil%2Cplacement%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3APlacement%3F%3Dnil%29-instance-method">#</a>
+        <a class="method-permalink" href="#create_bucket%28name%3AString%2Cdescription%3AString%3D%22%22%2C%2A%2Cttl%3ATime%3A%3ASpan%7CNil%3Dnil%2Cstorage%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3AStorage%3D%3Afile%2Creplicas%3AInt%7CNil%3Dnil%2Cmax_bytes%3AInt%7CNil%3Dnil%2Cplacement%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3APlacement%7CNil%3Dnil%29-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -795,7 +805,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L73" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L73" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -811,23 +821,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L107" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L107" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="get(bucket:String,key:String):IO?-instance-method">
+    <div class="entry-detail" id="get(bucket:String,key:String):IO|Nil-instance-method">
       <div class="signature">
         
-        def <strong>get</strong>(bucket : String, key : String) : IO?
+        def <strong>get</strong>(bucket : String, key : String) : IO | Nil
 
-        <a class="method-permalink" href="#get%28bucket%3AString%2Ckey%3AString%29%3AIO%3F-instance-method">#</a>
+        <a class="method-permalink" href="#get%28bucket%3AString%2Ckey%3AString%29%3AIO%7CNil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L167" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L167" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -843,7 +853,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L101" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L101" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -859,7 +869,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L157" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L157" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -875,23 +885,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L204" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L209" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="put(bucket:String,key:String,value:IO,description:String?=nil,headers:Headers=Headers.new,chunk_size:Int=DEFAULT_CHUNK_SIZE)-instance-method">
+    <div class="entry-detail" id="put(bucket:String,key:String,value:IO,description:String|Nil=nil,headers:Headers=Headers.new,chunk_size:Int=DEFAULT_CHUNK_SIZE)-instance-method">
       <div class="signature">
         
-        def <strong>put</strong>(bucket : String, key : String, value : IO, description : String? = <span class="n">nil</span>, headers : <a href="../../NATS/Headers.html">Headers</a> = <span class="t">Headers</span>.new, chunk_size : Int = <span class="t">DEFAULT_CHUNK_SIZE</span>)
+        def <strong>put</strong>(bucket : String, key : String, value : IO, description : String | Nil = <span class="n">nil</span>, headers : <a href="../../NATS/Headers.html">Headers</a> = <span class="t">Headers</span>.new, chunk_size : Int = <span class="t">DEFAULT_CHUNK_SIZE</span>)
 
-        <a class="method-permalink" href="#put%28bucket%3AString%2Ckey%3AString%2Cvalue%3AIO%2Cdescription%3AString%3F%3Dnil%2Cheaders%3AHeaders%3DHeaders.new%2Cchunk_size%3AInt%3DDEFAULT_CHUNK_SIZE%29-instance-method">#</a>
+        <a class="method-permalink" href="#put%28bucket%3AString%2Ckey%3AString%2Cvalue%3AIO%2Cdescription%3AString%7CNil%3Dnil%2Cheaders%3AHeaders%3DHeaders.new%2Cchunk_size%3AInt%3DDEFAULT_CHUNK_SIZE%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L111" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L111" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -907,7 +917,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L222" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L227" target="_blank">View source</a>]
         
       </div>
     </div>

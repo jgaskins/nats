@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 1.5.1">
-<meta name="crystal_docs.project_version" content="1.2.2">
+<meta name="crystal_docs.project_version" content="1.2.3">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::Subscription - nats 1.2.2</title>
+  <title>NATS::Subscription - nats 1.2.3</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        1.2.2
+        1.2.3
       </span>
     </div>
   </div>
@@ -406,8 +406,18 @@
       
         <ul>
   
-  <li class=" " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
+  <li class="parent " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
       <a href="../NATS/KV/Bucket.html">Bucket</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Bucket/Size" data-name="nats::kv::bucket::size">
+      <a href="../NATS/KV/Bucket/Size.html">Size</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -618,7 +628,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L892" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L897" target="_blank">
         nats.cr
       </a>
     
@@ -640,7 +650,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28subject%3AString%2Csid%3AInt64%2Cqueue_group%3AString%3F%2Cnats%3ANATS%3A%3AClient%2Cmax_in_flight%3AInt%3D10%2C%26block%3AMessage%2CSubscription-%3E%29-class-method" class="signature"><strong>.new</strong>(subject : String, sid : Int64, queue_group : String?, nats : NATS::Client, max_in_flight : Int = <span class="n">10</span>, &block : Message, Subscription -> )</a>
+        <a href="#new%28subject%3AString%2Csid%3AInt64%2Cqueue_group%3ANil%7CString%2Cnats%3ANATS%3A%3AClient%2Cmax_in_flight%3AInt%3D10%2C%26block%3AMessage%2CSubscription-%3E%29-class-method" class="signature"><strong>.new</strong>(subject : String, sid : Int64, queue_group : Nil | String, nats : NATS::Client, max_in_flight : Int = <span class="n">10</span>, &block : Message, Subscription -> )</a>
         
       </li>
     
@@ -671,12 +681,12 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#messages_remaining%3AInt32%3F-instance-method" class="signature"><strong>#messages_remaining</strong> : Int32?</a>
+        <a href="#messages_remaining%3AInt32%7CNil-instance-method" class="signature"><strong>#messages_remaining</strong> : Int32 | Nil</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#queue_group%3AString%3F-instance-method" class="signature"><strong>#queue_group</strong> : String?</a>
+        <a href="#queue_group%3AString%7CNil-instance-method" class="signature"><strong>#queue_group</strong> : String | Nil</a>
         
       </li>
     
@@ -745,18 +755,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(subject:String,sid:Int64,queue_group:String?,nats:NATS::Client,max_in_flight:Int=10,&amp;block:Message,Subscription-&gt;)-class-method">
+    <div class="entry-detail" id="new(subject:String,sid:Int64,queue_group:Nil|String,nats:NATS::Client,max_in_flight:Int=10,&amp;block:Message,Subscription-&gt;)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(subject : String, sid : Int64, queue_group : String?, nats : <a href="../NATS/Client.html">NATS::Client</a>, max_in_flight : Int = <span class="n">10</span>, &block : <a href="../NATS/Message.html">Message</a>, <a href="../NATS/Subscription.html">Subscription</a> -> )
+        def self.<strong>new</strong>(subject : String, sid : Int64, queue_group : Nil | String, nats : <a href="../NATS/Client.html">NATS::Client</a>, max_in_flight : Int = <span class="n">10</span>, &block : <a href="../NATS/Message.html">Message</a>, <a href="../NATS/Subscription.html">Subscription</a> -> )
 
-        <a class="method-permalink" href="#new%28subject%3AString%2Csid%3AInt64%2Cqueue_group%3AString%3F%2Cnats%3ANATS%3A%3AClient%2Cmax_in_flight%3AInt%3D10%2C%26block%3AMessage%2CSubscription-%3E%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28subject%3AString%2Csid%3AInt64%2Cqueue_group%3ANil%7CString%2Cnats%3ANATS%3A%3AClient%2Cmax_in_flight%3AInt%3D10%2C%26block%3AMessage%2CSubscription-%3E%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L903" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L908" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -786,7 +796,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L959" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L964" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -802,39 +812,39 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L953" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L958" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="messages_remaining:Int32?-instance-method">
+    <div class="entry-detail" id="messages_remaining:Int32|Nil-instance-method">
       <div class="signature">
         
-        def <strong>messages_remaining</strong> : Int32?
+        def <strong>messages_remaining</strong> : Int32 | Nil
 
-        <a class="method-permalink" href="#messages_remaining%3AInt32%3F-instance-method">#</a>
+        <a class="method-permalink" href="#messages_remaining%3AInt32%7CNil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L898" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L903" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="queue_group:String?-instance-method">
+    <div class="entry-detail" id="queue_group:String|Nil-instance-method">
       <div class="signature">
         
-        def <strong>queue_group</strong> : String?
+        def <strong>queue_group</strong> : String | Nil
 
-        <a class="method-permalink" href="#queue_group%3AString%3F-instance-method">#</a>
+        <a class="method-permalink" href="#queue_group%3AString%7CNil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L897" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L902" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -850,7 +860,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L964" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L969" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -866,7 +876,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L896" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L901" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -882,7 +892,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L927" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L932" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -898,7 +908,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L895" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L900" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -914,7 +924,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L924" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L929" target="_blank">View source</a>]
         
       </div>
     </div>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 1.5.1">
-<meta name="crystal_docs.project_version" content="1.2.2">
+<meta name="crystal_docs.project_version" content="1.2.3">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::KV::Client - nats 1.2.2</title>
+  <title>NATS::KV::Client - nats 1.2.3</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        1.2.2
+        1.2.3
       </span>
     </div>
   </div>
@@ -406,8 +406,18 @@
       
         <ul>
   
-  <li class=" " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
+  <li class="parent " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
       <a href="../../NATS/KV/Bucket.html">Bucket</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Bucket/Size" data-name="nats::kv::bucket::size">
+      <a href="../../NATS/KV/Bucket/Size.html">Size</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -618,7 +628,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L230" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L265" target="_blank">
         kv.cr
       </a>
     
@@ -661,14 +671,14 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#create%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%29%3AInt64%3F-instance-method" class="signature"><strong>#create</strong>(bucket : String, key : String, value : String | Bytes) : Int64?</a>
+        <a href="#create%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%29%3AInt64%7CNil-instance-method" class="signature"><strong>#create</strong>(bucket : String, key : String, value : String | Bytes) : Int64 | Nil</a>
         
           <div class="summary"><p>Create a key in the given <code>bucket</code> with the specified <code>value</code>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#create_bucket%28name%3AString%2Cdescription%3AString%3D%22%22%2C%2A%2Cmax_value_size%3AInt32%3F%3Dnil%2Chistory%3AUInt8%3D1%2Cttl%3ATime%3A%3ASpan%3F%3Dnil%2Cmax_bytes%3AInt64%3F%3Dnil%2Cstorage%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3AStorage%3D%3Afile%2Creplicas%3AInt32%3D1%2Cplacement%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3APlacement%3F%3Dnil%29%3ABucket-instance-method" class="signature"><strong>#create_bucket</strong>(name : String, description : String = <span class="s">&quot;&quot;</span>, *, max_value_size : Int32? = <span class="n">nil</span>, history : UInt8 = <span class="n">1</span>, ttl : Time::Span? = <span class="n">nil</span>, max_bytes : Int64? = <span class="n">nil</span>, storage : JetStream::API::V1::StreamConfig::Storage = <span class="n">:file</span>, replicas : Int32 = <span class="n">1</span>, placement : JetStream::API::V1::StreamConfig::Placement? = <span class="n">nil</span>) : Bucket</a>
+        <a href="#create_bucket%28name%3AString%2Cdescription%3AString%3D%22%22%2C%2A%2Cmax_value_size%3AInt32%7CNil%3Dnil%2Chistory%3AUInt8%3D1%2Cttl%3ATime%3A%3ASpan%7CNil%3Dnil%2Cmax_bytes%3AInt64%7CNil%3Dnil%2Cstorage%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3AStorage%3D%3Afile%2Creplicas%3AInt32%3D1%2Cdiscard_new_per_key%3ABool%3Dfalse%2Cplacement%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3APlacement%7CNil%3Dnil%29%3ABucket-instance-method" class="signature"><strong>#create_bucket</strong>(name : String, description : String = <span class="s">&quot;&quot;</span>, *, max_value_size : Int32 | Nil = <span class="n">nil</span>, history : UInt8 = <span class="n">1</span>, ttl : Time::Span | Nil = <span class="n">nil</span>, max_bytes : Int64 | Nil = <span class="n">nil</span>, storage : JetStream::API::V1::StreamConfig::Storage = <span class="n">:file</span>, replicas : Int32 = <span class="n">1</span>, discard_new_per_key : Bool = <span class="n">false</span>, placement : JetStream::API::V1::StreamConfig::Placement | Nil = <span class="n">nil</span>) : Bucket</a>
         
           <div class="summary"><p>Create a <code><a href="../../NATS/KV/Bucket.html">NATS::KV::Bucket</a></code> to store key/value mappings in with the specified <code>name</code>.</p></div>
         
@@ -695,14 +705,14 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#get%28bucket%3AString%2Ckey%3AString%2Cignore_deletes%3Dfalse%29%3AEntry%3F-instance-method" class="signature"><strong>#get</strong>(bucket : String, key : String, ignore_deletes = <span class="n">false</span>) : Entry?</a>
+        <a href="#get%28bucket%3AString%2Ckey%3AString%2C%2A%2Crevision%3AInt%7CNil%3Dnil%2Cignore_deletes%3ABool%3Dfalse%29%3AEntry%7CNil-instance-method" class="signature"><strong>#get</strong>(bucket : String, key : String, *, revision : Int | Nil = <span class="n">nil</span>, ignore_deletes : Bool = <span class="n">false</span>) : Entry | Nil</a>
         
           <div class="summary"><p>Get the <code><a href="../../NATS/KV/Entry.html">KV::Entry</a></code> for the given <code>key</code> in <code>bucket</code>, or <code>nil</code> if the key does not exist.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#get_bucket%28name%3AString%29%3ABucket%3F-instance-method" class="signature"><strong>#get_bucket</strong>(name : String) : Bucket?</a>
+        <a href="#get_bucket%28name%3AString%29%3ABucket%7CNil-instance-method" class="signature"><strong>#get_bucket</strong>(name : String) : Bucket | Nil</a>
         
           <div class="summary"><p>Get the <code><a href="../../NATS/KV/Bucket.html">Bucket</a></code> with the given name, or <code>nil</code> if that bucket does not exist.</p></div>
         
@@ -742,7 +752,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#update%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%2Crevision%3AInt%29%3AInt64%3F-instance-method" class="signature"><strong>#update</strong>(bucket : String, key : String, value : String | Bytes, revision : Int) : Int64?</a>
+        <a href="#update%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%2Crevision%3AInt%29%3AInt64%7CNil-instance-method" class="signature"><strong>#update</strong>(bucket : String, key : String, value : String | Bytes, revision : Int) : Int64 | Nil</a>
         
           <div class="summary"><p>Update a bucket's key with the specified value only if the current value is the specified revision.</p></div>
         
@@ -804,7 +814,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L231" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L266" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -823,18 +833,18 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="create(bucket:String,key:String,value:String|Bytes):Int64?-instance-method">
+    <div class="entry-detail" id="create(bucket:String,key:String,value:String|Bytes):Int64|Nil-instance-method">
       <div class="signature">
         
-        def <strong>create</strong>(bucket : String, key : String, value : String | Bytes) : Int64?
+        def <strong>create</strong>(bucket : String, key : String, value : String | Bytes) : Int64 | Nil
 
-        <a class="method-permalink" href="#create%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%29%3AInt64%3F-instance-method">#</a>
+        <a class="method-permalink" href="#create%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%29%3AInt64%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
           
           <p>Create a key in the given <code>bucket</code> with the specified <code>value</code>. On
-success, <code><a href="../../NATS/KV/Client.html#create%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%29%3AInt64%3F-instance-method">#create</a></code> returns the new revision number for the key. If the
+success, <code><a href="../../NATS/KV/Client.html#create%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%29%3AInt64%7CNil-instance-method">#create</a></code> returns the new revision number for the key. If the
 key already exists, the value will not be set and <code>nil</code> is returned.</p>
 <pre><code class="language-crystal"><span class="k">if</span> revision <span class="o">=</span> kv.create(<span class="s">&quot;my-bucket&quot;</span>, <span class="s">&quot;my-key&quot;</span>, <span class="s">&quot;my-value&quot;</span>)
   <span class="c"># created</span>
@@ -846,17 +856,17 @@ key already exists, the value will not be set and <code>nil</code> is returned.<
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L343" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L387" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="create_bucket(name:String,description:String=&quot;&quot;,*,max_value_size:Int32?=nil,history:UInt8=1,ttl:Time::Span?=nil,max_bytes:Int64?=nil,storage:JetStream::API::V1::StreamConfig::Storage=:file,replicas:Int32=1,placement:JetStream::API::V1::StreamConfig::Placement?=nil):Bucket-instance-method">
+    <div class="entry-detail" id="create_bucket(name:String,description:String=&quot;&quot;,*,max_value_size:Int32|Nil=nil,history:UInt8=1,ttl:Time::Span|Nil=nil,max_bytes:Int64|Nil=nil,storage:JetStream::API::V1::StreamConfig::Storage=:file,replicas:Int32=1,discard_new_per_key:Bool=false,placement:JetStream::API::V1::StreamConfig::Placement|Nil=nil):Bucket-instance-method">
       <div class="signature">
         
-        def <strong>create_bucket</strong>(name : String, description : String = <span class="s">&quot;&quot;</span>, *, max_value_size : Int32? = <span class="n">nil</span>, history : UInt8 = <span class="n">1</span>, ttl : Time::Span? = <span class="n">nil</span>, max_bytes : Int64? = <span class="n">nil</span>, storage : <a href="../../NATS/JetStream/API/V1/StreamConfig/Storage.html">JetStream::API::V1::StreamConfig::Storage</a> = <span class="n">:file</span>, replicas : Int32 = <span class="n">1</span>, placement : <a href="../../NATS/JetStream/API/V1/StreamConfig/Placement.html">JetStream::API::V1::StreamConfig::Placement</a>? = <span class="n">nil</span>) : <a href="../../NATS/KV/Bucket.html">Bucket</a>
+        def <strong>create_bucket</strong>(name : String, description : String = <span class="s">&quot;&quot;</span>, *, max_value_size : Int32 | Nil = <span class="n">nil</span>, history : UInt8 = <span class="n">1</span>, ttl : Time::Span | Nil = <span class="n">nil</span>, max_bytes : Int64 | Nil = <span class="n">nil</span>, storage : <a href="../../NATS/JetStream/API/V1/StreamConfig/Storage.html">JetStream::API::V1::StreamConfig::Storage</a> = <span class="n">:file</span>, replicas : Int32 = <span class="n">1</span>, discard_new_per_key : Bool = <span class="n">false</span>, placement : <a href="../../NATS/JetStream/API/V1/StreamConfig/Placement.html">JetStream::API::V1::StreamConfig::Placement</a> | Nil = <span class="n">nil</span>) : <a href="../../NATS/KV/Bucket.html">Bucket</a>
 
-        <a class="method-permalink" href="#create_bucket%28name%3AString%2Cdescription%3AString%3D%22%22%2C%2A%2Cmax_value_size%3AInt32%3F%3Dnil%2Chistory%3AUInt8%3D1%2Cttl%3ATime%3A%3ASpan%3F%3Dnil%2Cmax_bytes%3AInt64%3F%3Dnil%2Cstorage%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3AStorage%3D%3Afile%2Creplicas%3AInt32%3D1%2Cplacement%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3APlacement%3F%3Dnil%29%3ABucket-instance-method">#</a>
+        <a class="method-permalink" href="#create_bucket%28name%3AString%2Cdescription%3AString%3D%22%22%2C%2A%2Cmax_value_size%3AInt32%7CNil%3Dnil%2Chistory%3AUInt8%3D1%2Cttl%3ATime%3A%3ASpan%7CNil%3Dnil%2Cmax_bytes%3AInt64%7CNil%3Dnil%2Cstorage%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3AStorage%3D%3Afile%2Creplicas%3AInt32%3D1%2Cdiscard_new_per_key%3ABool%3Dfalse%2Cplacement%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3APlacement%7CNil%3Dnil%29%3ABucket-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -876,7 +886,7 @@ specified <code>name</code>. Options are:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L243" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L278" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -892,7 +902,7 @@ specified <code>name</code>. Options are:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L470" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L511" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -908,7 +918,7 @@ specified <code>name</code>. Options are:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L499" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L540" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -924,7 +934,7 @@ specified <code>name</code>. Options are:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L503" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L544" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -940,17 +950,17 @@ specified <code>name</code>. Options are:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L409" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L450" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="get(bucket:String,key:String,ignore_deletes=false):Entry?-instance-method">
+    <div class="entry-detail" id="get(bucket:String,key:String,*,revision:Int|Nil=nil,ignore_deletes:Bool=false):Entry|Nil-instance-method">
       <div class="signature">
         
-        def <strong>get</strong>(bucket : String, key : String, ignore_deletes = <span class="n">false</span>) : <a href="../../NATS/KV/Entry.html">Entry</a>?
+        def <strong>get</strong>(bucket : String, key : String, *, revision : Int | Nil = <span class="n">nil</span>, ignore_deletes : Bool = <span class="n">false</span>) : <a href="../../NATS/KV/Entry.html">Entry</a> | Nil
 
-        <a class="method-permalink" href="#get%28bucket%3AString%2Ckey%3AString%2Cignore_deletes%3Dfalse%29%3AEntry%3F-instance-method">#</a>
+        <a class="method-permalink" href="#get%28bucket%3AString%2Ckey%3AString%2C%2A%2Crevision%3AInt%7CNil%3Dnil%2Cignore_deletes%3ABool%3Dfalse%29%3AEntry%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -962,17 +972,17 @@ does not exist.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L308" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L345" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="get_bucket(name:String):Bucket?-instance-method">
+    <div class="entry-detail" id="get_bucket(name:String):Bucket|Nil-instance-method">
       <div class="signature">
         
-        def <strong>get_bucket</strong>(name : String) : <a href="../../NATS/KV/Bucket.html">Bucket</a>?
+        def <strong>get_bucket</strong>(name : String) : <a href="../../NATS/KV/Bucket.html">Bucket</a> | Nil
 
-        <a class="method-permalink" href="#get_bucket%28name%3AString%29%3ABucket%3F-instance-method">#</a>
+        <a class="method-permalink" href="#get_bucket%28name%3AString%29%3ABucket%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -983,7 +993,7 @@ does not exist.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L281" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L318" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -998,7 +1008,7 @@ does not exist.</p>
       
         <div class="doc">
           
-          <p>Get all of the currently retained history for the given <code>key</code> in the given <code>bucket</code> name. Note that some of the history could have expired due to <code><a href="../../NATS/KV/Bucket.html#ttl%3ATime%3A%3ASpan%3F-instance-method">Bucket#ttl</a></code> or <code><a href="../../NATS/KV/Bucket.html#history%3AInt64%3F-instance-method">Bucket#history</a></code>.</p>
+          <p>Get all of the currently retained history for the given <code>key</code> in the given <code>bucket</code> name. Note that some of the history could have expired due to <code><a href="../../NATS/KV/Bucket.html#ttl%3ATime%3A%3ASpan%7CNil-instance-method">Bucket#ttl</a></code> or <code><a href="../../NATS/KV/Bucket.html#history%3AInt64%7CNil-instance-method">Bucket#history</a></code>.</p>
 <pre><code class="language-crystal">kv.set <span class="s">&quot;config&quot;</span>, <span class="s">&quot;name&quot;</span>, <span class="s">&quot;1&quot;</span>
 kv.history(<span class="s">&quot;config&quot;</span>, <span class="s">&quot;name&quot;</span>)</code></pre>
         </div>
@@ -1006,7 +1016,7 @@ kv.history(<span class="s">&quot;config&quot;</span>, <span class="s">&quot;name
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L423" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L464" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1027,7 +1037,7 @@ kv.history(<span class="s">&quot;config&quot;</span>, <span class="s">&quot;name
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L386" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L427" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1043,7 +1053,7 @@ kv.history(<span class="s">&quot;config&quot;</span>, <span class="s">&quot;name
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L484" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L525" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1064,7 +1074,7 @@ kv.history(<span class="s">&quot;config&quot;</span>, <span class="s">&quot;name
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L288" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L325" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1086,17 +1096,17 @@ from the NATS server.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L302" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L339" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="update(bucket:String,key:String,value:String|Bytes,revision:Int):Int64?-instance-method">
+    <div class="entry-detail" id="update(bucket:String,key:String,value:String|Bytes,revision:Int):Int64|Nil-instance-method">
       <div class="signature">
         
-        def <strong>update</strong>(bucket : String, key : String, value : String | Bytes, revision : Int) : Int64?
+        def <strong>update</strong>(bucket : String, key : String, value : String | Bytes, revision : Int) : Int64 | Nil
 
-        <a class="method-permalink" href="#update%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%2Crevision%3AInt%29%3AInt64%3F-instance-method">#</a>
+        <a class="method-permalink" href="#update%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%2Crevision%3AInt%29%3AInt64%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1114,7 +1124,7 @@ not performed and this method returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L364" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L408" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1130,7 +1140,7 @@ not performed and this method returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L437" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L478" target="_blank">View source</a>]
         
       </div>
     </div>

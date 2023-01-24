@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 1.5.1">
-<meta name="crystal_docs.project_version" content="1.2.2">
+<meta name="crystal_docs.project_version" content="1.2.3">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../../../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::API::V1::StreamSourceInfo - nats 1.2.2</title>
+  <title>NATS::JetStream::API::V1::StreamSourceInfo - nats 1.2.3</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../../../";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        1.2.2
+        1.2.3
       </span>
     </div>
   </div>
@@ -406,8 +406,18 @@
       
         <ul>
   
-  <li class=" " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
+  <li class="parent " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
       <a href="../../../../NATS/KV/Bucket.html">Bucket</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Bucket/Size" data-name="nats::kv::bucket::size">
+      <a href="../../../../NATS/KV/Bucket/Size.html">Size</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -618,7 +628,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L659" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L687" target="_blank">
         jetstream.cr
       </a>
     
@@ -645,7 +655,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#new%28name%3AString%2Cexternal%3ANATS%3A%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AExternalStream%3F%3Dnil%2Clag%3ATime%3A%3ASpan%3D0.seconds%2Cactive%3ATime%3A%3ASpan%3D0.seconds%2Cerror%3ANATS%3A%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AAPIError%3F%3Dnil%29-class-method" class="signature"><strong>.new</strong>(name : String, external : NATS::JetStream::API::V1::ExternalStream? = <span class="n">nil</span>, lag : Time::Span = <span class="n">0</span>.seconds, active : Time::Span = <span class="n">0</span>.seconds, error : NATS::JetStream::API::V1::APIError? = <span class="n">nil</span>)</a>
+        <a href="#new%28name%3AString%2Cexternal%3ANATS%3A%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AExternalStream%7CNil%3Dnil%2Clag%3ATime%3A%3ASpan%3D0.seconds%2Cactive%3ATime%3A%3ASpan%3D0.seconds%2Cerror%3ANATS%3A%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AAPIError%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(name : String, external : NATS::JetStream::API::V1::ExternalStream | Nil = <span class="n">nil</span>, lag : Time::Span = <span class="n">0</span>.seconds, active : Time::Span = <span class="n">0</span>.seconds, error : NATS::JetStream::API::V1::APIError | Nil = <span class="n">nil</span>)</a>
         
       </li>
     
@@ -671,12 +681,12 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#error%3AAPIError%3F-instance-method" class="signature"><strong>#error</strong> : APIError?</a>
+        <a href="#error%3AAPIError%7CNil-instance-method" class="signature"><strong>#error</strong> : APIError | Nil</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#external%3AExternalStream%3F-instance-method" class="signature"><strong>#external</strong> : ExternalStream?</a>
+        <a href="#external%3AExternalStream%7CNil-instance-method" class="signature"><strong>#external</strong> : ExternalStream | Nil</a>
         
       </li>
     
@@ -780,23 +790,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L659" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L687" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="new(name:String,external:NATS::JetStream::API::V1::ExternalStream?=nil,lag:Time::Span=0.seconds,active:Time::Span=0.seconds,error:NATS::JetStream::API::V1::APIError?=nil)-class-method">
+    <div class="entry-detail" id="new(name:String,external:NATS::JetStream::API::V1::ExternalStream|Nil=nil,lag:Time::Span=0.seconds,active:Time::Span=0.seconds,error:NATS::JetStream::API::V1::APIError|Nil=nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(name : String, external : <a href="../../../../NATS/JetStream/API/V1/ExternalStream.html">NATS::JetStream::API::V1::ExternalStream</a>? = <span class="n">nil</span>, lag : Time::Span = <span class="n">0</span>.seconds, active : Time::Span = <span class="n">0</span>.seconds, error : <a href="../../../../NATS/JetStream/API/V1/APIError.html">NATS::JetStream::API::V1::APIError</a>? = <span class="n">nil</span>)
+        def self.<strong>new</strong>(name : String, external : <a href="../../../../NATS/JetStream/API/V1/ExternalStream.html">NATS::JetStream::API::V1::ExternalStream</a> | Nil = <span class="n">nil</span>, lag : Time::Span = <span class="n">0</span>.seconds, active : Time::Span = <span class="n">0</span>.seconds, error : <a href="../../../../NATS/JetStream/API/V1/APIError.html">NATS::JetStream::API::V1::APIError</a> | Nil = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#new%28name%3AString%2Cexternal%3ANATS%3A%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AExternalStream%3F%3Dnil%2Clag%3ATime%3A%3ASpan%3D0.seconds%2Cactive%3ATime%3A%3ASpan%3D0.seconds%2Cerror%3ANATS%3A%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AAPIError%3F%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28name%3AString%2Cexternal%3ANATS%3A%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AExternalStream%7CNil%3Dnil%2Clag%3ATime%3A%3ASpan%3D0.seconds%2Cactive%3ATime%3A%3ASpan%3D0.seconds%2Cerror%3ANATS%3A%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AAPIError%7CNil%3Dnil%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L668" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L696" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -826,39 +836,39 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L665" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L693" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="error:APIError?-instance-method">
+    <div class="entry-detail" id="error:APIError|Nil-instance-method">
       <div class="signature">
         
-        def <strong>error</strong> : <a href="../../../../NATS/JetStream/API/V1/APIError.html">APIError</a>?
+        def <strong>error</strong> : <a href="../../../../NATS/JetStream/API/V1/APIError.html">APIError</a> | Nil
 
-        <a class="method-permalink" href="#error%3AAPIError%3F-instance-method">#</a>
+        <a class="method-permalink" href="#error%3AAPIError%7CNil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L666" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L694" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="external:ExternalStream?-instance-method">
+    <div class="entry-detail" id="external:ExternalStream|Nil-instance-method">
       <div class="signature">
         
-        def <strong>external</strong> : <a href="../../../../NATS/JetStream/API/V1/ExternalStream.html">ExternalStream</a>?
+        def <strong>external</strong> : <a href="../../../../NATS/JetStream/API/V1/ExternalStream.html">ExternalStream</a> | Nil
 
-        <a class="method-permalink" href="#external%3AExternalStream%3F-instance-method">#</a>
+        <a class="method-permalink" href="#external%3AExternalStream%7CNil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L661" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L689" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -874,7 +884,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L663" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L691" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -890,7 +900,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L660" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L688" target="_blank">View source</a>]
         
       </div>
     </div>

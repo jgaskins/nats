@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 1.5.1">
-<meta name="crystal_docs.project_version" content="1.2.2">
+<meta name="crystal_docs.project_version" content="1.2.3">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::Message - nats 1.2.2</title>
+  <title>NATS::Message - nats 1.2.3</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        1.2.2
+        1.2.3
       </span>
     </div>
   </div>
@@ -406,8 +406,18 @@
       
         <ul>
   
-  <li class=" " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
+  <li class="parent " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
       <a href="../NATS/KV/Bucket.html">Bucket</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Bucket/Size" data-name="nats::kv::bucket::size">
+      <a href="../NATS/KV/Bucket/Size.html">Size</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -618,7 +628,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L875" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L880" target="_blank">
         nats.cr
       </a>
     
@@ -640,7 +650,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28subject%3AString%2Cbody%3ASlice%28UInt8%29%2Creply_to%3AString%3F%3Dnil%2Cheaders%3AHash%28String%2CString%29%3F%3Dnil%29-class-method" class="signature"><strong>.new</strong>(subject : String, body : Slice(UInt8), reply_to : String? = <span class="n">nil</span>, headers : Hash(String, String)? = <span class="n">nil</span>)</a>
+        <a href="#new%28subject%3AString%2Cbody%3ASlice%28UInt8%29%2Creply_to%3ANil%7CString%3Dnil%2Cheaders%3ANil%7CHash%28String%2CString%29%3Dnil%29-class-method" class="signature"><strong>.new</strong>(subject : String, body : Slice(UInt8), reply_to : Nil | String = <span class="n">nil</span>, headers : Nil | Hash(String, String) = <span class="n">nil</span>)</a>
         
       </li>
     
@@ -673,12 +683,12 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#headers%3AHeaders%3F-instance-method" class="signature"><strong>#headers</strong> : Headers?</a>
+        <a href="#headers%3AHeaders%7CNil-instance-method" class="signature"><strong>#headers</strong> : Headers | Nil</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#reply_to%3AString%3F-instance-method" class="signature"><strong>#reply_to</strong> : String?</a>
+        <a href="#reply_to%3AString%7CNil-instance-method" class="signature"><strong>#reply_to</strong> : String | Nil</a>
         
       </li>
     
@@ -737,18 +747,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(subject:String,body:Slice(UInt8),reply_to:String?=nil,headers:Hash(String,String)?=nil)-class-method">
+    <div class="entry-detail" id="new(subject:String,body:Slice(UInt8),reply_to:Nil|String=nil,headers:Nil|Hash(String,String)=nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(subject : String, body : Slice(UInt8), reply_to : String? = <span class="n">nil</span>, headers : Hash(String, String)? = <span class="n">nil</span>)
+        def self.<strong>new</strong>(subject : String, body : Slice(UInt8), reply_to : Nil | String = <span class="n">nil</span>, headers : Nil | Hash(String, String) = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#new%28subject%3AString%2Cbody%3ASlice%28UInt8%29%2Creply_to%3AString%3F%3Dnil%2Cheaders%3AHash%28String%2CString%29%3F%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28subject%3AString%2Cbody%3ASlice%28UInt8%29%2Creply_to%3ANil%7CString%3Dnil%2Cheaders%3ANil%7CHash%28String%2CString%29%3Dnil%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L883" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L888" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -778,7 +788,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L877" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L882" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -799,39 +809,39 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L887" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L892" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="headers:Headers?-instance-method">
+    <div class="entry-detail" id="headers:Headers|Nil-instance-method">
       <div class="signature">
         
-        def <strong>headers</strong> : <a href="../NATS/Message/Headers.html">Headers</a>?
+        def <strong>headers</strong> : <a href="../NATS/Message/Headers.html">Headers</a> | Nil
 
-        <a class="method-permalink" href="#headers%3AHeaders%3F-instance-method">#</a>
+        <a class="method-permalink" href="#headers%3AHeaders%7CNil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L879" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L884" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="reply_to:String?-instance-method">
+    <div class="entry-detail" id="reply_to:String|Nil-instance-method">
       <div class="signature">
         
-        def <strong>reply_to</strong> : String?
+        def <strong>reply_to</strong> : String | Nil
 
-        <a class="method-permalink" href="#reply_to%3AString%3F-instance-method">#</a>
+        <a class="method-permalink" href="#reply_to%3AString%7CNil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L878" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L883" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -847,7 +857,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L876" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L881" target="_blank">View source</a>]
         
       </div>
     </div>

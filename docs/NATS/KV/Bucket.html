@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 1.5.1">
-<meta name="crystal_docs.project_version" content="1.2.2">
+<meta name="crystal_docs.project_version" content="1.2.3">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::KV::Bucket - nats 1.2.2</title>
+  <title>NATS::KV::Bucket - nats 1.2.3</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        1.2.2
+        1.2.3
       </span>
     </div>
   </div>
@@ -406,8 +406,18 @@
       
         <ul>
   
-  <li class=" current" data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
+  <li class="parent open current" data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
       <a href="../../NATS/KV/Bucket.html">Bucket</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Bucket/Size" data-name="nats::kv::bucket::size">
+      <a href="../../NATS/KV/Bucket/Size.html">Size</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -618,7 +628,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L39" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L39" target="_blank">
         kv.cr
       </a>
     
@@ -651,7 +661,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#%5B%5D%3F%28key%3AString%29%3ABytes%3F-instance-method" class="signature"><strong>#[]?</strong>(key : String) : Bytes?</a>
+        <a href="#%5B%5D%3F%28key%3AString%29%3ABytes%7CNil-instance-method" class="signature"><strong>#[]?</strong>(key : String) : Bytes | Nil</a>
         
           <div class="summary"><p>Get the value of a key, if it exists (not counting <code>Delete</code> operations), stripping away all metadata to return only the value.</p></div>
         
@@ -665,6 +675,11 @@
       </li>
     
       <li class="entry-summary">
+        <a href="#created%3ATime-instance-method" class="signature"><strong>#created</strong> : Time</a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#delete%28key%3AString%29-instance-method" class="signature"><strong>#delete</strong>(key : String)</a>
         
           <div class="summary"><p>Deletes the given <code>key</code> from the KV store.</p></div>
@@ -672,7 +687,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#description%3AString%3F-instance-method" class="signature"><strong>#description</strong> : String?</a>
+        <a href="#description%3AString%7CNil-instance-method" class="signature"><strong>#description</strong> : String | Nil</a>
         
           <div class="summary"><p>An optional description of the purpose of this bucket</p></div>
         
@@ -684,14 +699,14 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#get%28key%3AString%2C%2A%2Cignore_deletes%3Dfalse%29%3AEntry%3F-instance-method" class="signature"><strong>#get</strong>(key : String, *, ignore_deletes = <span class="n">false</span>) : Entry?</a>
+        <a href="#get%28key%3AString%2C%2A%2Crevision%3AInt%7CNil%3Dnil%2Cignore_deletes%3Dfalse%29%3AEntry%7CNil-instance-method" class="signature"><strong>#get</strong>(key : String, *, revision : Int | Nil = <span class="n">nil</span>, ignore_deletes = <span class="n">false</span>) : Entry | Nil</a>
         
           <div class="summary"><p>Get the entry for a key as a <code><a href="../../NATS/KV/Entry.html">KV::Entry</a></code> - returns <code>nil</code> if the key does not exist or if it's been deleted with <code>ignore_deletes</code> set to <code>true</code>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#get%21%28key%3AString%2Cignore_deletes%3Dfalse%29%3AEntry-instance-method" class="signature"><strong>#get!</strong>(key : String, ignore_deletes = <span class="n">false</span>) : Entry</a>
+        <a href="#get%21%28key%3AString%2C%2A%2Crevision%3AInt%7CNil%3Dnil%2Cignore_deletes%3Dfalse%29%3AEntry-instance-method" class="signature"><strong>#get!</strong>(key : String, *, revision : Int | Nil = <span class="n">nil</span>, ignore_deletes = <span class="n">false</span>) : Entry</a>
         
           <div class="summary"><p>Get the value of a key as a <code><a href="../../NATS/KV/Entry.html">KV::Entry</a></code> - raises <code><a href="../../NATS/KV/KeyError.html">KeyError</a></code> if the key does not exist or if it's been deleted with <code>ignore_deletes</code> set to <code>true</code>.</p></div>
         
@@ -705,7 +720,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#history%3AInt64%3F-instance-method" class="signature"><strong>#history</strong> : Int64?</a>
+        <a href="#history%3AInt64%7CNil-instance-method" class="signature"><strong>#history</strong> : Int64 | Nil</a>
         
           <div class="summary"><p>The number of revisions NATS will retain for this key</p></div>
         
@@ -719,14 +734,19 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#max_bytes%3AInt64%3F-instance-method" class="signature"><strong>#max_bytes</strong> : Int64?</a>
+        <a href="#last_update%3ATime-instance-method" class="signature"><strong>#last_update</strong> : Time</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#max_bytes%3AInt64%7CNil-instance-method" class="signature"><strong>#max_bytes</strong> : Int64 | Nil</a>
         
           <div class="summary"><p>The maximum size in bytes of this bucket in memory or on disk</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#max_value_size%3AInt32%3F-instance-method" class="signature"><strong>#max_value_size</strong> : Int32?</a>
+        <a href="#max_value_size%3AInt32%7CNil-instance-method" class="signature"><strong>#max_value_size</strong> : Int32 | Nil</a>
         
           <div class="summary"><p>The maximum number of bytes in a value</p></div>
         
@@ -736,6 +756,11 @@
         <a href="#name%3AString-instance-method" class="signature"><strong>#name</strong> : String</a>
         
           <div class="summary"><p>The name of this bucket</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#placement%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3APlacement%7CNil-instance-method" class="signature"><strong>#placement</strong> : JetStream::API::V1::StreamConfig::Placement | Nil</a>
         
       </li>
     
@@ -754,7 +779,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#replicas%3AInt32%3F-instance-method" class="signature"><strong>#replicas</strong> : Int32?</a>
+        <a href="#replicas%3AInt32-instance-method" class="signature"><strong>#replicas</strong> : Int32</a>
         
           <div class="summary"><p>The number of NATS nodes to which this KV bucket will be replicated</p></div>
         
@@ -764,6 +789,11 @@
         <a href="#set%28key%3AString%2Cvalue%3AData%29-instance-method" class="signature"><strong>#set</strong>(key : String, value : Data)</a>
         
           <div class="summary"><p>Assign <code>value</code> to <code>key</code> in <code>bucket</code> asynchronously, not waiting for acknowledgement from the NATS server.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#size%3ASize-instance-method" class="signature"><strong>#size</strong> : Size</a>
         
       </li>
     
@@ -782,7 +812,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#ttl%3ATime%3A%3ASpan%3F-instance-method" class="signature"><strong>#ttl</strong> : Time::Span?</a>
+        <a href="#ttl%3ATime%3A%3ASpan%7CNil-instance-method" class="signature"><strong>#ttl</strong> : Time::Span | Nil</a>
         
           <div class="summary"><p>The maximum length of time NATS will retain a value or revision for a key</p></div>
         
@@ -792,6 +822,11 @@
         <a href="#update%28key%3AString%2Cvalue%3AString%2Crevision%3AInt64%29-instance-method" class="signature"><strong>#update</strong>(key : String, value : String, revision : Int64)</a>
         
           <div class="summary"><p>Updates the given <code>key</code> with the given <code>value</code> if and only if it exists and is currently at the given <code>revision</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#values%3AInt64-instance-method" class="signature"><strong>#values</strong> : Int64</a>
         
       </li>
     
@@ -872,17 +907,17 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L114" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L149" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="[]?(key:String):Bytes?-instance-method">
+    <div class="entry-detail" id="[]?(key:String):Bytes|Nil-instance-method">
       <div class="signature">
         
-        def <strong>[]?</strong>(key : String) : Bytes?
+        def <strong>[]?</strong>(key : String) : Bytes | Nil
 
-        <a class="method-permalink" href="#%5B%5D%3F%28key%3AString%29%3ABytes%3F-instance-method">#</a>
+        <a class="method-permalink" href="#%5B%5D%3F%28key%3AString%29%3ABytes%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -890,13 +925,13 @@
           <p>Get the value of a key, if it exists (not counting <code>Delete</code> operations),
 stripping away all metadata to return only the value. If you need
 metadata such as <code>revision</code>, <code>timestamp</code>, or <code>operation</code>, or if you need
-to be able to get deleted keys, you should use <code><a href="../../NATS/KV/Bucket.html#get%28key%3AString%2C%2A%2Cignore_deletes%3Dfalse%29%3AEntry%3F-instance-method">Bucket#get</a></code> instead.</p>
+to be able to get deleted keys, you should use <code><a href="../../NATS/KV/Bucket.html#get%28key%3AString%2C%2A%2Crevision%3AInt%7CNil%3Dnil%2Cignore_deletes%3Dfalse%29%3AEntry%7CNil-instance-method">Bucket#get</a></code> instead.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L135" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L170" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -918,7 +953,23 @@ does not yet exist.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L154" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L189" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="created:Time-instance-method">
+      <div class="signature">
+        
+        def <strong>created</strong> : Time
+
+        <a class="method-permalink" href="#created%3ATime-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L75" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -941,17 +992,17 @@ deletion.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L170" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L205" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="description:String?-instance-method">
+    <div class="entry-detail" id="description:String|Nil-instance-method">
       <div class="signature">
         
-        def <strong>description</strong> : String?
+        def <strong>description</strong> : String | Nil
 
-        <a class="method-permalink" href="#description%3AString%3F-instance-method">#</a>
+        <a class="method-permalink" href="#description%3AString%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -962,7 +1013,7 @@ deletion.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L47" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L47" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -978,17 +1029,17 @@ deletion.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L187" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L222" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="get(key:String,*,ignore_deletes=false):Entry?-instance-method">
+    <div class="entry-detail" id="get(key:String,*,revision:Int|Nil=nil,ignore_deletes=false):Entry|Nil-instance-method">
       <div class="signature">
         
-        def <strong>get</strong>(key : String, *, ignore_deletes = <span class="n">false</span>) : <a href="../../NATS/KV/Entry.html">Entry</a>?
+        def <strong>get</strong>(key : String, *, revision : Int | Nil = <span class="n">nil</span>, ignore_deletes = <span class="n">false</span>) : <a href="../../NATS/KV/Entry.html">Entry</a> | Nil
 
-        <a class="method-permalink" href="#get%28key%3AString%2C%2A%2Cignore_deletes%3Dfalse%29%3AEntry%3F-instance-method">#</a>
+        <a class="method-permalink" href="#get%28key%3AString%2C%2A%2Crevision%3AInt%7CNil%3Dnil%2Cignore_deletes%3Dfalse%29%3AEntry%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1006,17 +1057,17 @@ ignore deleted messages.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L127" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L162" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="get!(key:String,ignore_deletes=false):Entry-instance-method">
+    <div class="entry-detail" id="get!(key:String,*,revision:Int|Nil=nil,ignore_deletes=false):Entry-instance-method">
       <div class="signature">
         
-        def <strong>get!</strong>(key : String, ignore_deletes = <span class="n">false</span>) : <a href="../../NATS/KV/Entry.html">Entry</a>
+        def <strong>get!</strong>(key : String, *, revision : Int | Nil = <span class="n">nil</span>, ignore_deletes = <span class="n">false</span>) : <a href="../../NATS/KV/Entry.html">Entry</a>
 
-        <a class="method-permalink" href="#get%21%28key%3AString%2Cignore_deletes%3Dfalse%29%3AEntry-instance-method">#</a>
+        <a class="method-permalink" href="#get%21%28key%3AString%2C%2A%2Crevision%3AInt%7CNil%3Dnil%2Cignore_deletes%3Dfalse%29%3AEntry-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1029,7 +1080,7 @@ does not exist or if it's been deleted with <code>ignore_deletes</code> set to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L144" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L179" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1050,17 +1101,17 @@ does not exist or if it's been deleted with <code>ignore_deletes</code> set to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L192" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L227" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="history:Int64?-instance-method">
+    <div class="entry-detail" id="history:Int64|Nil-instance-method">
       <div class="signature">
         
-        def <strong>history</strong> : Int64?
+        def <strong>history</strong> : Int64 | Nil
 
-        <a class="method-permalink" href="#history%3AInt64%3F-instance-method">#</a>
+        <a class="method-permalink" href="#history%3AInt64%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1071,7 +1122,7 @@ does not exist or if it's been deleted with <code>ignore_deletes</code> set to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L53" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L53" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1092,17 +1143,33 @@ does not exist or if it's been deleted with <code>ignore_deletes</code> set to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L183" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L218" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="max_bytes:Int64?-instance-method">
+    <div class="entry-detail" id="last_update:Time-instance-method">
       <div class="signature">
         
-        def <strong>max_bytes</strong> : Int64?
+        def <strong>last_update</strong> : Time
 
-        <a class="method-permalink" href="#max_bytes%3AInt64%3F-instance-method">#</a>
+        <a class="method-permalink" href="#last_update%3ATime-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L73" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="max_bytes:Int64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>max_bytes</strong> : Int64 | Nil
+
+        <a class="method-permalink" href="#max_bytes%3AInt64%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1113,17 +1180,17 @@ does not exist or if it's been deleted with <code>ignore_deletes</code> set to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L59" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L59" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="max_value_size:Int32?-instance-method">
+    <div class="entry-detail" id="max_value_size:Int32|Nil-instance-method">
       <div class="signature">
         
-        def <strong>max_value_size</strong> : Int32?
+        def <strong>max_value_size</strong> : Int32 | Nil
 
-        <a class="method-permalink" href="#max_value_size%3AInt32%3F-instance-method">#</a>
+        <a class="method-permalink" href="#max_value_size%3AInt32%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1134,7 +1201,7 @@ does not exist or if it's been deleted with <code>ignore_deletes</code> set to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L50" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L50" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1155,7 +1222,23 @@ does not exist or if it's been deleted with <code>ignore_deletes</code> set to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L41" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L41" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="placement:JetStream::API::V1::StreamConfig::Placement|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>placement</strong> : <a href="../../NATS/JetStream/API/V1/StreamConfig/Placement.html">JetStream::API::V1::StreamConfig::Placement</a> | Nil
+
+        <a class="method-permalink" href="#placement%3AJetStream%3A%3AAPI%3A%3AV1%3A%3AStreamConfig%3A%3APlacement%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L67" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1179,7 +1262,7 @@ set to <code><a href="../../NATS/KV/Entry/Operation.html#Purge">KV::Entry::Opera
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L178" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L213" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1200,17 +1283,17 @@ set to <code><a href="../../NATS/KV/Entry/Operation.html#Purge">KV::Entry::Opera
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L100" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L135" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="replicas:Int32?-instance-method">
+    <div class="entry-detail" id="replicas:Int32-instance-method">
       <div class="signature">
         
-        def <strong>replicas</strong> : Int32?
+        def <strong>replicas</strong> : Int32
 
-        <a class="method-permalink" href="#replicas%3AInt32%3F-instance-method">#</a>
+        <a class="method-permalink" href="#replicas%3AInt32-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1221,7 +1304,7 @@ set to <code><a href="../../NATS/KV/Entry/Operation.html#Purge">KV::Entry::Opera
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L65" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L65" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1245,7 +1328,23 @@ received the value. Use with caution.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L109" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L144" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="size:Size-instance-method">
+      <div class="signature">
+        
+        def <strong>size</strong> : <a href="../../NATS/KV/Bucket/Size.html">Size</a>
+
+        <a class="method-permalink" href="#size%3ASize-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L69" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1266,7 +1365,7 @@ received the value. Use with caution.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L62" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L62" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1287,17 +1386,17 @@ received the value. Use with caution.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L44" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L44" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="ttl:Time::Span?-instance-method">
+    <div class="entry-detail" id="ttl:Time::Span|Nil-instance-method">
       <div class="signature">
         
-        def <strong>ttl</strong> : Time::Span?
+        def <strong>ttl</strong> : Time::Span | Nil
 
-        <a class="method-permalink" href="#ttl%3ATime%3A%3ASpan%3F-instance-method">#</a>
+        <a class="method-permalink" href="#ttl%3ATime%3A%3ASpan%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1308,7 +1407,7 @@ received the value. Use with caution.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L56" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L56" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1333,7 +1432,23 @@ use <code><a href="../../NATS/KV/Bucket.html#put%28key%3AString%2Cvalue%3AData%2
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L163" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L198" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="values:Int64-instance-method">
+      <div class="signature">
+        
+        def <strong>values</strong> : Int64
+
+        <a class="method-permalink" href="#values%3AInt64-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L71" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1374,7 +1489,7 @@ watch.each <span class="k">do</span> <span class="o">|</span>entry<span class="o
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L225" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L260" target="_blank">View source</a>]
         
       </div>
     </div>

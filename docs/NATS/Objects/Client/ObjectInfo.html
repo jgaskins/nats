@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 1.5.1">
-<meta name="crystal_docs.project_version" content="1.2.2">
+<meta name="crystal_docs.project_version" content="1.2.3">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::Objects::Client::ObjectInfo - nats 1.2.2</title>
+  <title>NATS::Objects::Client::ObjectInfo - nats 1.2.3</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../../";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        1.2.2
+        1.2.3
       </span>
     </div>
   </div>
@@ -406,8 +406,18 @@
       
         <ul>
   
-  <li class=" " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
+  <li class="parent " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
       <a href="../../../NATS/KV/Bucket.html">Bucket</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Bucket/Size" data-name="nats::kv::bucket::size">
+      <a href="../../../NATS/KV/Bucket/Size.html">Size</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -632,7 +642,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L272" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L277" target="_blank">
         objects.cr
       </a>
     
@@ -659,7 +669,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#new%28%2A%2Cbucket%3AString%2Cname%3AString%2Cdescription%3AString%3F%2Cheaders%3AHash%28String%2CString%29%3F%2Cnuid%3AString%2Csize%3AInt64%2Cchunks%3AInt32%2Cdigest%3AString%2Cmtime%3ATime%3DTime.new%280%2C0%29%2Cdeleted%3ABool%3F%3Dnil%29-class-method" class="signature"><strong>.new</strong>(*, bucket : String, name : String, description : String?, headers : Hash(String, String)?, nuid : String, size : Int64, chunks : Int32, digest : String, mtime : Time = <span class="t">Time</span>.new(<span class="n">0</span>, <span class="n">0</span>), deleted : Bool? = <span class="n">nil</span>)</a>
+        <a href="#new%28%2A%2Cbucket%3AString%2Cname%3AString%2Cdescription%3ANil%7CString%2Cheaders%3ANil%7CHash%28String%2CString%29%2Cnuid%3AString%2Csize%3AInt64%2Cchunks%3AInt32%2Cdigest%3AString%2Cmtime%3ATime%3DTime.new%280%2C0%29%2Cdeleted%3ABool%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(*, bucket : String, name : String, description : Nil | String, headers : Nil | Hash(String, String), nuid : String, size : Int64, chunks : Int32, digest : String, mtime : Time = <span class="t">Time</span>.new(<span class="n">0</span>, <span class="n">0</span>), deleted : Bool | Nil = <span class="n">nil</span>)</a>
         
       </li>
     
@@ -690,12 +700,12 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#deleted%3ABool%3F-instance-method" class="signature"><strong>#deleted</strong> : Bool?</a>
+        <a href="#deleted%3ABool%7CNil-instance-method" class="signature"><strong>#deleted</strong> : Bool | Nil</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#description%3AString%3F-instance-method" class="signature"><strong>#description</strong> : String?</a>
+        <a href="#description%3AString%7CNil-instance-method" class="signature"><strong>#description</strong> : String | Nil</a>
         
       </li>
     
@@ -805,23 +815,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L273" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L278" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="new(*,bucket:String,name:String,description:String?,headers:Hash(String,String)?,nuid:String,size:Int64,chunks:Int32,digest:String,mtime:Time=Time.new(0,0),deleted:Bool?=nil)-class-method">
+    <div class="entry-detail" id="new(*,bucket:String,name:String,description:Nil|String,headers:Nil|Hash(String,String),nuid:String,size:Int64,chunks:Int32,digest:String,mtime:Time=Time.new(0,0),deleted:Bool|Nil=nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(*, bucket : String, name : String, description : String?, headers : Hash(String, String)?, nuid : String, size : Int64, chunks : Int32, digest : String, mtime : Time = <span class="t">Time</span>.new(<span class="n">0</span>, <span class="n">0</span>), deleted : Bool? = <span class="n">nil</span>)
+        def self.<strong>new</strong>(*, bucket : String, name : String, description : Nil | String, headers : Nil | Hash(String, String), nuid : String, size : Int64, chunks : Int32, digest : String, mtime : Time = <span class="t">Time</span>.new(<span class="n">0</span>, <span class="n">0</span>), deleted : Bool | Nil = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#new%28%2A%2Cbucket%3AString%2Cname%3AString%2Cdescription%3AString%3F%2Cheaders%3AHash%28String%2CString%29%3F%2Cnuid%3AString%2Csize%3AInt64%2Cchunks%3AInt32%2Cdigest%3AString%2Cmtime%3ATime%3DTime.new%280%2C0%29%2Cdeleted%3ABool%3F%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28%2A%2Cbucket%3AString%2Cname%3AString%2Cdescription%3ANil%7CString%2Cheaders%3ANil%7CHash%28String%2CString%29%2Cnuid%3AString%2Csize%3AInt64%2Cchunks%3AInt32%2Cdigest%3AString%2Cmtime%3ATime%3DTime.new%280%2C0%29%2Cdeleted%3ABool%7CNil%3Dnil%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L286" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L291" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -851,7 +861,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L275" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L280" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -867,39 +877,39 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L282" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L287" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="deleted:Bool?-instance-method">
+    <div class="entry-detail" id="deleted:Bool|Nil-instance-method">
       <div class="signature">
         
-        def <strong>deleted</strong> : Bool?
+        def <strong>deleted</strong> : Bool | Nil
 
-        <a class="method-permalink" href="#deleted%3ABool%3F-instance-method">#</a>
+        <a class="method-permalink" href="#deleted%3ABool%7CNil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L284" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L289" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="description:String?-instance-method">
+    <div class="entry-detail" id="description:String|Nil-instance-method">
       <div class="signature">
         
-        def <strong>description</strong> : String?
+        def <strong>description</strong> : String | Nil
 
-        <a class="method-permalink" href="#description%3AString%3F-instance-method">#</a>
+        <a class="method-permalink" href="#description%3AString%7CNil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L277" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L282" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -915,7 +925,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L283" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L288" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -931,7 +941,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L278" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L283" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -947,7 +957,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L281" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L286" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -963,7 +973,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L281" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L286" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -979,7 +989,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L276" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L281" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -995,7 +1005,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L279" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L284" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1011,7 +1021,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L280" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L285" target="_blank">View source</a>]
         
       </div>
     </div>

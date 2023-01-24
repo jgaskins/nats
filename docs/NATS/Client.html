@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 1.5.1">
-<meta name="crystal_docs.project_version" content="1.2.2">
+<meta name="crystal_docs.project_version" content="1.2.3">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::Client - nats 1.2.2</title>
+  <title>NATS::Client - nats 1.2.3</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        1.2.2
+        1.2.3
       </span>
     </div>
   </div>
@@ -406,8 +406,18 @@
       
         <ul>
   
-  <li class=" " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
+  <li class="parent " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
       <a href="../NATS/KV/Bucket.html">Bucket</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Bucket/Size" data-name="nats::kv::bucket::size">
+      <a href="../NATS/KV/Bucket/Size.html">Size</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -630,28 +640,28 @@ servers.</p>
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L1150" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L1241" target="_blank">
         jetstream.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L618" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L659" target="_blank">
         kv.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L84" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L84" target="_blank">
         nats.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L349" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L354" target="_blank">
         objects.cr
       </a>
     
@@ -707,21 +717,21 @@ servers.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28uri%3AURI%2Cping_interval%3D2.minutes%2Cmax_pings_out%3D2%2Cnkeys_file%3AString%3F%3Dnil%2Cuser_credentials%3AString%3F%3Dnil%29-class-method" class="signature"><strong>.new</strong>(uri : URI, ping_interval = <span class="n">2</span>.minutes, max_pings_out = <span class="n">2</span>, nkeys_file : String? = <span class="n">nil</span>, user_credentials : String? = <span class="n">nil</span>)</a>
+        <a href="#new%28uri%3AURI%2Cping_interval%3D2.minutes%2Cmax_pings_out%3D2%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(uri : URI, ping_interval = <span class="n">2</span>.minutes, max_pings_out = <span class="n">2</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>)</a>
         
           <div class="summary"><p>Connect to a single NATS server at the given URI</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#new%28servers%3AArray%28URI%29%2Cping_interval%3ATime%3A%3ASpan%3D2.minutes%2Cmax_pings_out%3AInt32%3D2%2Cnkeys_file%3AString%3F%3Dnil%2Cuser_credentials%3AString%3F%3Dnil%29-class-method" class="signature"><strong>.new</strong>(servers : Array(URI), ping_interval : Time::Span = <span class="n">2</span>.minutes, max_pings_out : Int32 = <span class="n">2</span>, nkeys_file : String? = <span class="n">nil</span>, user_credentials : String? = <span class="n">nil</span>)</a>
+        <a href="#new%28servers%3AArray%28URI%29%2Cping_interval%3ATime%3A%3ASpan%3D2.minutes%2Cmax_pings_out%3AInt32%3D2%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(servers : Array(URI), ping_interval : Time::Span = <span class="n">2</span>.minutes, max_pings_out : Int32 = <span class="n">2</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>)</a>
         
           <div class="summary"><p>Connect to a NATS cluster at the given URIs</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#new%28%2A%2Cping_interval%3D2.minutes%2Cmax_pings_out%3D2%2Cnkeys_file%3AString%3F%3Dnil%2Cuser_credentials%3AString%3F%3Dnil%29-class-method" class="signature"><strong>.new</strong>(*, ping_interval = <span class="n">2</span>.minutes, max_pings_out = <span class="n">2</span>, nkeys_file : String? = <span class="n">nil</span>, user_credentials : String? = <span class="n">nil</span>)</a>
+        <a href="#new%28%2A%2Cping_interval%3D2.minutes%2Cmax_pings_out%3D2%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(*, ping_interval = <span class="n">2</span>.minutes, max_pings_out = <span class="n">2</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>)</a>
         
       </li>
     
@@ -807,7 +817,7 @@ servers.</p>
       </li>
     
       <li class="entry-summary">
-        <a href="#publish%28subject%3AString%2Cmessage%3AData%3DBytes.empty%2Creply_to%3AString%3F%3Dnil%2Cheaders%3AMessage%3A%3AHeaders%3F%3Dnil%29%3ANil-instance-method" class="signature"><strong>#publish</strong>(subject : String, message : Data = <span class="t">Bytes</span>.empty, reply_to : String? = <span class="n">nil</span>, headers : Message::Headers? = <span class="n">nil</span>) : Nil</a>
+        <a href="#publish%28subject%3AString%2Cmessage%3AData%3DBytes.empty%2Creply_to%3AString%7CNil%3Dnil%2Cheaders%3AMessage%3A%3AHeaders%7CNil%3Dnil%29%3ANil-instance-method" class="signature"><strong>#publish</strong>(subject : String, message : Data = <span class="t">Bytes</span>.empty, reply_to : String | Nil = <span class="n">nil</span>, headers : Message::Headers | Nil = <span class="n">nil</span>) : Nil</a>
         
           <div class="summary"><p>Publish the given message body (either <code>Bytes</code> for binary data or <code>String</code> for text) on the given NATS subject, optionally supplying a <code>reply_to</code> subject (if expecting a reply or to notify the receiver where to send updates) and any <code>headers</code>.</p></div>
         
@@ -821,7 +831,7 @@ servers.</p>
       </li>
     
       <li class="entry-summary">
-        <a href="#request%28subject%3AString%2Cmessage%3AData%3D%22%22%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%2Cheaders%3AHeaders%3F%3Dnil%29%3AMessage%3F-instance-method" class="signature"><strong>#request</strong>(subject : String, message : Data = <span class="s">&quot;&quot;</span>, timeout : Time::Span = <span class="n">2</span>.seconds, headers : Headers? = <span class="n">nil</span>) : Message?</a>
+        <a href="#request%28subject%3AString%2Cmessage%3AData%3D%22%22%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%2Cheaders%3AHeaders%7CNil%3Dnil%29%3AMessage%7CNil-instance-method" class="signature"><strong>#request</strong>(subject : String, message : Data = <span class="s">&quot;&quot;</span>, timeout : Time::Span = <span class="n">2</span>.seconds, headers : Headers | Nil = <span class="n">nil</span>) : Message | Nil</a>
         
           <div class="summary"><p>Make a synchronous request to subscribers of the given <code>subject</code>, waiting up to <code>timeout</code> for a response from any of the subscribers.</p></div>
         
@@ -847,7 +857,7 @@ servers.</p>
       </li>
     
       <li class="entry-summary">
-        <a href="#subscribe%28subject%3AString%2Cqueue_group%3AString%3F%3Dnil%2Csid%3D%40current_sid.add%281%29%2Cmax_in_flight%3D64000%2C%26block%3AMessage%2CSubscription-%3E%29%3ASubscription-instance-method" class="signature"><strong>#subscribe</strong>(subject : String, queue_group : String? = <span class="n">nil</span>, sid = @current_sid.add(<span class="n">1</span>), max_in_flight = <span class="n">64000</span>, &block : Message, Subscription -> ) : Subscription</a>
+        <a href="#subscribe%28subject%3AString%2Cqueue_group%3AString%7CNil%3Dnil%2Csid%3D%40current_sid.add%281%29%2Cmax_in_flight%3D64000%2C%26block%3AMessage%2CSubscription-%3E%29%3ASubscription-instance-method" class="signature"><strong>#subscribe</strong>(subject : String, queue_group : String | Nil = <span class="n">nil</span>, sid = @current_sid.add(<span class="n">1</span>), max_in_flight = <span class="n">64000</span>, &block : Message, Subscription -> ) : Subscription</a>
         
           <div class="summary"><p>Subscribe to the given <code>subject</code>, optionally with a <code>queue_group</code> (so that each message is delivered to this application once instead of once for each instance of the application), executing the given block for each message.</p></div>
         
@@ -907,12 +917,12 @@ servers.</p>
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(uri:URI,ping_interval=2.minutes,max_pings_out=2,nkeys_file:String?=nil,user_credentials:String?=nil)-class-method">
+    <div class="entry-detail" id="new(uri:URI,ping_interval=2.minutes,max_pings_out=2,nkeys_file:String|Nil=nil,user_credentials:String|Nil=nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(uri : URI, ping_interval = <span class="n">2</span>.minutes, max_pings_out = <span class="n">2</span>, nkeys_file : String? = <span class="n">nil</span>, user_credentials : String? = <span class="n">nil</span>)
+        def self.<strong>new</strong>(uri : URI, ping_interval = <span class="n">2</span>.minutes, max_pings_out = <span class="n">2</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#new%28uri%3AURI%2Cping_interval%3D2.minutes%2Cmax_pings_out%3D2%2Cnkeys_file%3AString%3F%3Dnil%2Cuser_credentials%3AString%3F%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28uri%3AURI%2Cping_interval%3D2.minutes%2Cmax_pings_out%3D2%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%29-class-method">#</a>
       </div>
       
         <div class="doc">
@@ -924,17 +934,17 @@ servers.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L154" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L154" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="new(servers:Array(URI),ping_interval:Time::Span=2.minutes,max_pings_out:Int32=2,nkeys_file:String?=nil,user_credentials:String?=nil)-class-method">
+    <div class="entry-detail" id="new(servers:Array(URI),ping_interval:Time::Span=2.minutes,max_pings_out:Int32=2,nkeys_file:String|Nil=nil,user_credentials:String|Nil=nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(servers : Array(URI), ping_interval : Time::Span = <span class="n">2</span>.minutes, max_pings_out : Int32 = <span class="n">2</span>, nkeys_file : String? = <span class="n">nil</span>, user_credentials : String? = <span class="n">nil</span>)
+        def self.<strong>new</strong>(servers : Array(URI), ping_interval : Time::Span = <span class="n">2</span>.minutes, max_pings_out : Int32 = <span class="n">2</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#new%28servers%3AArray%28URI%29%2Cping_interval%3ATime%3A%3ASpan%3D2.minutes%2Cmax_pings_out%3AInt32%3D2%2Cnkeys_file%3AString%3F%3Dnil%2Cuser_credentials%3AString%3F%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28servers%3AArray%28URI%29%2Cping_interval%3ATime%3A%3ASpan%3D2.minutes%2Cmax_pings_out%3AInt32%3D2%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%29-class-method">#</a>
       </div>
       
         <div class="doc">
@@ -950,23 +960,23 @@ servers.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L173" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L173" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="new(*,ping_interval=2.minutes,max_pings_out=2,nkeys_file:String?=nil,user_credentials:String?=nil)-class-method">
+    <div class="entry-detail" id="new(*,ping_interval=2.minutes,max_pings_out=2,nkeys_file:String|Nil=nil,user_credentials:String|Nil=nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(*, ping_interval = <span class="n">2</span>.minutes, max_pings_out = <span class="n">2</span>, nkeys_file : String? = <span class="n">nil</span>, user_credentials : String? = <span class="n">nil</span>)
+        def self.<strong>new</strong>(*, ping_interval = <span class="n">2</span>.minutes, max_pings_out = <span class="n">2</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#new%28%2A%2Cping_interval%3D2.minutes%2Cmax_pings_out%3D2%2Cnkeys_file%3AString%3F%3Dnil%2Cuser_credentials%3AString%3F%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28%2A%2Cping_interval%3D2.minutes%2Cmax_pings_out%3D2%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L130" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L130" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1003,7 +1013,7 @@ associated with this client.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L766" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L771" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1019,7 +1029,7 @@ associated with this client.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L540" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L540" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1040,7 +1050,7 @@ associated with this client.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L557" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L557" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1062,7 +1072,7 @@ the NATS server.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L1153" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L1244" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1085,7 +1095,7 @@ the NATS server.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/kv.cr#L622" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/kv.cr#L663" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1101,7 +1111,7 @@ the NATS server.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L350" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L355" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1125,7 +1135,7 @@ nats.on_disconnect { <span class="t">Datadog</span>.metrics.increment <span clas
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L799" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L804" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1149,7 +1159,7 @@ nats.on_error { <span class="o">|</span>error<span class="o">|</span> <span clas
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L786" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L791" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1173,7 +1183,7 @@ nats.on_reconnect { <span class="t">Datadog</span>.metrics.increment <span class
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L812" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L817" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1189,17 +1199,17 @@ nats.on_reconnect { <span class="t">Datadog</span>.metrics.increment <span class
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L572" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L572" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="publish(subject:String,message:Data=Bytes.empty,reply_to:String?=nil,headers:Message::Headers?=nil):Nil-instance-method">
+    <div class="entry-detail" id="publish(subject:String,message:Data=Bytes.empty,reply_to:String|Nil=nil,headers:Message::Headers|Nil=nil):Nil-instance-method">
       <div class="signature">
         
-        def <strong>publish</strong>(subject : String, message : <a href="../NATS/Client/Data.html">Data</a> = <span class="t">Bytes</span>.empty, reply_to : String? = <span class="n">nil</span>, headers : <a href="../NATS/Message/Headers.html">Message::Headers</a>? = <span class="n">nil</span>) : Nil
+        def <strong>publish</strong>(subject : String, message : <a href="../NATS/Client/Data.html">Data</a> = <span class="t">Bytes</span>.empty, reply_to : String | Nil = <span class="n">nil</span>, headers : <a href="../NATS/Message/Headers.html">Message::Headers</a> | Nil = <span class="n">nil</span>) : Nil
 
-        <a class="method-permalink" href="#publish%28subject%3AString%2Cmessage%3AData%3DBytes.empty%2Creply_to%3AString%3F%3Dnil%2Cheaders%3AMessage%3A%3AHeaders%3F%3Dnil%29%3ANil-instance-method">#</a>
+        <a class="method-permalink" href="#publish%28subject%3AString%2Cmessage%3AData%3DBytes.empty%2Creply_to%3AString%7CNil%3Dnil%2Cheaders%3AMessage%3A%3AHeaders%7CNil%3Dnil%29%3ANil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1239,7 +1249,7 @@ nats.publish orders_subject, order.to_json, headers: <span class="t">NATS</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L500" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L500" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1270,17 +1280,17 @@ request/reply messaging model.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L459" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L459" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="request(subject:String,message:Data=&quot;&quot;,timeout:Time::Span=2.seconds,headers:Headers?=nil):Message?-instance-method">
+    <div class="entry-detail" id="request(subject:String,message:Data=&quot;&quot;,timeout:Time::Span=2.seconds,headers:Headers|Nil=nil):Message|Nil-instance-method">
       <div class="signature">
         
-        def <strong>request</strong>(subject : String, message : <a href="../NATS/Client/Data.html">Data</a> = <span class="s">&quot;&quot;</span>, timeout : Time::Span = <span class="n">2</span>.seconds, headers : <a href="../NATS/Headers.html">Headers</a>? = <span class="n">nil</span>) : <a href="../NATS/Message.html">Message</a>?
+        def <strong>request</strong>(subject : String, message : <a href="../NATS/Client/Data.html">Data</a> = <span class="s">&quot;&quot;</span>, timeout : Time::Span = <span class="n">2</span>.seconds, headers : <a href="../NATS/Headers.html">Headers</a> | Nil = <span class="n">nil</span>) : <a href="../NATS/Message.html">Message</a> | Nil
 
-        <a class="method-permalink" href="#request%28subject%3AString%2Cmessage%3AData%3D%22%22%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%2Cheaders%3AHeaders%3F%3Dnil%29%3AMessage%3F-instance-method">#</a>
+        <a class="method-permalink" href="#request%28subject%3AString%2Cmessage%3AData%3D%22%22%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%2Cheaders%3AHeaders%7CNil%3Dnil%29%3AMessage%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1299,7 +1309,7 @@ the <code>timeout</code> elapses, <code>nil</code> is returned.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L392" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L392" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1322,7 +1332,7 @@ the block.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L428" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L428" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1338,7 +1348,7 @@ the block.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L127" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L127" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1359,17 +1369,17 @@ the block.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L126" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L126" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="subscribe(subject:String,queue_group:String?=nil,sid=@current_sid.add(1),max_in_flight=64000,&amp;block:Message,Subscription-&gt;):Subscription-instance-method">
+    <div class="entry-detail" id="subscribe(subject:String,queue_group:String|Nil=nil,sid=@current_sid.add(1),max_in_flight=64000,&amp;block:Message,Subscription-&gt;):Subscription-instance-method">
       <div class="signature">
         
-        def <strong>subscribe</strong>(subject : String, queue_group : String? = <span class="n">nil</span>, sid = @current_sid.add(<span class="n">1</span>), max_in_flight = <span class="n">64000</span>, &block : <a href="../NATS/Message.html">Message</a>, <a href="../NATS/Subscription.html">Subscription</a> -> ) : <a href="../NATS/Subscription.html">Subscription</a>
+        def <strong>subscribe</strong>(subject : String, queue_group : String | Nil = <span class="n">nil</span>, sid = @current_sid.add(<span class="n">1</span>), max_in_flight = <span class="n">64000</span>, &block : <a href="../NATS/Message.html">Message</a>, <a href="../NATS/Subscription.html">Subscription</a> -> ) : <a href="../NATS/Subscription.html">Subscription</a>
 
-        <a class="method-permalink" href="#subscribe%28subject%3AString%2Cqueue_group%3AString%3F%3Dnil%2Csid%3D%40current_sid.add%281%29%2Cmax_in_flight%3D64000%2C%26block%3AMessage%2CSubscription-%3E%29%3ASubscription-instance-method">#</a>
+        <a class="method-permalink" href="#subscribe%28subject%3AString%2Cqueue_group%3AString%7CNil%3Dnil%2Csid%3D%40current_sid.add%281%29%2Cmax_in_flight%3D64000%2C%26block%3AMessage%2CSubscription-%3E%29%3ASubscription-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1391,7 +1401,7 @@ nats.subscribe <span class="s">&quot;orders.created&quot;</span> <span class="k"
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L316" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L316" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1412,7 +1422,7 @@ nats.subscribe <span class="s">&quot;orders.created&quot;</span> <span class="k"
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L360" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L360" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1444,7 +1454,7 @@ spawn <span class="k">do</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/nats.cr#L355" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/nats.cr#L355" target="_blank">View source</a>]
         
       </div>
     </div>

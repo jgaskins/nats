@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 1.5.1">
-<meta name="crystal_docs.project_version" content="1.2.2">
+<meta name="crystal_docs.project_version" content="1.2.3">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::Objects::Bucket - nats 1.2.2</title>
+  <title>NATS::Objects::Bucket - nats 1.2.3</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        1.2.2
+        1.2.3
       </span>
     </div>
   </div>
@@ -406,8 +406,18 @@
       
         <ul>
   
-  <li class=" " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
+  <li class="parent " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
       <a href="../../NATS/KV/Bucket.html">Bucket</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Bucket/Size" data-name="nats::kv::bucket::size">
+      <a href="../../NATS/KV/Bucket/Size.html">Size</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -618,7 +628,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L295" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L300" target="_blank">
         objects.cr
       </a>
     
@@ -696,7 +706,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#put%28key%3AString%2Cvalue%3AIO%2C%2A%2Cdescription%3AString%3F%3Dnil%2Cheaders%3AHeaders%3DHeaders.new%2Cchunk_size%3AInt%3DDEFAULT_CHUNK_SIZE%29-instance-method" class="signature"><strong>#put</strong>(key : String, value : IO, *, description : String? = <span class="n">nil</span>, headers : Headers = <span class="t">Headers</span>.new, chunk_size : Int = <span class="t">DEFAULT_CHUNK_SIZE</span>)</a>
+        <a href="#put%28key%3AString%2Cvalue%3AIO%2C%2A%2Cdescription%3AString%7CNil%3Dnil%2Cheaders%3AHeaders%3DHeaders.new%2Cchunk_size%3AInt%3DDEFAULT_CHUNK_SIZE%29-instance-method" class="signature"><strong>#put</strong>(key : String, value : IO, *, description : String | Nil = <span class="n">nil</span>, headers : Headers = <span class="t">Headers</span>.new, chunk_size : Int = <span class="t">DEFAULT_CHUNK_SIZE</span>)</a>
         
       </li>
     
@@ -771,7 +781,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L308" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L313" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -787,7 +797,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L300" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L305" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -817,7 +827,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L339" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L344" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -833,7 +843,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L331" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L336" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -849,7 +859,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L327" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L332" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -865,7 +875,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L319" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L324" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -881,7 +891,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L343" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L348" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -897,23 +907,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L296" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L301" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="put(key:String,value:IO,*,description:String?=nil,headers:Headers=Headers.new,chunk_size:Int=DEFAULT_CHUNK_SIZE)-instance-method">
+    <div class="entry-detail" id="put(key:String,value:IO,*,description:String|Nil=nil,headers:Headers=Headers.new,chunk_size:Int=DEFAULT_CHUNK_SIZE)-instance-method">
       <div class="signature">
         
-        def <strong>put</strong>(key : String, value : IO, *, description : String? = <span class="n">nil</span>, headers : <a href="../../NATS/Headers.html">Headers</a> = <span class="t">Headers</span>.new, chunk_size : Int = <span class="t">DEFAULT_CHUNK_SIZE</span>)
+        def <strong>put</strong>(key : String, value : IO, *, description : String | Nil = <span class="n">nil</span>, headers : <a href="../../NATS/Headers.html">Headers</a> = <span class="t">Headers</span>.new, chunk_size : Int = <span class="t">DEFAULT_CHUNK_SIZE</span>)
 
-        <a class="method-permalink" href="#put%28key%3AString%2Cvalue%3AIO%2C%2A%2Cdescription%3AString%3F%3Dnil%2Cheaders%3AHeaders%3DHeaders.new%2Cchunk_size%3AInt%3DDEFAULT_CHUNK_SIZE%29-instance-method">#</a>
+        <a class="method-permalink" href="#put%28key%3AString%2Cvalue%3AIO%2C%2A%2Cdescription%3AString%7CNil%3Dnil%2Cheaders%3AHeaders%3DHeaders.new%2Cchunk_size%3AInt%3DDEFAULT_CHUNK_SIZE%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L315" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L320" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -929,7 +939,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L311" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L316" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -945,7 +955,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/objects.cr#L297" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/objects.cr#L302" target="_blank">View source</a>]
         
       </div>
     </div>

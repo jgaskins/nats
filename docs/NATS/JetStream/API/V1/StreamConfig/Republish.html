@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Crystal Docs 1.5.1">
-<meta name="crystal_docs.project_version" content="1.2.2">
+<meta name="crystal_docs.project_version" content="1.2.3">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../../../../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::API::V1::StreamConfig::Republish - nats 1.2.2</title>
+  <title>NATS::JetStream::API::V1::StreamConfig::Republish - nats 1.2.3</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../../../../";
   </script>
@@ -39,7 +39,7 @@
       </h1>
 
       <span class="project-version">
-        1.2.2
+        1.2.3
       </span>
     </div>
   </div>
@@ -406,8 +406,18 @@
       
         <ul>
   
-  <li class=" " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
+  <li class="parent " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
       <a href="../../../../../NATS/KV/Bucket.html">Bucket</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Bucket/Size" data-name="nats::kv::bucket::size">
+      <a href="../../../../../NATS/KV/Bucket/Size.html">Size</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -618,7 +628,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L822" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L850" target="_blank">
         jetstream.cr
       </a>
     
@@ -645,7 +655,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#new%28%2A%2Csource%3AString%3F%3Dnil%2Cdestination%3AString%2Cheaders_only%3ABool%3F%3Dnil%29-class-method" class="signature"><strong>.new</strong>(*, source : String? = <span class="n">nil</span>, destination : String, headers_only : Bool? = <span class="n">nil</span>)</a>
+        <a href="#new%28%2A%2Csource%3AString%7CNil%3Dnil%2Cdestination%3AString%2Cheaders_only%3ABool%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(*, source : String | Nil = <span class="n">nil</span>, destination : String, headers_only : Bool | Nil = <span class="n">nil</span>)</a>
         
       </li>
     
@@ -671,12 +681,12 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#headers_only%3F%3ABool%3F-instance-method" class="signature"><strong>#headers_only?</strong> : Bool?</a>
+        <a href="#headers_only%3F%3ABool%7CNil-instance-method" class="signature"><strong>#headers_only?</strong> : Bool | Nil</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#source%3AString%3F-instance-method" class="signature"><strong>#source</strong> : String?</a>
+        <a href="#source%3AString%7CNil-instance-method" class="signature"><strong>#source</strong> : String | Nil</a>
         
       </li>
     
@@ -770,23 +780,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L822" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L850" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="new(*,source:String?=nil,destination:String,headers_only:Bool?=nil)-class-method">
+    <div class="entry-detail" id="new(*,source:String|Nil=nil,destination:String,headers_only:Bool|Nil=nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(*, source : String? = <span class="n">nil</span>, destination : String, headers_only : Bool? = <span class="n">nil</span>)
+        def self.<strong>new</strong>(*, source : String | Nil = <span class="n">nil</span>, destination : String, headers_only : Bool | Nil = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#new%28%2A%2Csource%3AString%3F%3Dnil%2Cdestination%3AString%2Cheaders_only%3ABool%3F%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28%2A%2Csource%3AString%7CNil%3Dnil%2Cdestination%3AString%2Cheaders_only%3ABool%7CNil%3Dnil%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L829" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L857" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -816,39 +826,39 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L826" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L854" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="headers_only?:Bool?-instance-method">
+    <div class="entry-detail" id="headers_only?:Bool|Nil-instance-method">
       <div class="signature">
         
-        def <strong>headers_only?</strong> : Bool?
+        def <strong>headers_only?</strong> : Bool | Nil
 
-        <a class="method-permalink" href="#headers_only%3F%3ABool%3F-instance-method">#</a>
+        <a class="method-permalink" href="#headers_only%3F%3ABool%7CNil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L827" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L855" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="source:String?-instance-method">
+    <div class="entry-detail" id="source:String|Nil-instance-method">
       <div class="signature">
         
-        def <strong>source</strong> : String?
+        def <strong>source</strong> : String | Nil
 
-        <a class="method-permalink" href="#source%3AString%3F-instance-method">#</a>
+        <a class="method-permalink" href="#source%3AString%7CNil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.2.2/src/jetstream.cr#L824" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.2.3/src/jetstream.cr#L852" target="_blank">View source</a>]
         
       </div>
     </div>
