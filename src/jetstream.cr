@@ -664,7 +664,7 @@ module NATS
           getter state : StreamState
           getter cluster : ClusterInfo?
           getter mirror : StreamSourceInfo?
-          getter sources : Array(StreamSourceInfo) = [] of StreamSourceInfo
+          getter sources : Array(StreamSourceInfo) { [] of StreamSourceInfo }
         end
 
         struct StreamSource < Message
