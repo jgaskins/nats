@@ -219,6 +219,28 @@ describe NATS::JetStream do
         nats.jetstream.stream.delete stream
       end
     end
+
+    it "can ack a pull message and receive the next in the same request" do
+      write_subject = UUID.random.to_s
+      stream = create_stream([write_subject])
+      consumer = create_consumer(stream, deliver_subject: nil)
+      3.times do |i|
+        nats.jetstream.publish write_subject, (i + 1).to_s
+      end
+
+      begin
+        count = 0
+        pull = nats.jetstream.pull_subscribe(consumer)
+        msg = pull.fetch(1).first
+        while msg = pull.ack_next(msg, timeout: 100.milliseconds)
+          count += 1
+        end
+
+        count.should eq 2
+      ensure
+        nats.jetstream.stream.delete stream
+      end
+    end
   end
 
   it "gets idle heartbeats" do

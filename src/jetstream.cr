@@ -1200,6 +1200,37 @@ module NATS
         msgs
       end
 
+      def ack_next(msg : Message, timeout : Time::Span = 2.seconds, no_wait : Bool = false)
+        ack_next(msg, 1, timeout, no_wait).first?
+      end
+
+      def ack_next(msg : Message, count : Int, timeout : Time::Span = 2.seconds, no_wait : Bool = false)
+        body = String.build do |str|
+          str << "+NXT "
+          {
+            batch:   count,
+            no_wait: no_wait,
+          }.to_json str
+        end
+
+        @nats.publish(msg.reply_to, body, reply_to: @nats_subscription.subject)
+        msgs = Array(Message).new(initial_capacity: count)
+        start = Time.monotonic
+        count.times do |i|
+          select
+          when msg = @channel.receive
+            msgs << msg
+          when timeout(timeout - (Time.monotonic - start))
+            break
+          end
+        end
+        msgs
+      end
+
+      def finalize
+        close
+      end
+
       def close
         @nats.unsubscribe @nats_subscription
         @closed = true
