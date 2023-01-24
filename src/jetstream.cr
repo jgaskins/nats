@@ -1137,7 +1137,7 @@ module NATS
         struct ClusterInfo < Message
           getter name : String?
           getter leader : String?
-          getter replicas : Array(PeerInfo) = [] of PeerInfo
+          getter replicas : Array(PeerInfo) { [] of PeerInfo }
         end
 
         struct PeerInfo < Message
