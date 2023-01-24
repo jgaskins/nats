@@ -1143,10 +1143,10 @@ module NATS
         struct PeerInfo < Message
           getter name : String
           getter? current : Bool
-          getter? offline : Bool
+          getter? offline : Bool = false
           @[JSON::Field(converter: ::NATS::JetStream::API::V1::NanosecondsConverter)]
           getter active : Time::Span
-          getter lag : UInt64
+          getter lag : UInt64?
         end
 
         module NanosecondsConverter
