@@ -184,6 +184,25 @@ module NATS
         @nats.request msg.reply_to, "+ACK", timeout: timeout
       end
 
+      def ack_sync(messages : Enumerable(Message), timeout : Time::Span = 2.seconds)
+        channel = Channel(Bool).new(messages.size)
+        messages.each do |msg|
+          @nats.request msg.reply_to, "+ACK", timeout: timeout do |response|
+            channel.send true
+          end
+        end
+
+        count = 0
+        messages.each do
+          select
+          when channel.receive
+            count += 1
+          when timeout(timeout)
+          end
+        end
+        count
+      end
+
       # Notify the NATS server that you need more time to process this message,
       # usually used when a consumer requires that you acknowledge a message
       # within a certain amount of time but a given message is taking longer

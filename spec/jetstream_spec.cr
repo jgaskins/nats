@@ -151,6 +151,27 @@ describe NATS::JetStream do
       end
     end
 
+    it "can wait for double-ack for a list of messages" do
+      successful = [] of NATS::JetStream::Message
+      write_subject = UUID.random.to_s
+      channel = Channel(NATS::JetStream::Message).new
+      stream = create_stream([write_subject])
+      consumer = create_consumer(stream)
+      count = 10
+      count.times { |i| nats.publish write_subject, i.to_s }
+
+      begin
+        nats.jetstream.subscribe consumer do |msg|
+          channel.send msg
+        end
+
+        count.times { successful << channel.receive }
+        nats.jetstream.ack_sync(successful).should eq count
+      ensure
+        nats.jetstream.stream.delete stream
+      end
+    end
+
     it "can negatively acknowledge (reject) a message" do
       write_subject = UUID.random.to_s
       stream = create_stream([write_subject])
