@@ -1201,10 +1201,23 @@ module NATS
         msgs
       end
 
+      # Acknowledge the given message and request the next in a single round
+      # trip to the server to save latency.
+      #
+      # ```
+      # pull = js.pull_subscribe(consumer)
+      # # Poll for messages until we get one
+      # until msg = pull.fetch(timeout: 30.seconds)
+      # end
+      # loop do
+      # end
+      # ```
       def ack_next(msg : Message, timeout : Time::Span = 2.seconds, no_wait : Bool = false)
         ack_next(msg, 1, timeout, no_wait).first?
       end
 
+      # Acknowledge the given message and request the next `count` messages in
+      # a single round trip to the server to save latency.
       def ack_next(msg : Message, count : Int, timeout : Time::Span = 2.seconds, no_wait : Bool = false)
         body = String.build do |str|
           str << "+NXT "
