@@ -1011,6 +1011,7 @@ module NATS
 
           @[JSON::Field(key: "num_replicas")]
           getter replicas : Int32 = 0
+          @[JSON::Field(key: "mem_storage")]
           getter? memory_storage : Bool?
 
           # // Pull based options.
