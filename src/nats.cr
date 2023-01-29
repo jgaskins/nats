@@ -456,9 +456,9 @@ module NATS
     #   end
     # end
     # ```
-    def reply(msg : Message, body : Data) : Nil
+    def reply(msg : Message, body : Data = "", headers : Headers? = nil) : Nil
       if subject = msg.reply_to
-        publish subject, body
+        publish subject, body, headers: headers
       else
         raise NotAReply.new("Cannot reply to a message that has no return address", msg)
       end
