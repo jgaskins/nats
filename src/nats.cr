@@ -403,7 +403,7 @@ module NATS
       # 8KB and we send more than 8KB every millisecond, this mutex lock and
       # socket flush are unnecessary and we could potentially coalesce multiple
       # requests within the same socket flush, reducing the number of syscalls.
-      @out.synchronize { @socket.flush }
+      flush!
 
       begin
         select
@@ -459,6 +459,7 @@ module NATS
     def reply(msg : Message, body : Data = "", headers : Headers? = nil) : Nil
       if subject = msg.reply_to
         publish subject, body, headers: headers
+        flush!
       else
         raise NotAReply.new("Cannot reply to a message that has no return address", msg)
       end
@@ -558,7 +559,7 @@ module NATS
       channel = Channel(Nil).new(1)
       ping channel
       LOG.debug { "Flushing buffer..." }
-      @out.synchronize { @socket.flush }
+      flush!
 
       Fiber.yield
 
@@ -566,6 +567,13 @@ module NATS
       when channel.receive
       when timeout(timeout)
         raise Error.new("Flush did not complete within duration: #{timeout}")
+      end
+    end
+
+    def flush!
+      @out.synchronize do
+        @socket.flush
+        @data_waiting = false
       end
     end
 
@@ -607,8 +615,7 @@ module NATS
         if data_waiting?
           LOG.debug { "Flushing output buffer..." }
           @out.synchronize do
-            @socket.flush
-            @data_waiting = false
+            flush!
             @outbound_interval = 5.microseconds
           end
           LOG.debug { "Output flushed." }
