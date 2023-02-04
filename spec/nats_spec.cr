@@ -181,6 +181,7 @@ describe NATS do
     nats.subscribe subject do |msg|
       data = msg.body
     end
+    sleep 100.milliseconds # Allow for reconnect
 
     nats.publish subject, "yep"
     nats.flush
@@ -196,6 +197,7 @@ describe NATS do
       data = msg.body
     end
     nats.@socket.close # OOPS WE BROKE THE INTERNET
+    sleep 100.milliseconds # Allow time to reconnect
 
     nats.publish subject, "yep"
     nats.flush
