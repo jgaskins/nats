@@ -193,7 +193,7 @@ module NATS
       default_port = tls ? 4443 : 4222
       host = uri.host.presence || "localhost"
       port = uri.port || default_port
-      LOG.debug { "Connecting to #{host}:#{port}..." }
+      LOG.trace { "Connecting to #{host}:#{port}..." }
       s = TCPSocket.new(host, port)
       s.tcp_nodelay = true
       s.sync = false
@@ -201,7 +201,7 @@ module NATS
       s.buffer_size = BUFFER_SIZE
 
       info_line = s.read_line
-      LOG.debug { "RECEIVED: #{info_line}" }
+      LOG.trace { "RECEIVED: #{info_line}" }
       @server_info = ServerInfo.from_json info_line[5..-1]
 
       if tls || @server_info.tls_required?
@@ -259,7 +259,7 @@ module NATS
       ping
       @socket.flush
       until (line = @socket.read_line) == "PONG"
-        LOG.debug { line }
+        LOG.trace { line }
         if line.starts_with? "-ERR "
           raise Error.new(line.lchop("-ERR "))
         end
@@ -270,7 +270,7 @@ module NATS
         subscriptions = @subscriptions
         @subscriptions = {} of Int64 => Subscription
         subscriptions.each_value do |subscription|
-          LOG.debug { "Resubscribing to subscription #{subscription.subject}#{" (queue_group: #{subscription.queue_group}}" if subscription.queue_group} on subscription id #{subscription.sid}..." }
+          LOG.trace { "Resubscribing to subscription #{subscription.subject}#{" (queue_group: #{subscription.queue_group}}" if subscription.queue_group} on subscription id #{subscription.sid}..." }
           resubscribe subscription
         end
         IO.copy @disconnect_buffer.rewind, @io
@@ -284,7 +284,7 @@ module NATS
 
       unless @state.reconnecting?
         inbox_subject = "#{@inbox_prefix}.*"
-        LOG.debug { "Subscribing to inbox: #{inbox_subject}" }
+        LOG.trace { "Subscribing to inbox: #{inbox_subject}" }
         subscribe inbox_subject do |msg|
           if handler = @inbox_handlers[msg.subject]?
             handler.call msg
@@ -314,7 +314,7 @@ module NATS
     # end
     # ```
     def subscribe(subject : String, queue_group : String? = nil, sid = @current_sid.add(1), max_in_flight = 64_000, &block : Message, Subscription ->) : Subscription
-      LOG.debug { "Subscribing to #{subject.inspect}, queue_group: #{queue_group.inspect}, sid: #{sid}" }
+      LOG.trace { "Subscribing to #{subject.inspect}, queue_group: #{queue_group.inspect}, sid: #{sid}" }
       write do
         @io << "SUB " << subject << ' '
         if queue_group
@@ -362,7 +362,7 @@ module NATS
     end
 
     private def unsubscribe(sid : Int) : Nil
-      LOG.debug { "Unsubscribing from sid: #{sid}" }
+      LOG.trace { "Unsubscribing from sid: #{sid}" }
       write { @io << "UNSUB " << sid << "\r\n" }
     ensure
       if subscription = @subscriptions.delete sid
@@ -371,7 +371,7 @@ module NATS
     end
 
     private def unsubscribe(sid : Int, max_messages : Int) : Nil
-      LOG.debug { "Unsubscribing from sid #{sid} after #{max_messages} messages" }
+      LOG.trace { "Unsubscribing from sid #{sid} after #{max_messages} messages" }
       write { @io << "UNSUB " << sid << ' ' << max_messages << "\r\n" }
     ensure
       @subscriptions[sid].unsubscribe_after messages: max_messages
@@ -558,7 +558,7 @@ module NATS
     def flush(timeout = 2.seconds)
       channel = Channel(Nil).new(1)
       ping channel
-      LOG.debug { "Flushing buffer..." }
+      LOG.trace { "Flushing buffer..." }
       flush!
 
       Fiber.yield
@@ -578,7 +578,7 @@ module NATS
     end
 
     def ping(channel = Channel(Nil).new(1))
-      LOG.debug { "Sending PING" }
+      LOG.trace { "Sending PING" }
       write do
         @io << "PING\r\n"
         @ping_count.add 1
@@ -588,7 +588,7 @@ module NATS
 
     # :nodoc:
     def pong
-      LOG.debug { "Sending PONG" }
+      LOG.trace { "Sending PONG" }
       write { @io << "PONG\r\n" }
     end
 
@@ -597,7 +597,7 @@ module NATS
         sleep @ping_interval
         return if @state.closed?
         if @ping_count.get > @max_pings_out
-          LOG.debug { "Too many unresolved pings. Reconnecting..." }
+          LOG.warn { "Too many unresolved pings. Reconnecting..." }
           handle_disconnect!
         end
         ping
@@ -613,12 +613,12 @@ module NATS
         return if @state.closed?
 
         if data_waiting?
-          LOG.debug { "Flushing output buffer..." }
+          LOG.trace { "Flushing output buffer..." }
           @out.synchronize do
             flush!
             @outbound_interval = 5.microseconds
           end
-          LOG.debug { "Output flushed." }
+          LOG.trace { "Output flushed." }
         else
           @outbound_interval = {@outbound_interval * 2, MAX_OUTBOUND_INTERVAL}.min
         end
@@ -640,7 +640,7 @@ module NATS
 
         line = @socket.read_line
         break if state.closed?
-        LOG.debug { line || "" }
+        LOG.trace { line || "" }
         case line
         when .starts_with?("MSG"), .starts_with?("HMSG")
           starting_point = 4 # "MSG "
@@ -687,7 +687,7 @@ module NATS
                   key, value = header_line.split(/:\s*/, 2)
                   headers[key] = value
                 end
-                LOG.debug { "Headers: #{headers.inspect}" }
+                LOG.trace { "Headers: #{headers.inspect}" }
               else
                 raise Error.new("Invalid header declaration: #{header_decl} (msg: #{line})")
               end
@@ -709,11 +709,11 @@ module NATS
 
           if subscription = @subscriptions[sid]?
             subscription.send Message.new(subject, body, reply_to: reply_to, headers: headers) do |ex|
-              LOG.debug { "Error occurred in handling subscription #{sid}: #{ex}" }
+              LOG.trace { "Error occurred in handling subscription #{sid}: #{ex}" }
               @on_error.call ex
             end
             if subscription.messages_remaining
-              LOG.debug { "Messages remaining in subscription #{sid} to #{subscription.subject}: #{subscription.messages_remaining}" }
+              LOG.trace { "Messages remaining in subscription #{sid} to #{subscription.subject}: #{subscription.messages_remaining}" }
             end
             if (messages_remaining = subscription.messages_remaining) && messages_remaining <= 0
               @subscriptions.delete sid
@@ -761,13 +761,13 @@ module NATS
     end
 
     private def handle_inbound_disconnect(exception, backoff : Time::Span)
-      LOG.debug { "Exception in inbound data handler: #{exception}" }
+      LOG.warn { "Exception in inbound data handler: #{exception}" }
       if backtrace = exception.backtrace?
         backtrace.each do |line|
-          LOG.debug { line }
+          LOG.warn { line }
         end
       end
-      LOG.debug { "Waiting #{backoff} to reconnect" }
+      LOG.warn { "Waiting #{backoff} to reconnect" }
       sleep backoff
       handle_disconnect!
     end
@@ -777,12 +777,12 @@ module NATS
     # associated with this client.
     def close
       return if @state.closed?
-      LOG.debug { "Flushing/draining before closing..." }
+      LOG.trace { "Flushing/draining before closing..." }
       flush
       drain
       @socket.close
       @state = :closed
-      LOG.debug { "Connection closed" }
+      LOG.trace { "Connection closed" }
     rescue IO::Error
     end
 
@@ -853,7 +853,7 @@ module NATS
             @on_disconnect.call
             # Redirect all writes to the buffer until we reconnect to the server
             @io = @disconnect_buffer
-            LOG.debug { "Output set to in-memory buffer pending reconnection" }
+            LOG.trace { "Output set to in-memory buffer pending reconnection" }
             reconnect!
           end
         end
@@ -944,7 +944,7 @@ module NATS
             message, on_error = result
             @processing = true
 
-            LOG.debug { "Calling subscription handler for sid #{sid} (subscription to #{subject.inspect}, message subject #{message.subject.inspect})" }
+            LOG.trace { "Calling subscription handler for sid #{sid} (subscription to #{subject.inspect}, message subject #{message.subject.inspect})" }
             begin
               call message, on_error
             ensure
