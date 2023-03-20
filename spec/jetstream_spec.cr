@@ -54,7 +54,28 @@ describe NATS::JetStream do
     end
   end
 
-  it "creates and deletes consumers" do
+  it "paginates streams" do
+    a_bunch_of_streams = Array.new(1000) do |id|
+      js.stream.create(
+        name: "test-#{id}",
+        storage: :memory,
+        subjects: ["test.jetstream.pagination.#{id}"],
+      )
+    end
+
+    begin
+      streams = nats.jetstream.stream.list.to_a
+      a_bunch_of_streams.each do |stream|
+        streams.map(&.config.name).should contain stream.config.name
+      end
+    ensure
+      a_bunch_of_streams.each do |stream|
+        js.stream.delete stream
+      end
+    end
+  end
+
+  it "creates and deletes streams" do
     subjects = [UUID.random.to_s]
     stream = create_stream(subjects)
 
