@@ -116,6 +116,7 @@ module NATS
     @current_sid = Atomic(Int64).new(0_i64)
     @subscriptions = {} of Int64 => Subscription
     @out = Mutex.new(protection: :reentrant)
+    @reconnect_mutex = Mutex.new(protection: :reentrant)
     @ping_count : Atomic(Int32)
     @pings = Channel(Channel(Nil)).new(3) # For flushing the connection
     @disconnect_buffer = IO::Memory.new
@@ -868,13 +869,16 @@ module NATS
       return unless @state.disconnected?
       @state = :reconnecting
       LOG.debug { "Reconnecting..." }
-      initialize(
-        servers: @servers,
-        ping_interval: @ping_interval,
-        max_pings_out: @max_pings_out,
-        nkeys_file: @nkeys_file,
-        user_credentials: @user_credentials,
-      )
+
+      @reconnect_mutex.synchronize do
+        initialize(
+          servers: @servers,
+          ping_interval: @ping_interval,
+          max_pings_out: @max_pings_out,
+          nkeys_file: @nkeys_file,
+          user_credentials: @user_credentials,
+        )
+      end
       @on_reconnect.call
     end
 
