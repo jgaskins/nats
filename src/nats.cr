@@ -501,6 +501,9 @@ module NATS
     # }
     # ```
     def publish(subject : String, message : Data = Bytes.empty, reply_to : String? = nil, headers : Message::Headers? = nil) : Nil
+      if subject.includes? ' '
+        raise ArgumentError.new("Cannot publish to a subject that contains a space")
+      end
       if message.bytesize > MAX_PUBLISH_SIZE
         raise Error.new("Attempted to publish message of size #{message.bytesize}. Cannot publish messages larger than #{MAX_PUBLISH_SIZE}.")
       end
