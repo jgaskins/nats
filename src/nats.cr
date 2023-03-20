@@ -681,7 +681,8 @@ module NATS
                 raise Error.new("Invalid message declaration with headers: #{line}")
               end
               headers = Message::Headers.new
-              if (header_decl = @socket.read_line).starts_with? "NATS/1.0" # Headers preamble, intended to look like HTTP/1.1
+              # Headers preamble, intended to look like HTTP/1.1
+              if (header_decl = @socket.read_line).starts_with? "NATS/1.0"
                 # If there is anything beyond the NATS/1.0  status line, that
                 # indicates the request stauts and becomes the status header of
                 # the reply message.
