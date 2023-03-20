@@ -935,9 +935,11 @@ module NATS
         @senders = Crystal::PointerLinkedList(Sender(T)).new
         @receivers = Crystal::PointerLinkedList(Receiver(T)).new
 
-        if capacity > 0
-          @queue = Deque(T).new
-        end
+        @queue = Deque(T).new
+      end
+
+      def queue
+        @queue.not_nil!
       end
     end
 
@@ -971,7 +973,7 @@ module NATS
     end
 
     def drain : Nil
-      until @message_channel.@queue.not_nil!.empty? && !processing?
+      until @message_channel.queue.empty? && !processing?
         sleep 1.millisecond
       end
     end
