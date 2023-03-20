@@ -910,7 +910,7 @@ module NATS
   end
 
   class Subscription
-    alias MessageChannel = Channel({Message, Proc(Exception, Nil)})
+    alias MessageChannel = Channel({Message, (Exception -> Nil)})
 
     getter subject : String
     getter sid : Int64
