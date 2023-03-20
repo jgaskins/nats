@@ -122,6 +122,7 @@ module NATS
     @disconnect_buffer = IO::Memory.new
     @inbox_prefix = "_INBOX.#{Random::Secure.hex}"
     @inbox_handlers = {} of String => Proc(Message, Nil)
+    @nuid = NUID.new
 
     # The current state of the connection
     getter state : State = :connecting
@@ -392,7 +393,7 @@ module NATS
     # ```
     def request(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil) : Message?
       channel = Channel(Message).new(1)
-      inbox = NUID.next
+      inbox = @nuid.next
       key = "#{@inbox_prefix}.#{inbox}"
       @inbox_handlers[key] = ->(msg : Message) { channel.send msg unless channel.closed? }
       publish subject, message, reply_to: key, headers: headers
@@ -427,7 +428,7 @@ module NATS
     # waiting for a response. The first message to come back will be passed to
     # the block.
     def request(subject : String, message : Data = "", timeout = 2.seconds, &block : Message ->) : Nil
-      inbox = NUID.next
+      inbox = @nuid.next
       key = "#{@inbox_prefix}.#{inbox}"
       @inbox_handlers[key] = ->(msg : Message) do
         block.call msg
