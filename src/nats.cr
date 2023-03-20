@@ -391,7 +391,7 @@ module NATS
     #   response.status = :service_unavailable
     # end
     # ```
-    def request(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil) : Message?
+    def request(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil, *, flush = true) : Message?
       channel = Channel(Message).new(1)
       inbox = @nuid.next
       key = "#{@inbox_prefix}.#{inbox}"
@@ -405,7 +405,7 @@ module NATS
       # 8KB and we send more than 8KB every millisecond, this mutex lock and
       # socket flush are unnecessary and we could potentially coalesce multiple
       # requests within the same socket flush, reducing the number of syscalls.
-      flush!
+      flush! if flush
 
       begin
         select
@@ -458,10 +458,10 @@ module NATS
     #   end
     # end
     # ```
-    def reply(msg : Message, body : Data = "", headers : Headers? = nil) : Nil
+    def reply(msg : Message, body : Data = "", headers : Headers? = nil, *, flush = true) : Nil
       if subject = msg.reply_to
         publish subject, body, headers: headers
-        flush!
+        flush! if flush
       else
         raise NotAReply.new("Cannot reply to a message that has no return address", msg)
       end
