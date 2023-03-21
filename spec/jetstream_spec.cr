@@ -10,12 +10,12 @@ private macro create_stream(subjects)
   )
 end
 
-private macro create_consumer(stream)
+private macro create_consumer(stream, deliver_subject = UUID.random.to_s)
   nats.jetstream.consumer.create(
     stream_name: stream.config.name,
     durable_name: UUID.random.to_s,
     deliver_group: UUID.random.to_s,
-    deliver_subject: UUID.random.to_s,
+    deliver_subject: {{deliver_subject}},
   )
 end
 
