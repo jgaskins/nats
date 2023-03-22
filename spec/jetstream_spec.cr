@@ -13,7 +13,6 @@ end
 private macro create_consumer(stream, deliver_subject = UUID.random.to_s)
   nats.jetstream.consumer.create(
     stream_name: stream.config.name,
-    durable_name: UUID.random.to_s,
     deliver_group: UUID.random.to_s,
     deliver_subject: {{deliver_subject}},
   )
@@ -99,29 +98,26 @@ describe NATS::JetStream do
       durable_name: consumer_name,
       deliver_group: deliver_group,
       deliver_subject: read_subject,
+      ack_policy: :none,
     )
 
     begin
       js.publish write_subject, "hello"
-      channel = Channel(Nil).new
+      channel = Channel(NATS::JetStream::Message).new
 
       msg_subject = nil
       msg_body = nil
       nats.jetstream.subscribe consumer do |msg|
-        msg_subject = msg.subject
-        msg_body = msg.body
-        js.ack msg
-        channel.send nil
+        channel.send msg
       end
 
       select
-      when channel.receive
+      when msg = channel.receive
+        msg.subject.should eq write_subject
+        msg.body.should eq "hello".to_slice
       when timeout(2.seconds)
         raise "Did not receive message within 2 seconds"
       end
-
-      msg_subject.should eq write_subject
-      msg_body.should eq "hello".to_slice
     ensure
       nats.jetstream.stream.delete stream
     end
