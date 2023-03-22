@@ -610,27 +610,23 @@ module NATS
       end
     end
 
-    MAX_OUTBOUND_INTERVAL = 10.milliseconds
-    @outbound_interval : Time::Span = 5.microseconds
+    private OUTBOUND_INTERVAL = ENV
+      .fetch("NATS_FLUSH_INTERVAL_MS", "10")
+      .to_i { 10 } # if we can't parse an int, just use 10
+      .milliseconds
 
     private def begin_outbound
       loop do
-        sleep @outbound_interval
-        return if @state.closed?
+        sleep OUTBOUND_INTERVAL
+        return if state.closed?
 
         if data_waiting?
           LOG.trace { "Flushing output buffer..." }
-          @out.synchronize do
-            flush!
-            @outbound_interval = 5.microseconds
-          end
+          flush!
           LOG.trace { "Output flushed." }
-        else
-          @outbound_interval = {@outbound_interval * 2, MAX_OUTBOUND_INTERVAL}.min
         end
       rescue ex : IO::Error
         break if state.closed?
-        @outbound_interval = MAX_OUTBOUND_INTERVAL
       rescue ex
         @on_error.call ex
       end
