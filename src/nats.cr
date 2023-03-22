@@ -5,6 +5,7 @@ require "uuid"
 require "openssl"
 require "log"
 
+require "./message"
 require "./nuid"
 require "./nkeys"
 require "./version"
@@ -122,7 +123,7 @@ module NATS
     @disconnect_buffer = IO::Memory.new
     @inbox_prefix = "_INBOX.#{Random::Secure.hex}"
     @inbox_handlers = {} of String => Proc(Message, Nil)
-    @nuid = NUID.new
+    getter nuid = NUID.new
 
     # The current state of the connection
     getter state : State = :connecting
@@ -890,23 +891,6 @@ module NATS
     # Raised when an attempt is made to communicate with the NATS server using
     # a client instance that has been explicitly closed.
     class ClientClosed < Error
-    end
-  end
-
-  struct Message
-    getter subject : String
-    getter body : Bytes
-    getter reply_to : String?
-    getter headers : Headers?
-
-    alias Headers = Hash(String, String)
-
-    def initialize(@subject, @body, @reply_to = nil, @headers = nil)
-    end
-
-    @[Deprecated("Instantiating a new IO::Memory for each message made them heavier than intended, so we're now recommending using `String.new(msg.body)`")]
-    def body_io
-      @body_io ||= IO::Memory.new(@body)
     end
   end
 
