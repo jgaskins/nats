@@ -1,6 +1,8 @@
 require "json"
 require "./nats"
 require "./jetstream"
+require "./jetstream/pub_ack"
+require "./jetstream/error_response"
 
 module NATS
   # `NATS::KV` is an experimental interface to the NATS server's experimental KV

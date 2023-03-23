@@ -15,4 +15,6 @@ module NATS::JetStream
       getter description : String
     end
   end
+
+  deprecate_api_v1 ErrorResponse
 end
