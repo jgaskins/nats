@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Crystal Docs 1.5.1">
+<meta name="crystal_docs.project_version" content="1.3.0">
+<meta name="crystal_docs.project_name" content="nats">
+
+
+
+<link href="../../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../js/doc.js"></script>
+
+  <meta name="repository-name" content="nats">
+  <title>NATS::JetStream::ErrorResponse - nats 1.3.0</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../../index.html">
+          nats
+        </a>
+      </h1>
+
+      <span class="project-version">
+        1.3.0
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="nats/NATS" data-name="nats">
+      <a href="../../NATS.html">NATS</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="nats/NATS/Client" data-name="nats::client">
+      <a href="../../NATS/Client.html">Client</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Client/ClientClosed" data-name="nats::client::clientclosed">
+      <a href="../../NATS/Client/ClientClosed.html">ClientClosed</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Client/Data" data-name="nats::client::data">
+      <a href="../../NATS/Client/Data.html">Data</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Client/State" data-name="nats::client::state">
+      <a href="../../NATS/Client/State.html">State</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Data" data-name="nats::data">
+      <a href="../../NATS/Data.html">Data</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Error" data-name="nats::error">
+      <a href="../../NATS/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Headers" data-name="nats::headers">
+      <a href="../../NATS/Headers.html">Headers</a>
+      
+    </li>
+  
+  <li class="parent open current" data-id="nats/NATS/JetStream" data-name="nats::jetstream">
+      <a href="../../NATS/JetStream.html">JetStream</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API" data-name="nats::jetstream::api">
+      <a href="../../NATS/JetStream/API.html">API</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/API/V1" data-name="nats::jetstream::api::v1">
+      <a href="../../NATS/JetStream/API/V1.html">V1</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/APIError" data-name="nats::jetstream::api::v1::apierror">
+      <a href="../../NATS/JetStream/API/V1/APIError.html">APIError</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ClusterInfo" data-name="nats::jetstream::api::v1::clusterinfo">
+      <a href="../../NATS/JetStream/API/V1/ClusterInfo.html">ClusterInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Consumer" data-name="nats::jetstream::api::v1::consumer">
+      <a href="../../NATS/JetStream/API/V1/Consumer.html">Consumer</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ConsumerConfig" data-name="nats::jetstream::api::v1::consumerconfig">
+      <a href="../../NATS/JetStream/API/V1/ConsumerConfig.html">ConsumerConfig</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ConsumerListResponse" data-name="nats::jetstream::api::v1::consumerlistresponse">
+      <a href="../../NATS/JetStream/API/V1/ConsumerListResponse.html">ConsumerListResponse</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Consumers" data-name="nats::jetstream::api::v1::consumers">
+      <a href="../../NATS/JetStream/API/V1/Consumers.html">Consumers</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ErrorResponse" data-name="nats::jetstream::api::v1::errorresponse">
+      <a href="../../NATS/JetStream/API/V1/ErrorResponse.html">ErrorResponse</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/ExternalStream" data-name="nats::jetstream::api::v1::externalstream">
+      <a href="../../NATS/JetStream/API/V1/ExternalStream.html">ExternalStream</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/NanosecondsConverter" data-name="nats::jetstream::api::v1::nanosecondsconverter">
+      <a href="../../NATS/JetStream/API/V1/NanosecondsConverter.html">NanosecondsConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/PeerInfo" data-name="nats::jetstream::api::v1::peerinfo">
+      <a href="../../NATS/JetStream/API/V1/PeerInfo.html">PeerInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/PubAck" data-name="nats::jetstream::api::v1::puback">
+      <a href="../../NATS/JetStream/API/V1/PubAck.html">PubAck</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Stream" data-name="nats::jetstream::api::v1::stream">
+      <a href="../../NATS/JetStream/API/V1/Stream.html">Stream</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamConfig" data-name="nats::jetstream::api::v1::streamconfig">
+      <a href="../../NATS/JetStream/API/V1/StreamConfig.html">StreamConfig</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamGetMsgResponse" data-name="nats::jetstream::api::v1::streamgetmsgresponse">
+      <a href="../../NATS/JetStream/API/V1/StreamGetMsgResponse.html">StreamGetMsgResponse</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamListResponse" data-name="nats::jetstream::api::v1::streamlistresponse">
+      <a href="../../NATS/JetStream/API/V1/StreamListResponse.html">StreamListResponse</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/Streams" data-name="nats::jetstream::api::v1::streams">
+      <a href="../../NATS/JetStream/API/V1/Streams.html">Streams</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamSource" data-name="nats::jetstream::api::v1::streamsource">
+      <a href="../../NATS/JetStream/API/V1/StreamSource.html">StreamSource</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamSourceInfo" data-name="nats::jetstream::api::v1::streamsourceinfo">
+      <a href="../../NATS/JetStream/API/V1/StreamSourceInfo.html">StreamSourceInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/API/V1/StreamState" data-name="nats::jetstream::api::v1::streamstate">
+      <a href="../../NATS/JetStream/API/V1/StreamState.html">StreamState</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/APIError" data-name="nats::jetstream::apierror">
+      <a href="../../NATS/JetStream/APIError.html">APIError</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Client" data-name="nats::jetstream::client">
+      <a href="../../NATS/JetStream/Client.html">Client</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/ClusterInfo" data-name="nats::jetstream::clusterinfo">
+      <a href="../../NATS/JetStream/ClusterInfo.html">ClusterInfo</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/Consumer" data-name="nats::jetstream::consumer">
+      <a href="../../NATS/JetStream/Consumer.html">Consumer</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Consumer/Sequence" data-name="nats::jetstream::consumer::sequence">
+      <a href="../../NATS/JetStream/Consumer/Sequence.html">Sequence</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/ConsumerConfig" data-name="nats::jetstream::consumerconfig">
+      <a href="../../NATS/JetStream/ConsumerConfig.html">ConsumerConfig</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/ConsumerConfig/AckPolicy" data-name="nats::jetstream::consumerconfig::ackpolicy">
+      <a href="../../NATS/JetStream/ConsumerConfig/AckPolicy.html">AckPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/ConsumerConfig/DeliverPolicy" data-name="nats::jetstream::consumerconfig::deliverpolicy">
+      <a href="../../NATS/JetStream/ConsumerConfig/DeliverPolicy.html">DeliverPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/ConsumerConfig/ReplayPolicy" data-name="nats::jetstream::consumerconfig::replaypolicy">
+      <a href="../../NATS/JetStream/ConsumerConfig/ReplayPolicy.html">ReplayPolicy</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/ConsumerListResponse" data-name="nats::jetstream::consumerlistresponse">
+      <a href="../../NATS/JetStream/ConsumerListResponse.html">ConsumerListResponse</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Consumers" data-name="nats::jetstream::consumers">
+      <a href="../../NATS/JetStream/Consumers.html">Consumers</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Entity" data-name="nats::jetstream::entity">
+      <a href="../../NATS/JetStream/Entity.html">Entity</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Error" data-name="nats::jetstream::error">
+      <a href="../../NATS/JetStream/Error.html">Error</a>
+      
+    </li>
+  
+  <li class="parent open current" data-id="nats/NATS/JetStream/ErrorResponse" data-name="nats::jetstream::errorresponse">
+      <a href="../../NATS/JetStream/ErrorResponse.html">ErrorResponse</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/ErrorResponse/Error" data-name="nats::jetstream::errorresponse::error">
+      <a href="../../NATS/JetStream/ErrorResponse/Error.html">Error</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Errors" data-name="nats::jetstream::errors">
+      <a href="../../NATS/JetStream/Errors.html">Errors</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/ExternalStream" data-name="nats::jetstream::externalstream">
+      <a href="../../NATS/JetStream/ExternalStream.html">ExternalStream</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/Message" data-name="nats::jetstream::message">
+      <a href="../../NATS/JetStream/Message.html">Message</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Message/InvalidJetStreamMessage" data-name="nats::jetstream::message::invalidjetstreammessage">
+      <a href="../../NATS/JetStream/Message/InvalidJetStreamMessage.html">InvalidJetStreamMessage</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/NAKBackoff" data-name="nats::jetstream::nakbackoff">
+      <a href="../../NATS/JetStream/NAKBackoff.html">NAKBackoff</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/NanosecondsConverter" data-name="nats::jetstream::nanosecondsconverter">
+      <a href="../../NATS/JetStream/NanosecondsConverter.html">NanosecondsConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/PeerInfo" data-name="nats::jetstream::peerinfo">
+      <a href="../../NATS/JetStream/PeerInfo.html">PeerInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/PubAck" data-name="nats::jetstream::puback">
+      <a href="../../NATS/JetStream/PubAck.html">PubAck</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/PullSubscription" data-name="nats::jetstream::pullsubscription">
+      <a href="../../NATS/JetStream/PullSubscription.html">PullSubscription</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Stream" data-name="nats::jetstream::stream">
+      <a href="../../NATS/JetStream/Stream.html">Stream</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/StreamConfig" data-name="nats::jetstream::streamconfig">
+      <a href="../../NATS/JetStream/StreamConfig.html">StreamConfig</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/DiscardPolicy" data-name="nats::jetstream::streamconfig::discardpolicy">
+      <a href="../../NATS/JetStream/StreamConfig/DiscardPolicy.html">DiscardPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/Placement" data-name="nats::jetstream::streamconfig::placement">
+      <a href="../../NATS/JetStream/StreamConfig/Placement.html">Placement</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/Republish" data-name="nats::jetstream::streamconfig::republish">
+      <a href="../../NATS/JetStream/StreamConfig/Republish.html">Republish</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/RetentionPolicy" data-name="nats::jetstream::streamconfig::retentionpolicy">
+      <a href="../../NATS/JetStream/StreamConfig/RetentionPolicy.html">RetentionPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/Storage" data-name="nats::jetstream::streamconfig::storage">
+      <a href="../../NATS/JetStream/StreamConfig/Storage.html">Storage</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/StreamGetMsgResponse" data-name="nats::jetstream::streamgetmsgresponse">
+      <a href="../../NATS/JetStream/StreamGetMsgResponse.html">StreamGetMsgResponse</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/StreamGetMsgResponse/Message" data-name="nats::jetstream::streamgetmsgresponse::message">
+      <a href="../../NATS/JetStream/StreamGetMsgResponse/Message.html">Message</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamGetMsgResponse/Message/Base64Data" data-name="nats::jetstream::streamgetmsgresponse::message::base64data">
+      <a href="../../NATS/JetStream/StreamGetMsgResponse/Message/Base64Data.html">Base64Data</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamGetMsgResponse/Message/HeadersConverter" data-name="nats::jetstream::streamgetmsgresponse::message::headersconverter">
+      <a href="../../NATS/JetStream/StreamGetMsgResponse/Message/HeadersConverter.html">HeadersConverter</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamListResponse" data-name="nats::jetstream::streamlistresponse">
+      <a href="../../NATS/JetStream/StreamListResponse.html">StreamListResponse</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/JetStream/Streams" data-name="nats::jetstream::streams">
+      <a href="../../NATS/JetStream/Streams.html">Streams</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/Streams/PurgeStreamResponse" data-name="nats::jetstream::streams::purgestreamresponse">
+      <a href="../../NATS/JetStream/Streams/PurgeStreamResponse.html">PurgeStreamResponse</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamSource" data-name="nats::jetstream::streamsource">
+      <a href="../../NATS/JetStream/StreamSource.html">StreamSource</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamSourceInfo" data-name="nats::jetstream::streamsourceinfo">
+      <a href="../../NATS/JetStream/StreamSourceInfo.html">StreamSourceInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamState" data-name="nats::jetstream::streamstate">
+      <a href="../../NATS/JetStream/StreamState.html">StreamState</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/KV" data-name="nats::kv">
+      <a href="../../NATS/KV.html">KV</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="nats/NATS/KV/Bucket" data-name="nats::kv::bucket">
+      <a href="../../NATS/KV/Bucket.html">Bucket</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Bucket/Size" data-name="nats::kv::bucket::size">
+      <a href="../../NATS/KV/Bucket/Size.html">Size</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/KV/Client" data-name="nats::kv::client">
+      <a href="../../NATS/KV/Client.html">Client</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/KV/Entry" data-name="nats::kv::entry">
+      <a href="../../NATS/KV/Entry.html">Entry</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Entry/Operation" data-name="nats::kv::entry::operation">
+      <a href="../../NATS/KV/Entry/Operation.html">Operation</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/KV/Error" data-name="nats::kv::error">
+      <a href="../../NATS/KV/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/KV/InvalidKeyname" data-name="nats::kv::invalidkeyname">
+      <a href="../../NATS/KV/InvalidKeyname.html">InvalidKeyname</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/KV/KeyEmptyError" data-name="nats::kv::keyemptyerror">
+      <a href="../../NATS/KV/KeyEmptyError.html">KeyEmptyError</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/KV/KeyError" data-name="nats::kv::keyerror">
+      <a href="../../NATS/KV/KeyError.html">KeyError</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/KV/Watch" data-name="nats::kv::watch">
+      <a href="../../NATS/KV/Watch.html">Watch</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/KV/Watch/Iterator" data-name="nats::kv::watch::iterator">
+      <a href="../../NATS/KV/Watch/Iterator.html">Iterator</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Message" data-name="nats::message">
+      <a href="../../NATS/Message.html">Message</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Message/Headers" data-name="nats::message::headers">
+      <a href="../../NATS/Message/Headers.html">Headers</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/NotAReply" data-name="nats::notareply">
+      <a href="../../NATS/NotAReply.html">NotAReply</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/NUID" data-name="nats::nuid">
+      <a href="../../NATS/NUID.html">NUID</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Objects" data-name="nats::objects">
+      <a href="../../NATS/Objects.html">Objects</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Objects/Bucket" data-name="nats::objects::bucket">
+      <a href="../../NATS/Objects/Bucket.html">Bucket</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Objects/Client" data-name="nats::objects::client">
+      <a href="../../NATS/Objects/Client.html">Client</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Objects/Client/ObjectInfo" data-name="nats::objects::client::objectinfo">
+      <a href="../../NATS/Objects/Client/ObjectInfo.html">ObjectInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Objects/Client/Watch" data-name="nats::objects::client::watch">
+      <a href="../../NATS/Objects/Client/Watch.html">Watch</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Objects/Error" data-name="nats::objects::error">
+      <a href="../../NATS/Objects/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Objects/KeyError" data-name="nats::objects::keyerror">
+      <a href="../../NATS/Objects/KeyError.html">KeyError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/ServerInfo" data-name="nats::serverinfo">
+      <a href="../../NATS/ServerInfo.html">ServerInfo</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/ServerNotRespondingToPings" data-name="nats::servernotrespondingtopings">
+      <a href="../../NATS/ServerNotRespondingToPings.html">ServerNotRespondingToPings</a>
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Subscription" data-name="nats::subscription">
+      <a href="../../NATS/Subscription.html">Subscription</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Subscription/MessageChannel" data-name="nats::subscription::messagechannel">
+      <a href="../../NATS/Subscription/MessageChannel.html">MessageChannel</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/UnknownCommand" data-name="nats::unknowncommand">
+      <a href="../../NATS/UnknownCommand.html">UnknownCommand</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">struct</span> NATS::JetStream::ErrorResponse
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../NATS/JetStream/ErrorResponse.html">NATS::JetStream::ErrorResponse</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="included-modules" class="anchor" href="#included-modules">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Included Modules
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type">JSON::Serializable</li>
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/jgaskins/nats/blob/v1.3.0/src/jetstream/error_response.cr#L5" target="_blank">
+        jetstream/error_response.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28pull%3AJSON%3A%3APullParser%29-class-method" class="signature"><strong>.new</strong>(pull : JSON::PullParser)</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#error%3AError-instance-method" class="signature"><strong>#error</strong> : Error</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(pull:JSON::PullParser)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(pull : JSON::PullParser)
+
+        <a class="method-permalink" href="#new%28pull%3AJSON%3A%3APullParser%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.0/src/jetstream/error_response.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="error:Error-instance-method">
+      <div class="signature">
+        
+        def <strong>error</strong> : <a href="../../NATS/JetStream/ErrorResponse/Error.html">Error</a>
+
+        <a class="method-permalink" href="#error%3AError-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.0/src/jetstream/error_response.cr#L8" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+</div>
+
+</body>
+</html>
