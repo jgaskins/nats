@@ -75,10 +75,10 @@ module NATS
         description : String = "",
         *,
         ttl : Time::Span? = nil,
-        storage : JetStream::API::V1::StreamConfig::Storage = :file,
+        storage : JetStream::StreamConfig::Storage = :file,
         replicas : Int? = nil,
         max_bytes : Int? = nil,
-        placement : JetStream::API::V1::StreamConfig::Placement? = nil
+        placement : JetStream::StreamConfig::Placement? = nil
       )
         stream = @nats.jetstream.stream.create(
           name: "OBJ_#{name}",
@@ -302,7 +302,7 @@ module NATS
       getter stream_name : String
       @client : Objects::Client
 
-      def self.new(stream : JetStream::API::V1::Stream, client : Objects::Client)
+      def self.new(stream : JetStream::Stream, client : Objects::Client)
         new(
           name: stream.config.name.lchop("OBJ_"),
           stream_name: stream.config.name,
