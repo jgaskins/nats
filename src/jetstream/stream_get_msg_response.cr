@@ -6,7 +6,10 @@ module NATS::JetStream
   struct StreamGetMsgResponse < Entity
     getter message : Message
 
-    struct Message
+    def initialize(*, @message)
+    end
+
+    struct Message < Entity
       include JSON::Serializable
       getter subject : String
       getter seq : Int64
@@ -15,6 +18,16 @@ module NATS::JetStream
       @[JSON::Field(key: "hdrs", converter: ::NATS::JetStream::StreamGetMsgResponse::Message::HeadersConverter)]
       getter headers : Headers { Headers.new }
       getter time : Time
+
+      def initialize(
+        *,
+        @subject,
+        @seq,
+        @data,
+        @headers,
+        @time
+      )
+      end
 
       module Base64Data
         def self.from_json(json : JSON::PullParser)

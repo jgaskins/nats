@@ -116,6 +116,70 @@ module NATS::JetStream
       end
     end
 
+    # The `get_msg` API involves some administrative overhead and usually routes
+    # to the stream's primary node in the NATS cluster. The `direct_get` method
+    # uses the `DIRECT.GET` API which allows any server hosting the stream
+    # (including replicas) to respond with the message data. Specifying
+    # `last_by_subject` allows you to get the last message in a stream that was
+    # published to a specific subject. This is used by `NATS::KV` internally to
+    # fetch values for a given key from replicas for the KV's backing stream.
+    #
+    # NOTE: In order to use this API, the stream _must_ have been created with
+    # [`allow_direct`](https://jgaskins.dev/nats/NATS/JetStream/StreamConfig.html#allow_direct%3F%3ABool%7CNil-instance-method)
+    # set to `true`. For performance reasons, the client does not perform this
+    # check.
+    def direct_get(stream : String, *, last_by_subject : String) : JetStream::StreamGetMsgResponse?
+      direct_get stream, {last_by_subj: last_by_subject}
+    end
+
+    # The `get_msg` API involves some administrative overhead and usually routes
+    # to the stream's primary node in the NATS cluster. The `direct_get` method
+    # uses the `DIRECT.GET` API which allows any server hosting the stream
+    # (including replicas) to respond with the message data. Specifying
+    # `last_by_subject` allows you to get the last message in a stream that was
+    # published to a specific subject. This is used by `NATS::KV` internally to
+    # fetch values for a given key from replicas for the KV's backing stream.
+    #
+    # NOTE: In order to use this API, the stream _must_ have been created with
+    # [`allow_direct`](https://jgaskins.dev/nats/NATS/JetStream/StreamConfig.html#allow_direct%3F%3ABool%7CNil-instance-method)
+    # set to `true`. For performance reasons, the client does not perform this
+    # check.
+    def direct_get(stream : String, *, sequence : Int, next_by_subject : String? = nil)
+      direct_get stream, {seq: sequence, next_by_subj: next_by_subject}
+    end
+
+    protected def direct_get(stream : String, params) : JetStream::StreamGetMsgResponse?
+      if response = @nats.request "$JS.API.DIRECT.GET.#{stream}", params.to_json
+        if headers = response.headers
+          return nil if headers["Status"]?.try(&.starts_with?("404"))
+          StreamGetMsgResponse.new(
+            message: StreamGetMsgResponse::Message.new(
+              subject: headers["Nats-Subject"],
+              seq: headers["Nats-Sequence"].to_i64,
+              data: response.body,
+              headers: headers,
+              time: Time::Format::RFC_3339.parse(headers["Nats-Time-Stamp"]),
+            ),
+          )
+        else
+          raise Error.new("Unexpected response to NATS::JetStream::Streams#direct_get (missing headers) - #{response.inspect}")
+        end
+
+        # case parsed = (StreamGetMsgResponse | ErrorResponse).from_json String.new(response.body)
+        # in StreamGetMsgResponse
+        #   parsed
+        # in ErrorResponse
+        #   if parsed.error.err_code.no_message_found?
+        #     nil # No message
+        #   else
+        #     raise Error.new(parsed.error.description)
+        #   end
+        # end
+      else
+        raise Error.new("Did not receive a response when getting message from stream #{stream.inspect} with options #{params}")
+      end
+    end
+
     def purge(stream : String, subject : String) : Int64
       if response = @nats.request("$JS.API.STREAM.PURGE.#{stream}", {filter: subject}.to_json)
         case parsed = (PurgeStreamResponse | ErrorResponse).from_json String.new(response.body)

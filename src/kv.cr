@@ -347,9 +347,9 @@ module NATS
       def get(bucket : String, key : String, *, revision : Int? = nil, ignore_deletes : Bool = false) : Entry?
         subject = "$KV.#{bucket}.#{key}"
         if revision
-          response = @nats.jetstream.stream.get_msg("KV_#{bucket}", sequence: revision, next_by_subject: subject)
+          response = @nats.jetstream.stream.direct_get("KV_#{bucket}", sequence: revision, next_by_subject: subject)
         else
-          response = @nats.jetstream.stream.get_msg("KV_#{bucket}", last_by_subject: subject)
+          response = @nats.jetstream.stream.direct_get("KV_#{bucket}", last_by_subject: subject)
         end
 
         if response
