@@ -282,7 +282,7 @@ module NATS
         description : String = "",
         *,
         max_value_size : Int32? = nil,
-        history : UInt8 = 1,
+        history : Int = 1,
         ttl : Time::Span? = nil,
         max_bytes : Int64? = nil,
         storage : JetStream::StreamConfig::Storage = :file,
