@@ -201,6 +201,7 @@ module NATS
       s.tcp_nodelay = true
       s.sync = false
       s.read_buffering = true
+      s.write_timeout = 10.seconds
       s.buffer_size = BUFFER_SIZE
 
       info_line = s.read_line
