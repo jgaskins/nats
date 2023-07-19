@@ -202,6 +202,9 @@ module NATS
       s.sync = false
       s.read_buffering = true
       s.write_timeout = 10.seconds
+      # s.read_timeout = 10.seconds
+      s.tcp_keepalive_count = 10
+      s.tcp_keepalive_interval = 1 # second
       s.buffer_size = BUFFER_SIZE
 
       info_line = s.read_line
@@ -638,7 +641,6 @@ module NATS
       loop do
         if @socket.closed?
           break if state.closed?
-          handle_inbound_disconnect IO::Error.new, backoff: backoff
         end
 
         line = @socket.read_line
@@ -755,9 +757,8 @@ module NATS
         backoff = 1.millisecond
         Fiber.yield
       rescue ex : IO::Error
-        backoff *= 2
-        backoff = {backoff, 10.seconds}.min
-        break if state.closed?
+        backoff = {backoff * 2, 10.seconds}.min
+        return if state.closed?
         handle_inbound_disconnect ex, backoff: backoff
       end
     ensure
@@ -848,7 +849,7 @@ module NATS
       end
     end
 
-    private def handle_disconnect!
+    private def handle_disconnect!(backoff : Time::Span = 1.millisecond)
       loop do
         @out.synchronize do
           unless @state.closed? || @state.connecting?
@@ -858,11 +859,13 @@ module NATS
             # Redirect all writes to the buffer until we reconnect to the server
             @io = @disconnect_buffer
             LOG.trace { "Output set to in-memory buffer pending reconnection" }
+            sleep backoff
+            backoff = {backoff * 2, 10.seconds}.min
             reconnect!
           end
         end
 
-        break
+        return
       rescue ex
         spawn @on_error.call(ex)
       end
