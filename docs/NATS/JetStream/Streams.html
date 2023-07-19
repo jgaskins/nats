@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.5.1">
-<meta name="crystal_docs.project_version" content="1.3.0">
+<meta name="crystal_docs.project_version" content="1.3.1">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -13,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::Streams - nats 1.3.0</title>
+  <title>NATS::JetStream::Streams - nats 1.3.1</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -25,6 +26,11 @@
     <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
   </symbol>
 </svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
 <div class="sidebar">
   <div class="sidebar-header">
     <div class="search-box">
@@ -39,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.3.0
+        1.3.1
       </span>
     </div>
   </div>
@@ -707,7 +713,7 @@ history in the order it was published.</p>
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.3.0/src/jetstream/streams.cr#L15" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/streams.cr#L15" target="_blank">
         jetstream/streams.cr
       </a>
     
@@ -767,6 +773,20 @@ history in the order it was published.</p>
         <a href="#delete%28stream%3AString%29-instance-method" class="signature"><strong>#delete</strong>(stream : String)</a>
         
           <div class="summary"><p>Delete the stream with the given name</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#direct_get%28stream%3AString%2C%2A%2Clast_by_subject%3AString%29%3AJetStream%3A%3AStreamGetMsgResponse%7CNil-instance-method" class="signature"><strong>#direct_get</strong>(stream : String, *, last_by_subject : String) : JetStream::StreamGetMsgResponse | Nil</a>
+        
+          <div class="summary"><p>The <code><a href="../../NATS/JetStream/Streams.html#get_msg%28stream%3AString%2C%2A%2Clast_by_subject%3AString%29-instance-method">#get_msg</a></code> API involves some administrative overhead and usually routes to the stream's primary node in the NATS cluster.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#direct_get%28stream%3AString%2C%2A%2Csequence%3AInt%2Cnext_by_subject%3AString%7CNil%3Dnil%29-instance-method" class="signature"><strong>#direct_get</strong>(stream : String, *, sequence : Int, next_by_subject : String | Nil = <span class="n">nil</span>)</a>
+        
+          <div class="summary"><p>The <code><a href="../../NATS/JetStream/Streams.html#get_msg%28stream%3AString%2C%2A%2Clast_by_subject%3AString%29-instance-method">#get_msg</a></code> API involves some administrative overhead and usually routes to the stream's primary node in the NATS cluster.</p></div>
         
       </li>
     
@@ -860,7 +880,7 @@ history in the order it was published.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.0/src/jetstream/streams.cr#L16" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/streams.cr#L16" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -897,7 +917,7 @@ properties, which are passed unmodified to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.0/src/jetstream/streams.cr#L22" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/streams.cr#L22" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -918,7 +938,7 @@ properties, which are passed unmodified to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.0/src/jetstream/streams.cr#L85" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/streams.cr#L85" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -939,7 +959,69 @@ properties, which are passed unmodified to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.0/src/jetstream/streams.cr#L90" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/streams.cr#L90" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="direct_get(stream:String,*,last_by_subject:String):JetStream::StreamGetMsgResponse|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>direct_get</strong>(stream : String, *, last_by_subject : String) : <a href="../../NATS/JetStream/StreamGetMsgResponse.html">JetStream::StreamGetMsgResponse</a> | Nil
+
+        <a class="method-permalink" href="#direct_get%28stream%3AString%2C%2A%2Clast_by_subject%3AString%29%3AJetStream%3A%3AStreamGetMsgResponse%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The <code><a href="../../NATS/JetStream/Streams.html#get_msg%28stream%3AString%2C%2A%2Clast_by_subject%3AString%29-instance-method">#get_msg</a></code> API involves some administrative overhead and usually routes
+to the stream's primary node in the NATS cluster. The <code><a href="../../NATS/JetStream/Streams.html#direct_get%28stream%3AString%2C%2A%2Clast_by_subject%3AString%29%3AJetStream%3A%3AStreamGetMsgResponse%7CNil-instance-method">#direct_get</a></code> method
+uses the <code>DIRECT.GET</code> API which allows any server hosting the stream
+(including replicas) to respond with the message data. Specifying
+<code>last_by_subject</code> allows you to get the last message in a stream that was
+published to a specific subject. This is used by <code><a href="../../NATS/KV.html">NATS::KV</a></code> internally to
+fetch values for a given key from replicas for the KV's backing stream.</p>
+<p><span class="flag purple">NOTE</span>  In order to use this API, the stream <em>must</em> have been created with
+<a href="https://jgaskins.dev/nats/NATS/JetStream/StreamConfig.html#allow_direct?:Bool%7CNil-instance-method"><code>allow_direct</code></a>
+set to <code>true</code>. For performance reasons, the client does not perform this
+check.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/streams.cr#L131" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="direct_get(stream:String,*,sequence:Int,next_by_subject:String|Nil=nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>direct_get</strong>(stream : String, *, sequence : Int, next_by_subject : String | Nil = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#direct_get%28stream%3AString%2C%2A%2Csequence%3AInt%2Cnext_by_subject%3AString%7CNil%3Dnil%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The <code><a href="../../NATS/JetStream/Streams.html#get_msg%28stream%3AString%2C%2A%2Clast_by_subject%3AString%29-instance-method">#get_msg</a></code> API involves some administrative overhead and usually routes
+to the stream's primary node in the NATS cluster. The <code><a href="../../NATS/JetStream/Streams.html#direct_get%28stream%3AString%2C%2A%2Clast_by_subject%3AString%29%3AJetStream%3A%3AStreamGetMsgResponse%7CNil-instance-method">#direct_get</a></code> method
+uses the <code>DIRECT.GET</code> API which allows any server hosting the stream
+(including replicas) to respond with the message data. Specifying
+<code>last_by_subject</code> allows you to get the last message in a stream that was
+published to a specific subject. This is used by <code><a href="../../NATS/KV.html">NATS::KV</a></code> internally to
+fetch values for a given key from replicas for the KV's backing stream.</p>
+<p><span class="flag purple">NOTE</span>  In order to use this API, the stream <em>must</em> have been created with
+<a href="https://jgaskins.dev/nats/NATS/JetStream/StreamConfig.html#allow_direct?:Bool%7CNil-instance-method"><code>allow_direct</code></a>
+set to <code>true</code>. For performance reasons, the client does not perform this
+check.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/streams.cr#L147" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -955,7 +1037,7 @@ properties, which are passed unmodified to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.0/src/jetstream/streams.cr#L94" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/streams.cr#L94" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -971,7 +1053,7 @@ properties, which are passed unmodified to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.0/src/jetstream/streams.cr#L98" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/streams.cr#L98" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -992,7 +1074,7 @@ properties, which are passed unmodified to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.0/src/jetstream/streams.cr#L67" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/streams.cr#L67" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1013,7 +1095,7 @@ properties, which are passed unmodified to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.0/src/jetstream/streams.cr#L54" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/streams.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1029,7 +1111,7 @@ properties, which are passed unmodified to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.0/src/jetstream/streams.cr#L119" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/streams.cr#L183" target="_blank">View source</a>]
         
       </div>
     </div>
