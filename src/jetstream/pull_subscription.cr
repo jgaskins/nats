@@ -4,13 +4,10 @@ require "./message"
 
 module NATS::JetStream
   class PullSubscription
-    getter nats_subscription : ::NATS::Subscription
     getter consumer : Consumer
-    getter? closed : Bool = false
-    @channel : Channel(Message)
     @nats : NATS::Client
 
-    def initialize(@nats_subscription, @consumer, @channel, @nats)
+    def initialize(@consumer, @nats)
     end
 
     def fetch(timeout : Time::Span = 2.seconds)
@@ -20,24 +17,50 @@ module NATS::JetStream
     def fetch(message_count : Int, timeout : Time::Span = 2.seconds, no_wait : Bool = false, max_bytes : Int? = nil) : Enumerable(Message)
       # We have to reimplement request/reply here because we get N replies
       # for 1 request, which NATS request/reply does not support.
+      LOG.trace { "Creating channel" }
+      channel = Channel(Message).new(message_count)
+      deliver_subject = "_INBOX.#{NUID.next}"
+      LOG.trace { "Sending subscription" }
+      subscription = @nats.subscribe deliver_subject do |msg, sub|
+        # If there isn't a reply-to, we're probably getting an update about
+        # some logistics pertaining to this pull subscription.
+        if (headers = msg.headers) && (status = headers["Status"]?) && status.starts_with?("409")
+          sub.close
+        elsif msg.reply_to.presence
+          # We can only receive messages that can be replied to because that's
+          # how we ack them.
+          channel.send Message.new(msg)
+        else
+          raise InternalError.new("Found a bug in NATS pull subscriptions. Please check the issues at https://github.com/jgaskins/nats/issues and, if there is not one open yet, please open one with this stack trace.")
+        end
+      end
+
       @nats.publish "$JS.API.CONSUMER.MSG.NEXT.#{consumer.stream_name}.#{consumer.name}",
         message: {
-          expires: timeout.total_nanoseconds.to_i64,
-          batch:   message_count,
+          expires: {(timeout - 100.milliseconds).total_nanoseconds, 0}
+            .max
+            .to_i64,
+          batch: message_count,
         }.to_json,
-        reply_to: @nats_subscription.subject
+        reply_to: deliver_subject
+      @nats.flush!
 
       msgs = Array(Message).new(initial_capacity: message_count)
       total_timeout = timeout
-      start = Time.monotonic
+      finish_by = Time.monotonic + timeout
+
       message_count.times do |i|
+        LOG.trace { "Waiting for message #{i}" }
         select
-        when msg = @channel.receive
+        when msg = channel.receive
+          LOG.trace { "received" }
           msgs << msg
-        when timeout(i == 0 ? total_timeout : 100.microseconds)
+        when timeout(finish_by - Time.monotonic)
+          LOG.trace { "timed out" }
           break
         end
       end
+      @nats.unsubscribe subscription
 
       msgs
     end
@@ -53,42 +76,38 @@ module NATS::JetStream
     # loop do
     # end
     # ```
-    def ack_next(msg : Message, timeout : Time::Span = 2.seconds, no_wait : Bool = false)
-      ack_next(msg, 1, timeout, no_wait).first?
+    def ack_next(msg : Message, timeout : Time::Span = 2.seconds)
+      # ack_next(msg, 1, timeout, no_wait).first?
+      inbox = "ack-next.#{NUID.next}"
+      channel = Channel(Message).new(1)
+
+      begin
+        sub = @nats.subscribe inbox do |msg|
+          channel.send Message.new(msg)
+        end
+        @nats.unsubscribe sub, max_messages: 1
+
+        @nats.publish(msg.reply_to, "+NXT 1", reply_to: inbox)
+
+        select
+        when reply = channel.receive
+          reply
+        when timeout(timeout)
+          @nats.unsubscribe sub
+          nil
+        end
+      end
     end
 
     # Acknowledge the given message and request the next `count` messages in
     # a single round trip to the server to save latency.
     def ack_next(msg : Message, count : Int, timeout : Time::Span = 2.seconds, no_wait : Bool = false)
-      body = String.build do |str|
-        str << "+NXT "
-        {
-          batch:   count,
-          no_wait: no_wait,
-        }.to_json str
-      end
-
-      @nats.publish(msg.reply_to, body, reply_to: @nats_subscription.subject)
-      msgs = Array(Message).new(initial_capacity: count)
-      start = Time.monotonic
-      count.times do |i|
-        select
-        when msg = @channel.receive
-          msgs << msg
-        when timeout(timeout - (Time.monotonic - start))
-          break
-        end
-      end
-      msgs
+      # This is an async ack, and then we fetch synchronously
+      nats.jetstream.ack msg
+      fetch(count, timeout: timeout)
     end
 
-    def finalize
-      close
-    end
-
-    def close
-      @nats.unsubscribe @nats_subscription
-      @closed = true
+    class InternalError < Error
     end
   end
 end

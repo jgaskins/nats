@@ -3,7 +3,7 @@ module NATS
     getter subject : String
     getter body : Bytes
     getter reply_to : String?
-    getter headers : Headers?
+    getter headers : Headers { Headers.new }
 
     alias Headers = Hash(String, String)
 

@@ -302,7 +302,7 @@ describe NATS::JetStream do
         nats.flush
       end
 
-      if msg = pull.fetch(timeout: 2.seconds)
+      if msg = pull.fetch(timeout: 1.second)
         msg.subject.should eq write_subject
         msg.body.should eq "0".to_slice
 
@@ -311,7 +311,7 @@ describe NATS::JetStream do
         raise "Did not receive a message within 2 seconds"
       end
 
-      msgs = pull.fetch(3, timeout: 500.milliseconds)
+      msgs = pull.fetch(3, timeout: 100.milliseconds)
       msgs.map(&.body).should eq [
         "1".to_slice,
         "2".to_slice,
@@ -319,6 +319,12 @@ describe NATS::JetStream do
 
       msgs.each { |msg| nats.jetstream.ack msg }
       nats.flush
+      consumer = nats
+        .jetstream
+        .consumer
+        .info(stream_name: stream.config.name, name: consumer_name)
+        .not_nil!
+      consumer.num_waiting.should eq 0
     ensure
       nats.jetstream.stream.delete stream
     end
@@ -337,14 +343,14 @@ describe NATS::JetStream do
     begin
       3.times { |i| nats.publish write_subject, i.to_s }
 
-      if msg = pull.fetch(timeout: 5000.milliseconds)
+      if msg = pull.fetch(timeout: 100.milliseconds)
         msg.subject.should eq write_subject
         msg.body.should eq "0".to_slice
       else
         raise "Did not receive a message within 500ms"
       end
 
-      msgs = pull.fetch(3, timeout: 500.milliseconds)
+      msgs = pull.fetch(3, timeout: 100.milliseconds)
       msgs.map(&.body).should eq [
         "1".to_slice,
         "2".to_slice,

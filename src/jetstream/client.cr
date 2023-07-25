@@ -110,27 +110,10 @@ module NATS::JetStream
     @[Experimental("NATS JetStream pull subscriptions may be unstable")]
     def pull_subscribe(consumer : Consumer, backlog : Int = 64)
       if consumer.config.deliver_subject
-        raise ArgumentError.new("Cannot set up a pull-based subscription to a push-based consumer: #{consumer.config.durable_name.inspect} on stream #{consumer.stream_name.inspect}")
+        raise ArgumentError.new("Cannot set up a pull-based subscription to a push-based consumer: #{consumer.name.inspect} on stream #{consumer.stream_name.inspect}")
       end
 
-      subject = "pull-subscriber.#{consumer.stream_name}.#{consumer.name}.#{NUID.next}"
-      channel = Channel(Message).new(backlog)
-
-      start = Time.monotonic
-      first_heartbeat = nil
-      subscription = @nats.subscribe(subject, queue_group: consumer.config.deliver_group || consumer.name) do |msg, sub|
-        if msg.reply_to.presence
-          channel.send Message.new(msg)
-        else
-          # If there isn't a reply-to, we're probably getting an update about
-          # some logistics pertaining to this pull subscription.
-          if (headers = msg.headers) && headers["Status"]? == "409 Consumer Deleted"
-            @nats.unsubscribe sub
-          end
-        end
-      end
-
-      PullSubscription.new(subscription, consumer, channel, @nats)
+      PullSubscription.new(consumer, @nats)
     end
 
     # Acknowledge success processing the specified message, usually called at
