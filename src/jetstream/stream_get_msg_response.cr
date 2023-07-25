@@ -34,7 +34,7 @@ module NATS::JetStream
           ::Base64.decode json.read_string
         end
 
-        def self.to_json(json : JSON::Builder, value : Bytes)
+        def self.to_json(value : Bytes, json : JSON::Builder)
           json.string ::Base64.encode(value)
         end
       end
