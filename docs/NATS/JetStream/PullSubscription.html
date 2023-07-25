@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.5.1">
-<meta name="crystal_docs.project_version" content="1.3.1">
+<meta name="crystal_docs.project_version" content="1.3.2">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::PullSubscription - nats 1.3.1</title>
+  <title>NATS::JetStream::PullSubscription - nats 1.3.2</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.3.1
+        1.3.2
       </span>
     </div>
   </div>
@@ -357,8 +357,18 @@
       
     </li>
   
-  <li class=" current" data-id="nats/NATS/JetStream/PullSubscription" data-name="nats::jetstream::pullsubscription">
+  <li class="parent open current" data-id="nats/NATS/JetStream/PullSubscription" data-name="nats::jetstream::pullsubscription">
       <a href="../../NATS/JetStream/PullSubscription.html">PullSubscription</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/PullSubscription/InternalError" data-name="nats::jetstream::pullsubscription::internalerror">
+      <a href="../../NATS/JetStream/PullSubscription/InternalError.html">InternalError</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -699,7 +709,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/pull_subscription.cr#L6" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.3.2/src/jetstream/pull_subscription.cr#L6" target="_blank">
         jetstream/pull_subscription.cr
       </a>
     
@@ -721,7 +731,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28nats_subscription%3ANATS%3A%3ASubscription%2Cconsumer%3ANATS%3A%3AJetStream%3A%3AConsumer%2Cchannel%3AChannel%28NATS%3A%3AJetStream%3A%3AMessage%29%2Cnats%3ANATS%3A%3AClient%29-class-method" class="signature"><strong>.new</strong>(nats_subscription : NATS::Subscription, consumer : NATS::JetStream::Consumer, channel : Channel(NATS::JetStream::Message), nats : NATS::Client)</a>
+        <a href="#new%28consumer%3ANATS%3A%3AJetStream%3A%3AConsumer%2Cnats%3ANATS%3A%3AClient%29-class-method" class="signature"><strong>.new</strong>(consumer : NATS::JetStream::Consumer, nats : NATS::Client)</a>
         
       </li>
     
@@ -742,7 +752,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#ack_next%28msg%3AMessage%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%2Cno_wait%3ABool%3Dfalse%29-instance-method" class="signature"><strong>#ack_next</strong>(msg : Message, timeout : Time::Span = <span class="n">2</span>.seconds, no_wait : Bool = <span class="n">false</span>)</a>
+        <a href="#ack_next%28msg%3AMessage%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%29-instance-method" class="signature"><strong>#ack_next</strong>(msg : Message, timeout : Time::Span = <span class="n">2</span>.seconds)</a>
         
           <div class="summary"><p>Acknowledge the given message and request the next in a single round trip to the server to save latency.</p></div>
         
@@ -752,16 +762,6 @@
         <a href="#ack_next%28msg%3AMessage%2Ccount%3AInt%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%2Cno_wait%3ABool%3Dfalse%29-instance-method" class="signature"><strong>#ack_next</strong>(msg : Message, count : Int, timeout : Time::Span = <span class="n">2</span>.seconds, no_wait : Bool = <span class="n">false</span>)</a>
         
           <div class="summary"><p>Acknowledge the given message and request the next <code>count</code> messages in a single round trip to the server to save latency.</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#close-instance-method" class="signature"><strong>#close</strong></a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#closed%3F%3ABool-instance-method" class="signature"><strong>#closed?</strong> : Bool</a>
         
       </li>
     
@@ -777,16 +777,6 @@
     
       <li class="entry-summary">
         <a href="#fetch%28message_count%3AInt%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%2Cno_wait%3ABool%3Dfalse%2Cmax_bytes%3AInt%7CNil%3Dnil%29%3AEnumerable%28Message%29-instance-method" class="signature"><strong>#fetch</strong>(message_count : Int, timeout : Time::Span = <span class="n">2</span>.seconds, no_wait : Bool = <span class="n">false</span>, max_bytes : Int | Nil = <span class="n">nil</span>) : Enumerable(Message)</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#finalize-instance-method" class="signature"><strong>#finalize</strong></a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#nats_subscription%3ANATS%3A%3ASubscription-instance-method" class="signature"><strong>#nats_subscription</strong> : NATS::Subscription</a>
         
       </li>
     
@@ -830,18 +820,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(nats_subscription:NATS::Subscription,consumer:NATS::JetStream::Consumer,channel:Channel(NATS::JetStream::Message),nats:NATS::Client)-class-method">
+    <div class="entry-detail" id="new(consumer:NATS::JetStream::Consumer,nats:NATS::Client)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(nats_subscription : <a href="../../NATS/Subscription.html">NATS::Subscription</a>, consumer : <a href="../../NATS/JetStream/Consumer.html">NATS::JetStream::Consumer</a>, channel : Channel(<a href="../../NATS/JetStream/Message.html">NATS::JetStream::Message</a>), nats : <a href="../../NATS/Client.html">NATS::Client</a>)
+        def self.<strong>new</strong>(consumer : <a href="../../NATS/JetStream/Consumer.html">NATS::JetStream::Consumer</a>, nats : <a href="../../NATS/Client.html">NATS::Client</a>)
 
-        <a class="method-permalink" href="#new%28nats_subscription%3ANATS%3A%3ASubscription%2Cconsumer%3ANATS%3A%3AJetStream%3A%3AConsumer%2Cchannel%3AChannel%28NATS%3A%3AJetStream%3A%3AMessage%29%2Cnats%3ANATS%3A%3AClient%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28consumer%3ANATS%3A%3AJetStream%3A%3AConsumer%2Cnats%3ANATS%3A%3AClient%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/pull_subscription.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.2/src/jetstream/pull_subscription.cr#L10" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -860,12 +850,12 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="ack_next(msg:Message,timeout:Time::Span=2.seconds,no_wait:Bool=false)-instance-method">
+    <div class="entry-detail" id="ack_next(msg:Message,timeout:Time::Span=2.seconds)-instance-method">
       <div class="signature">
         
-        def <strong>ack_next</strong>(msg : <a href="../../NATS/JetStream/Message.html">Message</a>, timeout : Time::Span = <span class="n">2</span>.seconds, no_wait : Bool = <span class="n">false</span>)
+        def <strong>ack_next</strong>(msg : <a href="../../NATS/JetStream/Message.html">Message</a>, timeout : Time::Span = <span class="n">2</span>.seconds)
 
-        <a class="method-permalink" href="#ack_next%28msg%3AMessage%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%2Cno_wait%3ABool%3Dfalse%29-instance-method">#</a>
+        <a class="method-permalink" href="#ack_next%28msg%3AMessage%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%29-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -883,7 +873,7 @@ loop <span class="k">do</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/pull_subscription.cr#L56" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.2/src/jetstream/pull_subscription.cr#L79" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -905,39 +895,7 @@ a single round trip to the server to save latency.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/pull_subscription.cr#L62" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="close-instance-method">
-      <div class="signature">
-        
-        def <strong>close</strong>
-
-        <a class="method-permalink" href="#close-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/pull_subscription.cr#L89" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="closed?:Bool-instance-method">
-      <div class="signature">
-        
-        def <strong>closed?</strong> : Bool
-
-        <a class="method-permalink" href="#closed%3F%3ABool-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/pull_subscription.cr#L9" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.2/src/jetstream/pull_subscription.cr#L104" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -953,7 +911,7 @@ a single round trip to the server to save latency.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/pull_subscription.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.2/src/jetstream/pull_subscription.cr#L7" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -969,7 +927,7 @@ a single round trip to the server to save latency.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/pull_subscription.cr#L16" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.2/src/jetstream/pull_subscription.cr#L13" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -985,39 +943,7 @@ a single round trip to the server to save latency.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/pull_subscription.cr#L20" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="finalize-instance-method">
-      <div class="signature">
-        
-        def <strong>finalize</strong>
-
-        <a class="method-permalink" href="#finalize-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/pull_subscription.cr#L85" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="nats_subscription:NATS::Subscription-instance-method">
-      <div class="signature">
-        
-        def <strong>nats_subscription</strong> : <a href="../../NATS/Subscription.html">NATS::Subscription</a>
-
-        <a class="method-permalink" href="#nats_subscription%3ANATS%3A%3ASubscription-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/jgaskins/nats/blob/v1.3.1/src/jetstream/pull_subscription.cr#L7" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.3.2/src/jetstream/pull_subscription.cr#L17" target="_blank">View source</a>]
         
       </div>
     </div>
