@@ -11,6 +11,7 @@ module NATS::JetStream
 
     struct Message < Entity
       include JSON::Serializable
+
       getter subject : String
       getter seq : Int64
       @[JSON::Field(converter: ::NATS::JetStream::StreamGetMsgResponse::Message::Base64Data)]
@@ -59,6 +60,14 @@ module NATS::JetStream
             end
 
             headers
+          end
+        end
+
+        def self.to_json(headers : NATS::Headers, json : JSON::Builder)
+          json.object do
+            headers.each do |(key, value)|
+              json.field key, value
+            end
           end
         end
       end
