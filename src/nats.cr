@@ -876,7 +876,7 @@ module NATS
       @state = :reconnecting
 
       @reconnect_mutex.synchronize do
-        LOG.warn &.emit "Reconnecting", servers: @servers
+        LOG.warn &.emit "Reconnecting", servers: @servers.map(&.to_s)
         initialize(
           servers: @servers,
           ping_interval: @ping_interval,
