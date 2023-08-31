@@ -746,7 +746,7 @@ module NATS
           @server_info = ServerInfo.from_json line[5..-1]
           if (urls = @server_info.connect_urls).any?
             @servers = urls.map do |host_with_port| # it's not a real URL :-(
-              URI.parse("tls://#{host_with_port}")
+              URI.parse("nats://#{host_with_port}")
             end
           end
         when .starts_with? "-ERR"
