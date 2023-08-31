@@ -874,9 +874,9 @@ module NATS
     private def reconnect!
       return unless @state.disconnected?
       @state = :reconnecting
-      LOG.debug { "Reconnecting..." }
 
       @reconnect_mutex.synchronize do
+        LOG.warn &.emit "Reconnecting", servers: @servers
         initialize(
           servers: @servers,
           ping_interval: @ping_interval,
