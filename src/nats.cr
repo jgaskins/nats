@@ -766,15 +766,8 @@ module NATS
     end
 
     private def handle_inbound_disconnect(exception, backoff : Time::Span)
-      LOG.warn { "Exception in inbound data handler: #{exception}" }
-      if backtrace = exception.backtrace?
-        backtrace.each do |line|
-          LOG.warn { line }
-        end
-      end
-      LOG.warn { "Waiting #{backoff} to reconnect" }
-      sleep backoff
-      handle_disconnect!
+      LOG.warn(exception: exception) { "Exception in inbound data handler" }
+      handle_disconnect! backoff
     end
 
     # Close this NATS connection. This should be done explicitly before exiting
