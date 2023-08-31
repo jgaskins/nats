@@ -197,7 +197,7 @@ module NATS
       host = uri.host.presence || "localhost"
       port = uri.port || default_port
       LOG.trace { "Connecting to #{host}:#{port}..." }
-      s = TCPSocket.new(host, port)
+      s = TCPSocket.new(host, port, connect_timeout: 5.seconds)
       s.tcp_nodelay = true
       s.sync = false
       s.read_buffering = true
