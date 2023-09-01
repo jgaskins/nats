@@ -598,12 +598,14 @@ module NATS
         @ping_count.add 1
         @pings.send channel
       end
+      @on_ping.call
     end
 
     # :nodoc:
     def pong
       LOG.trace { "Sending PONG" }
       write { @io << "PONG\r\n" }
+      @on_pong.call
     end
 
     private def begin_pings
@@ -824,6 +826,31 @@ module NATS
     # nats.on_reconnect { Datadog.metrics.increment "nats.reconnect" }
     # ```
     def on_reconnect(&@on_reconnect)
+      self
+    end
+
+    @on_ping = ->{}
+
+    # Execute the given block whenever this client pings the server.
+    #
+    # ```
+    # nats = NATS::Client.new
+    # nats.on_ping { Datadog.metrics.increment "nats.ping" }
+    # ```
+    def on_ping(&@on_ping)
+      self
+    end
+
+    @on_pong = ->{}
+
+    # Execute the given block whenever this client receives a pong reply from
+    # the server.
+    #
+    # ```
+    # nats = NATS::Client.new
+    # nats.on_pong { Datadog.metrics.increment "nats.pong" }
+    # ```
+    def on_pong(&@on_pong)
       self
     end
 
