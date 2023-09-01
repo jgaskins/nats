@@ -763,8 +763,8 @@ module NATS
         backoff = 1.millisecond
         Fiber.yield
       rescue ex : IO::Error
-        backoff = {backoff * 2, 10.seconds}.min
         return if state.closed?
+        backoff = {backoff * 2, 10.seconds}.min
         handle_inbound_disconnect ex, backoff: backoff
       end
     ensure
@@ -779,15 +779,17 @@ module NATS
     # Close this NATS connection. This should be done explicitly before exiting
     # the program so that the NATS server can remove any subscriptions that were
     # associated with this client.
-    def close
+    def close : Nil
       return if @state.closed?
       LOG.trace { "Flushing/draining before closing..." }
       flush
       drain
-      @socket.close
-      @state = :closed
-      LOG.trace { "Connection closed" }
     rescue IO::Error
+    ensure
+      # If we weren't able to set it above, we close now.
+      @state = :closed
+      @socket.close rescue nil
+      LOG.trace { "Connection closed" }
     end
 
     @on_error = ->(error : Exception) {}
