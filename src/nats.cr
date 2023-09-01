@@ -206,7 +206,6 @@ module NATS
       s.sync = false
       s.read_buffering = true
       s.write_timeout = 10.seconds
-      # s.read_timeout = 10.seconds
       s.tcp_keepalive_count = 10
       s.tcp_keepalive_interval = 1 # second
       s.buffer_size = BUFFER_SIZE
@@ -291,9 +290,7 @@ module NATS
         spawn begin_pings
         spawn begin_outbound
         spawn begin_inbound
-      end
 
-      unless @state.reconnecting?
         inbox_subject = "#{@inbox_prefix}.*"
         LOG.trace { "Subscribing to inbox: #{inbox_subject}" }
         subscribe inbox_subject do |msg|
