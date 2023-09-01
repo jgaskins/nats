@@ -88,9 +88,8 @@ module NATS
   class Client
     alias Data = String | Bytes
 
-    BUFFER_SIZE      = 1 << 15
-    MEGABYTE         = 1 << 20
-    MAX_PUBLISH_SIZE = 1 * MEGABYTE
+    private KILOBYTE               = 1 << 10
+    private BUFFER_SIZE            = 32 * KILOBYTE
 
     # The current state of the client's connection
     enum State
@@ -512,8 +511,8 @@ module NATS
       if subject.includes? ' '
         raise ArgumentError.new("Cannot publish to a subject that contains a space")
       end
-      if message.bytesize > MAX_PUBLISH_SIZE
-        raise Error.new("Attempted to publish message of size #{message.bytesize}. Cannot publish messages larger than #{MAX_PUBLISH_SIZE}.")
+      if message.bytesize > @server_info.max_payload
+        raise Error.new("Attempted to publish message of size #{message.bytesize}. Cannot publish messages larger than #{@server_info.max_payload}.")
       end
 
       LOG.debug { "Publishing #{message.bytesize} bytes to #{subject.inspect}, reply_to: #{reply_to.inspect}, headers: #{headers.inspect}" }
