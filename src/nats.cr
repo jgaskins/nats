@@ -90,6 +90,8 @@ module NATS
 
     private KILOBYTE               = 1 << 10
     private BUFFER_SIZE            = 32 * KILOBYTE
+    DEFAULT_PING_INTERVAL  = 2.minutes
+    DEFAULT_PING_THRESHOLD = 2
 
     # The current state of the client's connection
     enum State
@@ -121,7 +123,7 @@ module NATS
     @out = Mutex.new(protection: :reentrant)
     @reconnect_mutex = Mutex.new(protection: :reentrant)
     @ping_count : Atomic(Int32)
-    @pings = Channel(Channel(Nil)).new(3) # For flushing the connection
+    @pings : Channel(Channel(Nil)) # For flushing the connection
     @disconnect_buffer = IO::Memory.new
     @inbox_prefix = "_INBOX.#{Random::Secure.hex}"
     @inbox_handlers = {} of String => Proc(Message, Nil)
@@ -134,8 +136,8 @@ module NATS
 
     def self.new(
       *,
-      ping_interval = 2.minutes,
-      max_pings_out = 2,
+      ping_interval = DEFAULT_PING_INTERVAL,
+      max_pings_out = DEFAULT_PING_THRESHOLD,
       nkeys_file : String? = nil,
       user_credentials : String? = nil
     )
@@ -158,8 +160,8 @@ module NATS
     # ```
     def self.new(
       uri : URI,
-      ping_interval = 2.minutes,
-      max_pings_out = 2,
+      ping_interval = DEFAULT_PING_INTERVAL,
+      max_pings_out = DEFAULT_PING_THRESHOLD,
       nkeys_file : String? = nil,
       user_credentials : String? = nil
     )
@@ -177,14 +179,14 @@ module NATS
     # ```
     def initialize(
       @servers : Array(URI),
-      @ping_interval : Time::Span = 2.minutes,
-      @max_pings_out = 2,
+      @ping_interval : Time::Span = DEFAULT_PING_INTERVAL,
+      @max_pings_out = DEFAULT_PING_THRESHOLD,
       @nkeys_file : String? = nil,
       @user_credentials : String? = nil
     )
       uri = @servers.sample
       @ping_count = Atomic.new(0)
-      @pings = Channel(Channel(Nil)).new(3) # For flushing the connection
+      @pings = Channel(Channel(Nil)).new(max_pings_out + 1) # For flushing the connection
       @inbox_handlers = {} of String => Proc(Message, Nil)
 
       case uri.scheme
