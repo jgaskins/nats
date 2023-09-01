@@ -196,7 +196,7 @@ describe NATS do
     nats.subscribe subject do |msg|
       data = msg.body
     end
-    nats.@socket.close # OOPS WE BROKE THE INTERNET
+    nats.@socket.close     # OOPS WE BROKE THE INTERNET
     sleep 100.milliseconds # Allow time to reconnect
 
     nats.publish subject, "yep"
@@ -225,7 +225,7 @@ describe NATS do
       n.drain
 
       msgs.should eq({
-        first => %w[one two],
+        first  => %w[one two],
         second => %w[1 2],
       })
     ensure
@@ -259,6 +259,63 @@ describe NATS do
 
       response = client.request(subject, "hello").not_nil!
       response.body.should eq "HELLO".to_slice
+    end
+  end
+
+  it "reconnects if we hit too many pings" do
+    fake_nats_server = TCPServer.new("127.0.0.1", port: 0)
+    spawn do
+      until fake_nats_server.closed?
+        if client = fake_nats_server.accept?
+          client << "INFO "
+          {
+            server_id:   "lol",
+            server_name: "fake",
+            version:     "1.2.3.4",
+            go:          "fish",
+            host:        "0.0.0.0",
+            port:        0,
+            headers:     true,
+            max_payload: 2**20,
+            proto:       1,
+            client_id:   Random::Secure.rand(UInt64),
+          }.to_json client
+          client << "\r\n"
+
+          # Read the CONNECT line
+          client.read_line.should start_with "CONNECT "
+          # Read the initial ping
+          client.read_line.should eq "PING"
+          # Respond to the initial ping to complete the handshake
+          client << "PONG\r\n"
+        end
+      end
+    end
+
+    n = NATS::Client.new(
+      uri: URI.parse("nats://#{fake_nats_server.local_address.address}:#{fake_nats_server.local_address.port}"),
+      # The fake NATS server does not respond to pings beyond the initial one
+      # that completes the NATS connection, so we should be disconnected after
+      # the third ping is sent out at (50ms + latency) * 3 due to having too
+      # many outstanding pings
+      ping_interval: 20.milliseconds,
+      max_pings_out: 2,
+    )
+    disconnected = false
+    n.on_disconnect { disconnected = true }
+
+    begin
+      sleep 40.milliseconds
+      # We have only send out 2 unanswered pings at this point, so we should
+      # not have tried to reconnect
+      disconnected.should eq false
+
+      sleep 40.milliseconds
+      # At this point, we should have sent too many unanswered pings and
+      # been disconnected.
+      disconnected.should eq true
+    ensure
+      fake_nats_server.close
     end
   end
 end
