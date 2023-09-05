@@ -318,6 +318,8 @@ module NATS
 
       # Get the `Bucket` with the given name, or `nil` if that bucket does not exist.
       def get_bucket(name : String) : Bucket?
+        validate_bucket! name
+
         if stream = @nats.jetstream.stream.info("KV_#{name}")
           Bucket.new(stream, self)
         end
@@ -325,7 +327,9 @@ module NATS
 
       # Assign `value` to `key` in `bucket`, returning an acknowledgement or error if the key could not be set.
       def put(bucket : String, key : String, value : String | Bytes) : Int64
+        validate_bucket! bucket
         validate_key! key
+
         case response = @nats.jetstream.publish("$KV.#{bucket}.#{key}", value)
         in JetStream::PubAck
           response.sequence
@@ -339,12 +343,18 @@ module NATS
       # Assign `value` to `key` in `bucket` without waiting for acknowledgement
       # from the NATS server.
       def set(bucket : String, key : String, value : Data)
+        validate_bucket! bucket
+        validate_key! key
+
         @nats.publish("$KV.#{bucket}.#{key}", value)
       end
 
       # Get the `KV::Entry` for the given `key` in `bucket`, or `nil` if the key
       # does not exist.
       def get(bucket : String, key : String, *, revision : Int? = nil, ignore_deletes : Bool = false) : Entry?
+        validate_bucket! bucket
+        validate_pattern! key
+
         subject = "$KV.#{bucket}.#{key}"
         if revision
           response = @nats.jetstream.stream.direct_get("KV_#{bucket}", sequence: revision, next_by_subject: subject)
@@ -387,6 +397,9 @@ module NATS
       # end
       # ```
       def create(bucket : String, key : String, value : String | Bytes) : Int64?
+        validate_bucket! bucket
+        validate_key! key
+
         revision = update bucket, key, value, revision: 0
 
         if revision
@@ -408,6 +421,7 @@ module NATS
       # end
       # ```
       def update(bucket : String, key : String, value : String | Bytes, revision : Int) : Int64?
+        validate_bucket! bucket
         validate_key! key
 
         case response = @nats.jetstream.publish "$KV.#{bucket}.#{key}", value, expected_last_subject_sequence: revision
@@ -427,6 +441,9 @@ module NATS
 
       # Get all of the keys matching `pattern` for the given `bucket` name.
       def keys(bucket : String, pattern : String = ">") : Set(String)
+        validate_bucket! bucket
+        validate_pattern! pattern
+
         keys = Set(String).new
 
         # If there are no messages in the stream with this pattern, just return
@@ -450,6 +467,9 @@ module NATS
       end
 
       def each_key(bucket : String, pattern : String = ">") : Nil
+        validate_bucket! bucket
+        validate_pattern! pattern
+
         watch = watch(bucket, pattern, include_history: false)
         watch.each do |entry|
           yield entry.key if entry.operation.put?
@@ -464,6 +484,9 @@ module NATS
       # kv.history("config", "name")
       # ```
       def history(bucket : String, key : String) : Array(Entry)
+        validate_bucket! bucket
+        validate_pattern! key
+
         history = [] of Entry
 
         return history if get(bucket, key).nil?
@@ -484,6 +507,9 @@ module NATS
         ignore_deletes = false,
         include_history = false
       )
+        validate_bucket! bucket
+        validate_pattern! key
+
         inbox = "$KV_WATCH_INBOX.#{NUID.next}"
         deliver_group = NUID.next
         if include_history
@@ -511,6 +537,7 @@ module NATS
       end
 
       def delete(bucket : String, key : String)
+        validate_bucket! bucket
         validate_key! key
 
         headers = Headers{"KV-Operation" => "DEL"}
@@ -525,6 +552,9 @@ module NATS
       end
 
       def purge(bucket : String, key : String)
+        validate_bucket! bucket
+        validate_key! key
+
         headers = Headers{
           "KV-Operation" => "PURGE",
           "Nats-Rollup"  => "sub",
@@ -544,7 +574,25 @@ module NATS
       end
 
       def delete_bucket(bucket : String)
+        validate_bucket! bucket
+
         @nats.jetstream.stream.delete "KV_#{bucket}"
+      end
+
+      private def validate_bucket!(name : String)
+        if name.empty?
+          raise ArgumentError.new("Bucket names cannot be empty")
+        end
+        if name !~ %r{\A[-/_=a-zA-Z0-9]+\z}
+          raise ArgumentError.new("Bucket names may only contain alphanumeric characters, -, /, _, and = (got: #{name.inspect})")
+        end
+      end
+
+      private def validate_pattern!(pattern : String)
+        return if pattern == ">"
+        return if pattern == "*"
+
+        validate_key! pattern
       end
 
       private def validate_key!(key : String)
