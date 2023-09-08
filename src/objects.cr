@@ -140,7 +140,9 @@ module NATS
             chunks: sent,
             digest: "SHA-256=#{Base64.urlsafe_encode(sha.final)}",
           )
-          @nats.jetstream.publish meta_subject, msg.to_json, headers: Headers{"Nats-Rollup" => "sub"}
+          @nats.jetstream.publish "$O.#{bucket}.M.#{sanitize_key(key)}",
+          body: msg.to_json,
+          headers: Headers{"Nats-Rollup" => "sub"}
         rescue ex
           @nats.jetstream.stream.purge stream_name, subject: chunk_subject
           raise ex
@@ -155,7 +157,11 @@ module NATS
       end
 
       def get_info(bucket : String, key : String)
-        meta = "$O.#{bucket}.M.#{sanitize_key(key)}"
+        get_info bucket, pattern: sanitize_key(key)
+      end
+
+      def get_info(bucket : String, *, pattern : String)
+        meta = "$O.#{bucket}.M.#{pattern}"
         stream = "OBJ_#{bucket}"
         if response = @nats.jetstream.stream.get_msg(stream, last_by_subject: meta)
           info = ObjectInfo.from_json(String.new(response.message.data))
@@ -166,6 +172,7 @@ module NATS
 
       def get(bucket : String, key : String) : IO?
         return unless info = get_info(bucket, key)
+        key = sanitize_key(key)
 
         subject = "NATS.Objects.#{bucket}.data.#{key}.get.#{NUID.next}"
         consumer = @nats.jetstream.consumer.create(
@@ -212,10 +219,10 @@ module NATS
         # If there are no messages in the stream with this pattern, just return
         # the empty set of keys. Otherwise, we will end up sitting here waiting
         # for keys to come streaming in.
-        return keys if get_info(bucket, pattern).nil?
+        return keys if get_info(bucket, pattern: pattern).nil?
 
         # Look at all the keys in the current bucket
-        watch bucket, pattern do |msg, watch|
+        watch bucket, pattern: pattern do |msg, watch|
           keys << msg.name
 
           watch.stop if watch.pending == 0
@@ -229,6 +236,15 @@ module NATS
         key : String,
         &block : ObjectInfo, Watch ->
       )
+        watch bucket, pattern: sanitize_key(key), &block
+      end
+
+      def watch(
+        bucket : String,
+        *,
+        pattern : String,
+        &block : ObjectInfo, Watch ->
+      )
         stop_channel = Channel(Nil).new
         watch = Watch.new(stop_channel)
         inbox = "$WATCH_INBOX.#{NUID.next}"
@@ -240,7 +256,7 @@ module NATS
           deliver_subject: inbox,
           deliver_group: deliver_group,
           deliver_policy: :last_per_subject,
-          filter_subject: "$O.#{bucket}.M.#{sanitize_key(key)}",
+          filter_subject: "$O.#{bucket}.M.#{pattern}",
           ack_policy: :none,
         )
         subscription = @nats.subscribe inbox, queue_group: deliver_group do |msg|
@@ -293,7 +309,7 @@ module NATS
       end
 
       private def sanitize_key(key : String)
-        key.tr(" .", "__")
+        Base64.urlsafe_encode key
       end
     end
 
