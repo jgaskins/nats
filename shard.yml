@@ -6,6 +6,7 @@ authors:
 
 dependencies:
   base32: { github: jgaskins/base32 }
+  openssl_ext: { github: spider-gazelle/openssl_ext }
 
 crystal: ">= 0.35.1, < 2.0.0"
 

@@ -85,14 +85,15 @@ module NATS
       def sign(string : String | Bytes) : Bytes
         signature = Bytes.new(SIGNATURE_SIZE)
         generate_key do |key|
+          md_context = LibCrypto.evp_md_ctx_new
+
           MUTEX.synchronize do
-            md_context = LibCrypto.evp_md_ctx_new
-            handle_error unless md_context
+            handle_error if md_context.null?
 
             result = LibCrypto.evp_digest_sign_init md_context,
               out pkey_context,
               type: Pointer(Void).null,
-              engine: Pointer(Void).null,
+              engine: Pointer(LibCrypto::Engine).null,
               pkey: key
             handle_error if result == 0
 
@@ -103,7 +104,7 @@ module NATS
 
             signature
           ensure
-            LibCrypto.evp_md_ctx_free md_context if md_context
+            LibCrypto.evp_md_ctx_free md_context
           end
         end
       end
@@ -118,12 +119,12 @@ module NATS
             # haven't figured out what it is yet, so I'm just using this for now
             # because it works.
             md_context = LibCrypto.evp_md_ctx_new
-            handle_error unless md_context
+            handle_error if md_context.null?
             begin
               result = LibCrypto.evp_digest_sign_init md_context,
                 out pkey_context,
                 type: Pointer(Void).null,
-                engine: Pointer(Void).null,
+                engine: Pointer(LibCrypto::Engine).null,
                 pkey: key
             ensure
               LibCrypto.evp_md_ctx_free md_context
@@ -163,7 +164,7 @@ module NATS
       private def generate_key
         key = LibCrypto.evp_pkey_new_raw_private_key(
           type: LibCrypto::PKEY::ED25519,
-          engine: Pointer(Void).null,
+          engine: Pointer(LibCrypto::Engine).null,
           key: @private_key.to_unsafe,
           keylen: @private_key.bytesize,
         )
