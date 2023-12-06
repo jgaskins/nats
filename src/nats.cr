@@ -197,7 +197,7 @@ module NATS
       else
         raise Error.new("Unknown URI scheme #{uri.scheme.inspect}, must be tls:// or nats://")
       end
-      default_port = tls ? 4443 : 4222
+      default_port = 4222
       host = uri.host.presence || "localhost"
       port = uri.port || default_port
       LOG.trace { "Connecting to #{host}:#{port}..." }
