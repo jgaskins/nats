@@ -10,7 +10,7 @@ module NATS::JetStream
     getter limit : Int64
     getter consumers : Array(Consumer)
 
-    def each
+    def each(&)
       consumers.each { |c| yield c }
     end
   end

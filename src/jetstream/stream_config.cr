@@ -132,7 +132,7 @@ module NATS::JetStream
       @sources = nil,
       @discard_new_per_subject = nil,
       @discard : DiscardPolicy? = nil,
-      @storage : Storage = :file
+      @storage : Storage = :file,
     )
     end
   end

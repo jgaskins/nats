@@ -78,7 +78,7 @@ module NATS
         storage : JetStream::StreamConfig::Storage = :file,
         replicas : Int? = nil,
         max_bytes : Int? = nil,
-        placement : JetStream::StreamConfig::Placement? = nil
+        placement : JetStream::StreamConfig::Placement? = nil,
       )
         stream = @nats.jetstream.stream.create(
           name: "OBJ_#{name}",
@@ -141,8 +141,8 @@ module NATS
             digest: "SHA-256=#{Base64.urlsafe_encode(sha.final)}",
           )
           @nats.jetstream.publish "$O.#{bucket}.M.#{sanitize_key(key)}",
-          body: msg.to_json,
-          headers: Headers{"Nats-Rollup" => "sub"}
+            body: msg.to_json,
+            headers: Headers{"Nats-Rollup" => "sub"}
         rescue ex
           @nats.jetstream.stream.purge stream_name, subject: chunk_subject
           raise ex

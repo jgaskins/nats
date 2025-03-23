@@ -17,7 +17,7 @@ module NATS::JetStream
       stream_name : String,
       deliver_policy : ConsumerConfig::DeliverPolicy = :all,
       ack_policy : ConsumerConfig::AckPolicy = :explicit,
-      **properties
+      **properties,
     ) : Consumer
       consumer_config = ConsumerConfig.new(
         **properties,
@@ -73,7 +73,7 @@ module NATS::JetStream
 
     # Return the consumer with the specified `name` associated with the
     # given stream, yielding to the block if the consumer does not exist
-    def info(stream_name : String, name : String)
+    def info(stream_name : String, name : String, &)
       if consumer_response = @nats.request "$JS.API.CONSUMER.INFO.#{stream_name}.#{name}"
         case parsed = (Consumer | ErrorResponse).from_json(String.new(consumer_response.body))
         in Consumer

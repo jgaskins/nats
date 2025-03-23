@@ -22,7 +22,7 @@ module NATS
     end
 
     def self.next
-       global.next
+      global.next
     end
 
     def next

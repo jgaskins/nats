@@ -34,7 +34,7 @@ module NATS::JetStream
       expected_last_message_id : String? = nil,
       expected_last_sequence : Int64? = nil,
       expected_stream : String? = nil,
-      expected_last_subject_sequence : Int64? = nil
+      expected_last_subject_sequence : Int64? = nil,
     )
       headers["Nats-Msg-Id"] = message_id if message_id
       headers["Nats-Expected-Last-Msg-Id"] = expected_last_message_id if expected_last_message_id
@@ -93,14 +93,14 @@ module NATS::JetStream
     end
 
     @[Experimental("NATS JetStream pull subscriptions may be unstable")]
-    def pull_each(consumer : Consumer, *, batch_size : Int) : Nil
+    def pull_each(consumer : Consumer, *, batch_size : Int, &) : Nil
       pull_subscribe consumer, batch_size: batch_size do |msgs, pull|
         msgs.each { |msg| yield msg, pull }
       end
     end
 
     @[Experimental("NATS JetStream pull subscriptions may be unstable")]
-    def pull_subscribe(consumer : Consumer, *, batch_size : Int) : Nil
+    def pull_subscribe(consumer : Consumer, *, batch_size : Int, &) : Nil
       pull = pull_subscribe(consumer, backlog: batch_size)
       until pull.closed?
         yield pull.fetch(batch_size), pull
@@ -198,7 +198,6 @@ module NATS::JetStream
     #   # doing some work
     #
     #   jetstream.ack msg # Successfully processed
-    #
     # rescue ex
     #   jetstream.nack msg # Processing was unsuccessful, try again.
     # end

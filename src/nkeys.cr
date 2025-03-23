@@ -161,7 +161,7 @@ module NATS
         b2
       end
 
-      private def generate_key
+      private def generate_key(&)
         key = LibCrypto.evp_pkey_new_raw_private_key(
           type: LibCrypto::PKEY::ED25519,
           engine: Pointer(LibCrypto::Engine).null,

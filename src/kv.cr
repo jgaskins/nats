@@ -129,7 +129,7 @@ module NATS
         @size,
         @values,
         @last_update,
-        @kv : Client
+        @kv : Client,
       )
       end
 
@@ -221,7 +221,7 @@ module NATS
         @kv.keys(name, pattern)
       end
 
-      def each_key
+      def each_key(&)
         @kv.each_key(name) { |key| yield key }
       end
 
@@ -288,7 +288,7 @@ module NATS
         storage : JetStream::StreamConfig::Storage = :file,
         replicas : Int32 = 1,
         discard_new_per_key : Bool = false,
-        placement : JetStream::StreamConfig::Placement? = nil
+        placement : JetStream::StreamConfig::Placement? = nil,
       ) : Bucket
         unless name =~ /\A[a-zA-Z0-9_-]+\z/
           raise ArgumentError.new("NATS KV bucket names can only contain alphanumeric characters, underscores, and dashes")
@@ -466,7 +466,7 @@ module NATS
         keys
       end
 
-      def each_key(bucket : String, pattern : String = ">") : Nil
+      def each_key(bucket : String, pattern : String = ">", &) : Nil
         validate_bucket! bucket
         validate_pattern! pattern
 
@@ -505,7 +505,7 @@ module NATS
         key : String,
         *,
         ignore_deletes = false,
-        include_history = false
+        include_history = false,
       )
         validate_bucket! bucket
         validate_pattern! key
@@ -652,7 +652,7 @@ module NATS
         @key : String,
         @nats : ::NATS::Client,
         @consumer : JetStream::Consumer,
-        ignore_deletes : Bool
+        ignore_deletes : Bool,
       )
         @channel = Channel(Entry).new
         @subscription = @nats.subscribe consumer.config.deliver_subject.not_nil!, queue_group: consumer.config.deliver_group do |msg|
@@ -684,7 +684,7 @@ module NATS
         Iterator.new(@channel)
       end
 
-      def each
+      def each(&)
         each.each { |entry| yield entry }
       end
 

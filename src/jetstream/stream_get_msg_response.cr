@@ -26,7 +26,7 @@ module NATS::JetStream
         @seq,
         @data,
         @headers,
-        @time
+        @time,
       )
       end
 

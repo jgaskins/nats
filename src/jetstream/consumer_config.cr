@@ -87,7 +87,7 @@ module NATS::JetStream
       @max_request_max_bytes = nil,
       @replicas = 0,
       @memory_storage = nil,
-      @inactive_threshold = nil
+      @inactive_threshold = nil,
     )
       @max_deliver = max_deliver.try(&.to_i64)
       @max_ack_pending = max_ack_pending.to_i64 if max_ack_pending

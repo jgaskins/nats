@@ -17,13 +17,13 @@ lib LibCrypto
     type : PKEY,
     engine : Engine*,
     key : LibC::Char*,
-    keylen : LibC::SizeT
+    keylen : LibC::SizeT,
   ) : EvpPKey*
 
   fun evp_pkey_get_raw_public_key = EVP_PKEY_get_raw_public_key(
     key : EvpPKey*,
     pub : LibC::Char*,
-    len : LibC::SizeT*
+    len : LibC::SizeT*,
   ) : LibC::Int
 
   fun evp_digest_sign_init = EVP_DigestSignInit(
@@ -31,7 +31,7 @@ lib LibCrypto
     pkey_context : EVP_PKEY_CTX**,
     type : Void*,
     engine : Void*,
-    pkey : EvpPKey*
+    pkey : EvpPKey*,
   ) : LibC::Int
 
   fun evp_digest_sign = EVP_DigestSign(
@@ -39,7 +39,7 @@ lib LibCrypto
     sigret : LibC::Char*,
     siglen : LibC::SizeT*,
     tbs : LibC::Char*,
-    tbslen : LibC::SizeT
+    tbslen : LibC::SizeT,
   ) : LibC::Int
 
   fun err_error_string_n = ERR_error_string_n(e : ULong, buf : Char*, len : SizeT)

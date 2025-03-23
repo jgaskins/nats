@@ -14,7 +14,7 @@ module NATS::JetStream
       @opt_start_seq = nil,
       @opt_start_time = nil,
       @filter_subject = nil,
-      @external = nil
+      @external = nil,
     )
     end
   end

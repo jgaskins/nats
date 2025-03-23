@@ -23,7 +23,7 @@ module NATS::JetStream
       storage : StreamConfig::Storage,
       retention : StreamConfig::RetentionPolicy? = nil,
       discard : StreamConfig::DiscardPolicy? = nil,
-      **kwargs
+      **kwargs,
     ) : Stream
       create_stream = StreamConfig.new(
         **kwargs,

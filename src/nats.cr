@@ -139,7 +139,7 @@ module NATS
       ping_interval = DEFAULT_PING_INTERVAL,
       max_pings_out = DEFAULT_PING_THRESHOLD,
       nkeys_file : String? = nil,
-      user_credentials : String? = nil
+      user_credentials : String? = nil,
     )
       new(
         servers: ENV
@@ -163,7 +163,7 @@ module NATS
       ping_interval = DEFAULT_PING_INTERVAL,
       max_pings_out = DEFAULT_PING_THRESHOLD,
       nkeys_file : String? = nil,
-      user_credentials : String? = nil
+      user_credentials : String? = nil,
     )
       new([uri], ping_interval: ping_interval, max_pings_out: max_pings_out, nkeys_file: nkeys_file, user_credentials: user_credentials)
     end
@@ -182,7 +182,7 @@ module NATS
       @ping_interval : Time::Span = DEFAULT_PING_INTERVAL,
       @max_pings_out = DEFAULT_PING_THRESHOLD,
       @nkeys_file : String? = nil,
-      @user_credentials : String? = nil
+      @user_credentials : String? = nil,
     )
       uri = @servers.sample
       @ping_count = Atomic.new(0)
@@ -789,7 +789,7 @@ module NATS
       LOG.trace { "Connection closed" }
     end
 
-    @on_error = ->(error : Exception) {}
+    @on_error = ->(error : Exception) { }
 
     # Execute the given block whenever an exception is raised inside this NATS
     # client.
@@ -802,7 +802,7 @@ module NATS
       self
     end
 
-    @on_disconnect = ->{}
+    @on_disconnect = -> { }
 
     # Execute the given block whenever this client is disconnected from the NATS
     # server.
@@ -815,7 +815,7 @@ module NATS
       self
     end
 
-    @on_reconnect = ->{}
+    @on_reconnect = -> { }
 
     # Execute the given block whenever this client is reconnected to the NATS
     # server.
@@ -828,7 +828,7 @@ module NATS
       self
     end
 
-    @on_ping = ->{}
+    @on_ping = -> { }
 
     # Execute the given block whenever this client pings the server.
     #
@@ -840,7 +840,7 @@ module NATS
       self
     end
 
-    @on_pong = ->{}
+    @on_pong = -> { }
 
     # Execute the given block whenever this client receives a pong reply from
     # the server.
@@ -853,7 +853,7 @@ module NATS
       self
     end
 
-    private def write : Nil
+    private def write(&) : Nil
       if @socket.closed?
         handle_disconnect!
       end
