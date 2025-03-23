@@ -107,6 +107,7 @@ module NATS::JetStream
     getter? allow_direct : Bool?
     getter? mirror_direct : Bool?
     getter? discard_new_per_subject : Bool?
+    getter? allow_msg_ttl : Bool?
     getter republish : Republish?
 
     def initialize(
@@ -132,6 +133,7 @@ module NATS::JetStream
       @sources = nil,
       @discard_new_per_subject = nil,
       @discard : DiscardPolicy? = nil,
+      @allow_msg_ttl = false,
       @storage : Storage = :file,
     )
     end

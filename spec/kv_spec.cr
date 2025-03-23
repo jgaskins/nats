@@ -53,6 +53,32 @@ describe NATS::KV do
     end
   end
 
+  test "sets values with a TTL", bucket_options: {allow_msg_ttl: true} do
+    # We create a lot of values with TTLs to mitigate false positive & negatives
+    # due to sending/checking them at just the right time. I hate flaky tests.
+    concurrency = 10_000
+    channel = Channel(Exception?).new(concurrency)
+    concurrency.times do |i|
+      spawn do
+        key = "key-#{i}"
+        bucket.put key, "value", ttl: 1.second
+        bucket.get(key).should_not eq nil
+        sleep 1.second # per-message TTLs apparently have 1-second precision 😞
+        bucket.get(key).should eq nil
+      rescue ex
+        error = ex
+      ensure
+        channel.send error
+      end
+    end
+
+    concurrency.times do
+      if error = channel.receive
+        raise error
+      end
+    end
+  end
+
   test "gets a specific revision of a key" do
     bucket.put "key", "value1"
     bucket.put "key", "value2"

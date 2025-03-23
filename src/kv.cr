@@ -134,8 +134,8 @@ module NATS
       end
 
       # Set the value of a key
-      def put(key : String, value : Data)
-        @kv.put name, key, value
+      def put(key : String, value : Data, ttl : Time::Span? = nil)
+        @kv.put name, key, value, ttl: ttl
       end
 
       # Assign `value` to `key` in `bucket` asynchronously, not waiting for
@@ -143,8 +143,8 @@ module NATS
       #
       # WARNING: Without acknowledgement, there is no guarantee the server
       # received the value. Use with caution.
-      def set(key : String, value : Data)
-        @kv.set name, key, value
+      def set(key : String, value : Data, ttl : Time::Span? = nil)
+        @kv.set name, key, value, ttl: ttl
       end
 
       # Set the value of a key
@@ -289,6 +289,7 @@ module NATS
         replicas : Int32 = 1,
         discard_new_per_key : Bool = false,
         placement : JetStream::StreamConfig::Placement? = nil,
+        allow_msg_ttl : Bool? = nil,
       ) : Bucket
         unless name =~ /\A[a-zA-Z0-9_-]+\z/
           raise ArgumentError.new("NATS KV bucket names can only contain alphanumeric characters, underscores, and dashes")
@@ -311,6 +312,7 @@ module NATS
           allow_direct: true,
           deny_delete: true,
           placement: placement,
+          allow_msg_ttl: allow_msg_ttl,
         )
 
         Bucket.new(stream, self)
@@ -325,12 +327,16 @@ module NATS
         end
       end
 
-      # Assign `value` to `key` in `bucket`, returning an acknowledgement or error if the key could not be set.
-      def put(bucket : String, key : String, value : String | Bytes) : Int64
+      # Assign `value` to `key` in `bucket`, returning an acknowledgement or
+      # error if the key could not be set. The key will expire after `ttl` if
+      # it is provided.
+      def put(bucket : String, key : String, value : String | Bytes, ttl : Time::Span? = nil) : Int64
         validate_bucket! bucket
         validate_key! key
+        headers = Headers.new
+        headers["Nats-TTL"] = ttl.total_seconds.to_i64.to_s if ttl
 
-        case response = @nats.jetstream.publish("$KV.#{bucket}.#{key}", value)
+        case response = @nats.jetstream.publish("$KV.#{bucket}.#{key}", value, headers: headers)
         in JetStream::PubAck
           response.sequence
         in JetStream::ErrorResponse
@@ -341,12 +347,15 @@ module NATS
       end
 
       # Assign `value` to `key` in `bucket` without waiting for acknowledgement
-      # from the NATS server.
-      def set(bucket : String, key : String, value : Data)
+      # from the NATS server. The key will expire after `ttl` if it is provided.
+      def set(bucket : String, key : String, value : Data, ttl : Time::Span? = nil)
         validate_bucket! bucket
         validate_key! key
+        if ttl
+          headers = Headers{"Nats-TTL" => ttl.total_seconds.to_i64.to_s} if ttl
+        end
 
-        @nats.publish("$KV.#{bucket}.#{key}", value)
+        @nats.publish("$KV.#{bucket}.#{key}", value, headers: headers)
       end
 
       # Get the `KV::Entry` for the given `key` in `bucket`, or `nil` if the key
