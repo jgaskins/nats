@@ -2,11 +2,12 @@ require "./spec_helper"
 require "../src/jetstream"
 require "uuid"
 
-private macro create_stream(subjects)
+private macro create_stream(subjects, **bucket_options)
   nats.jetstream.stream.create(
     name: "test-stream-#{UUID.random}",
     subjects: {{subjects}},
     storage: :memory,
+    {{bucket_options.double_splat}}
   )
 end
 
@@ -19,7 +20,21 @@ private macro create_consumer(stream, deliver_subject = UUID.random.to_s)
 end
 
 nats = NATS::Client.new
+  .on_error { |ex| Log.for(NATS).error(exception: ex) }
 js = nats.jetstream
+
+private macro test(name, bucket_options = {} of String => String, **options)
+  it({{name}}, {{options.double_splat}}) do
+    write_subject = UUID.random.to_s
+    stream = create_stream([write_subject], {{bucket_options.double_splat}})
+
+    begin
+      {{yield}}
+    ensure
+      js.stream.delete stream
+    end
+  end
+end
 
 describe NATS::JetStream do
   it "creates, lists, and deletes streams" do
