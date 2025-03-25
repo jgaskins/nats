@@ -375,6 +375,16 @@ describe NATS::JetStream do
     end
   end
 
+  describe "compression" do
+    test "compresses streams with S2 compression", bucket_options: {compression: :s2} do
+      stream.config.compression.s2?.should eq true
+    end
+
+    test "compresses streams with no compression", bucket_options: {compression: :none} do
+      stream.config.compression.none?.should eq true
+    end
+  end
+
   describe "purging a stream" do
     it "purges by subject" do
       first, second = Array.new(2) { UUID.random.to_s }

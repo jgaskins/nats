@@ -109,6 +109,7 @@ module NATS::JetStream
     getter? discard_new_per_subject : Bool?
     getter? allow_msg_ttl : Bool?
     getter republish : Republish?
+    getter compression : Compression
 
     def initialize(
       @name,
@@ -135,7 +136,13 @@ module NATS::JetStream
       @discard : DiscardPolicy? = nil,
       @allow_msg_ttl = false,
       @storage : Storage = :file,
+      @compression = :none,
     )
+    end
+
+    enum Compression
+      None = 0
+      S2   = 1
     end
   end
 

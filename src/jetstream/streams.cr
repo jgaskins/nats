@@ -23,6 +23,7 @@ module NATS::JetStream
       storage : StreamConfig::Storage,
       retention : StreamConfig::RetentionPolicy? = nil,
       discard : StreamConfig::DiscardPolicy? = nil,
+      compression : StreamConfig::Compression = :none,
       **kwargs,
     ) : Stream
       create_stream = StreamConfig.new(
@@ -30,6 +31,7 @@ module NATS::JetStream
         storage: storage,
         retention: retention,
         discard: discard,
+        compression: compression,
       )
 
       if create_stream.name.includes? '.'
