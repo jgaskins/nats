@@ -376,11 +376,11 @@ describe NATS::JetStream do
   end
 
   describe "compression" do
-    test "compresses streams with S2 compression", bucket_options: {compression: :s2} do
+    test "creates streams with S2 compression", bucket_options: {compression: :s2} do
       stream.config.compression.s2?.should eq true
     end
 
-    test "compresses streams with no compression", bucket_options: {compression: :none} do
+    test "creates streams with no compression", bucket_options: {compression: :none} do
       stream.config.compression.none?.should eq true
     end
   end
