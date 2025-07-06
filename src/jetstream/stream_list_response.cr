@@ -25,13 +25,19 @@ module NATS::JetStream
     end
 
     def each(&block : Stream ->) : Nil
-      streams.each { |s| block.call s }
+      streams.each { |s| yield s }
       new_offset = offset + limit
-      if total > new_offset
-        js
+      total = self.total
+      while total > new_offset
+        response = js
           .stream
           .list(subject: subject, offset: new_offset, limit: limit)
-          .each { |s| block.call s }
+
+        response
+          .streams
+          .each { |s| yield s }
+        total = response.total
+        new_offset = response.offset + response.limit
       end
     end
   end
