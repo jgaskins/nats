@@ -61,7 +61,7 @@ module NATS::JetStream
           json: JSON::PullParser.new(String.new(response.body)),
           subject: subject
       else
-        raise "whoops"
+        raise Error.new("Did not receive a response from NATS JetStream")
       end
     end
 
