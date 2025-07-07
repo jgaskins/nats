@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.5.1">
-<meta name="crystal_docs.project_version" content="1.3.4">
+<meta name="generator" content="Crystal Docs 1.10.1">
+<meta name="crystal_docs.project_version" content="1.4.0">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS - nats 1.3.4</title>
+  <title>NATS - nats 1.4.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "";
   </script>
@@ -23,7 +23,7 @@
 
 <svg class="hidden">
   <symbol id="octicon-link" viewBox="0 0 16 16">
-    <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
   </symbol>
 </svg>
 <input type="checkbox" id="sidebar-btn">
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.3.4
+        1.4.0
       </span>
     </div>
   </div>
@@ -382,6 +382,11 @@
       
         <ul>
   
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/Compression" data-name="nats::jetstream::streamconfig::compression">
+      <a href="NATS/JetStream/StreamConfig/Compression.html">Compression</a>
+      
+    </li>
+  
   <li class=" " data-id="nats/NATS/JetStream/StreamConfig/DiscardPolicy" data-name="nats::jetstream::streamconfig::discardpolicy">
       <a href="NATS/JetStream/StreamConfig/DiscardPolicy.html">DiscardPolicy</a>
       
@@ -642,6 +647,36 @@
       
     </li>
   
+  <li class="parent " data-id="nats/NATS/Service" data-name="nats::service">
+      <a href="NATS/Service.html">Service</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Service/Endpoint" data-name="nats::service::endpoint">
+      <a href="NATS/Service/Endpoint.html">Endpoint</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Service/ErrorHandler" data-name="nats::service::errorhandler">
+      <a href="NATS/Service/ErrorHandler.html">ErrorHandler</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Service/Group" data-name="nats::service::group">
+      <a href="NATS/Service/Group.html">Group</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Services" data-name="nats::services">
+      <a href="NATS/Services.html">Services</a>
+      
+    </li>
+  
   <li class="parent " data-id="nats/NATS/Subscription" data-name="nats::subscription">
       <a href="NATS/Subscription.html">Subscription</a>
       
@@ -676,7 +711,9 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">module</span> NATS
+  <span class="kind">
+    module
+  </span> NATS
 
 </h1>
 
@@ -726,6 +763,8 @@ nats <span class="o">=</span> <span class="t">NATS</span><span class="t">::</spa
 
 
 
+
+
   <h2>
     <a id="defined-in" class="anchor" href="#defined-in">
   <svg class="octicon-link" aria-hidden="true">
@@ -736,63 +775,70 @@ nats <span class="o">=</span> <span class="t">NATS</span><span class="t">::</spa
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.3.4/src/error.cr#L1" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/error.cr#L1" target="_blank">
         error.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.3.4/src/jetstream.cr#L6" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/jetstream.cr#L6" target="_blank">
         jetstream.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.3.4/src/kv.cr#L7" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/kv.cr#L7" target="_blank">
         kv.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.3.4/src/message.cr#L1" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/message.cr#L1" target="_blank">
         message.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.3.4/src/nats.cr#L35" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/nats.cr#L35" target="_blank">
         nats.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.3.4/src/nkeys.cr#L7" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/nkeys.cr#L7" target="_blank">
         nkeys.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.3.4/src/nuid.cr#L1" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/nuid.cr#L1" target="_blank">
         nuid.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.3.4/src/objects.cr#L7" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/objects.cr#L7" target="_blank">
         objects.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.3.4/src/version.cr#L1" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L4" target="_blank">
+        services.cr
+      </a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/version.cr#L1" target="_blank">
         version.cr
       </a>
     
@@ -819,7 +865,7 @@ nats <span class="o">=</span> <span class="t">NATS</span><span class="t">::</spa
       
     
       <dt class="entry-const" id="VERSION">
-        <strong>VERSION</strong> = <code><span class="s">&quot;1.3.4&quot;</span></code>
+        <strong>VERSION</strong> = <code><span class="s">&quot;1.4.0&quot;</span></code>
       </dt>
       
     
@@ -827,24 +873,26 @@ nats <span class="o">=</span> <span class="t">NATS</span><span class="t">::</spa
 
 
 
-
-
-
-
-
-
-
-
-<div class="methods-inherited">
   
-</div>
+
+  
+
+  
+
+  
 
 
+  <div class="methods-inherited">
+    
+  </div>
 
+  
 
+  
 
+  
 
-
+  
 
 
 </div>

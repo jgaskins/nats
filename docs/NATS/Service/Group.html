@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::Message::Headers - nats 1.4.0</title>
+  <title>NATS::Service::Group - nats 1.4.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -567,12 +567,12 @@
       
     </li>
   
-  <li class="parent open current" data-id="nats/NATS/Message" data-name="nats::message">
+  <li class="parent " data-id="nats/NATS/Message" data-name="nats::message">
       <a href="../../NATS/Message.html">Message</a>
       
         <ul>
   
-  <li class=" current" data-id="nats/NATS/Message/Headers" data-name="nats::message::headers">
+  <li class=" " data-id="nats/NATS/Message/Headers" data-name="nats::message::headers">
       <a href="../../NATS/Message/Headers.html">Headers</a>
       
     </li>
@@ -647,7 +647,7 @@
       
     </li>
   
-  <li class="parent " data-id="nats/NATS/Service" data-name="nats::service">
+  <li class="parent open current" data-id="nats/NATS/Service" data-name="nats::service">
       <a href="../../NATS/Service.html">Service</a>
       
         <ul>
@@ -662,7 +662,7 @@
       
     </li>
   
-  <li class=" " data-id="nats/NATS/Service/Group" data-name="nats::service::group">
+  <li class=" current" data-id="nats/NATS/Service/Group" data-name="nats::service::group">
       <a href="../../NATS/Service/Group.html">Group</a>
       
     </li>
@@ -712,26 +712,30 @@
 <h1 class="type-name">
 
   <span class="kind">
-    alias
-  </span> NATS::<wbr>Message::<wbr>Headers
+    class
+  </span> NATS::<wbr>Service::<wbr>Group
 
 </h1>
 
 
-
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../NATS/Service/Group.html">NATS::Service::Group</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
 
   <h2>
-    <a id="alias-definition" class="anchor" href="#alias-definition">
+    <a id="overview" class="anchor" href="#overview">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>
-    Alias Definition
+    Overview
   </h2>
-  <code>Hash(String, String)</code>
+
+  <p>The  <code><a href="../../NATS/Service/Group.html">Group</a></code> represents a cohesive group of endpoints. Groups are useful
+for applying a common prefix to subjects or setting a common queue group.</p>
+
+
 
 
 
@@ -756,8 +760,8 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/message.cr#L9" target="_blank">
-        message.cr
+      <a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L271" target="_blank">
+        services.cr
       </a>
     
     <br/>
@@ -768,25 +772,221 @@
 
 
   
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28nats%3ANATS%3A%3AClient%2Cservice%3ANATS%3A%3AService%2Cname%3AString%29-class-method" class="signature"><strong>.new</strong>(nats : NATS::Client, service : NATS::Service, name : String)</a>
+        
+      </li>
+    
+  </ul>
+
 
   
 
   
 
   
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#add_endpoint%28name%3AString%2C%2A%2Csubject%3AString%3Dname%2Cqueue_group%3AString%3D%22q%22%2C%26block%3AMessage-%3E%29%3AEndpoint-instance-method" class="signature"><strong>#add_endpoint</strong>(name : String, *, subject : String = name, queue_group : String = <span class="s">&quot;q&quot;</span>, &block : Message -> ) : Endpoint</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#add_group%28name%3AString%2C%26%29-instance-method" class="signature"><strong>#add_group</strong>(name : String, &)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#add_group%28name%3AString%29-instance-method" class="signature"><strong>#add_group</strong>(name : String)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#name%3AString-instance-method" class="signature"><strong>#name</strong> : String</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#service%3AService-instance-method" class="signature"><strong>#service</strong> : Service</a>
+        
+      </li>
+    
+  </ul>
+
 
 
   <div class="methods-inherited">
     
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
   </div>
 
   
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(nats:NATS::Client,service:NATS::Service,name:String)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(nats : <a href="../../NATS/Client.html">NATS::Client</a>, service : <a href="../../NATS/Service.html">NATS::Service</a>, name : String)
+
+        <a class="method-permalink" href="#new%28nats%3ANATS%3A%3AClient%2Cservice%3ANATS%3A%3AService%2Cname%3AString%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L276" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
   
 
   
 
   
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="add_endpoint(name:String,*,subject:String=name,queue_group:String=&quot;q&quot;,&amp;block:Message-&gt;):Endpoint-instance-method">
+      <div class="signature">
+        
+        def <strong>add_endpoint</strong>(name : String, *, subject : String = name, queue_group : String = <span class="s">&quot;q&quot;</span>, &block : <a href="../../NATS/Message.html">Message</a> -> ) : <a href="../../NATS/Service/Endpoint.html">Endpoint</a>
+
+        <a class="method-permalink" href="#add_endpoint%28name%3AString%2C%2A%2Csubject%3AString%3Dname%2Cqueue_group%3AString%3D%22q%22%2C%26block%3AMessage-%3E%29%3AEndpoint-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L279" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="add_group(name:String,&amp;)-instance-method">
+      <div class="signature">
+        
+        def <strong>add_group</strong>(name : String, &)
+
+        <a class="method-permalink" href="#add_group%28name%3AString%2C%26%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L292" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="add_group(name:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>add_group</strong>(name : String)
+
+        <a class="method-permalink" href="#add_group%28name%3AString%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L296" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="name:String-instance-method">
+      <div class="signature">
+        
+        def <strong>name</strong> : String
+
+        <a class="method-permalink" href="#name%3AString-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L274" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="service:Service-instance-method">
+      <div class="signature">
+        
+        def <strong>service</strong> : <a href="../../NATS/Service.html">Service</a>
+
+        <a class="method-permalink" href="#service%3AService-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L273" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
 
 </div>
