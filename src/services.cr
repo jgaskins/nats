@@ -48,6 +48,7 @@ module NATS
 
     NAME_PATTERN = /\A[\w\-]+\z/
 
+    # :nodoc:
     def initialize(@nats)
     end
 
@@ -273,6 +274,7 @@ module NATS
       getter service : Service
       getter name : String
 
+      # :nodoc:
       def initialize(@nats, @service, @name)
       end
 
@@ -313,6 +315,7 @@ module NATS
       getter last_error : String?
       protected getter error_handler : ErrorHandler
 
+      # :nodoc:
       def initialize(@nats, @service, @name, @subject, @queue_group, @subscription)
         @error_handler = @service.error_handler
       end
