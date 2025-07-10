@@ -177,16 +177,17 @@ module NATS
       *,
       subject : String = name,
       queue_group : String = "q",
-      &block : Message ->
+      concurrency : Int = 1,
+      &block : Message, Subscription ->
     ) : Endpoint
       unless name =~ Services::NAME_PATTERN
         raise ArgumentError.new("Endpoint names can only contain letter, number, dash, and underscore characters")
       end
 
       endpoint = uninitialized Endpoint
-      subscription = @nats.subscribe subject, queue_group: queue_group do |msg|
+      subscription = @nats.subscribe subject, queue_group: queue_group, concurrency: concurrency do |msg, subscription|
         endpoint.request msg do
-          block.call msg
+          block.call msg, subscription
         end
       end
 
@@ -283,7 +284,7 @@ module NATS
         *,
         subject : String = name,
         queue_group : String = "q",
-        &block : Message ->
+        &block : Message, Subscription ->
       ) : Endpoint
         service.add_endpoint name,
           subject: "#{@name}.#{subject}",

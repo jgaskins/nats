@@ -1,6 +1,7 @@
 require "./spec_helper"
 require "../src/nats"
 require "uuid"
+require "wait_group"
 
 nats = NATS::Client.new
 
@@ -99,6 +100,26 @@ describe NATS do
     else
       raise "No response received"
     end
+  end
+
+  it "can handle multiple messages on the same subject concurrently" do
+    subject = "temp.#{UUID.v7}"
+    nats.subscribe subject, concurrency: 100 do |request, subscription|
+      sleep 10.milliseconds
+      nats.reply request, ""
+    end
+
+    start = Time.monotonic
+    WaitGroup.wait do |wg|
+      100.times do
+        wg.spawn do
+          unless response = nats.request subject
+            raise "Did not receive a response from the endpoint"
+          end
+        end
+      end
+    end
+    (Time.monotonic - start).should be_within 10.milliseconds, of: 10.milliseconds
   end
 
   it "assigns replies to the original requesters" do

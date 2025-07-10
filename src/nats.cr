@@ -321,7 +321,7 @@ module NATS
     #   # ...
     # end
     # ```
-    def subscribe(subject : String, queue_group : String? = nil, sid = @current_sid.add(1), max_in_flight = 64_000, &block : Message, Subscription ->) : Subscription
+    def subscribe(subject : String, queue_group : String? = nil, sid = @current_sid.add(1), max_in_flight = 64_000, *, concurrency = 1, &block : Message, Subscription ->) : Subscription
       LOG.trace { "Subscribing to #{subject.inspect}, queue_group: #{queue_group.inspect}, sid: #{sid}" }
       write do
         @io << "SUB " << subject << ' '
@@ -331,11 +331,14 @@ module NATS
         @io << sid << "\r\n"
       end
 
-      @subscriptions[sid] = Subscription.new(subject, sid, queue_group, self, max_in_flight: max_in_flight, &block).tap(&.start)
+      @subscriptions[sid] = Subscription.new(subject, sid, queue_group, self, max_in_flight: max_in_flight, concurrency: concurrency, &block).tap(&.start)
     end
 
     private def resubscribe(subscription : Subscription)
-      subscribe subscription.subject, subscription.queue_group, subscription.sid, &subscription.@block
+      subscribe subscription.subject, subscription.queue_group, subscription.sid,
+        max_in_flight: subscription.max_in_flight,
+        concurrency: subscription.concurrency,
+        &subscription.@block
     end
 
     private def sign_nonce(nkey, nonce)
@@ -924,18 +927,20 @@ module NATS
     getter sid : Int64
     getter queue_group : String?
     getter messages_remaining : Int32?
+    getter concurrency : Int32
+    getter max_in_flight : Int32
     private getter nats : Client
     private getter message_channel : MessageChannel
     private getter? processing = false
 
-    def initialize(@subject, @sid, @queue_group, @nats, max_in_flight : Int = 10, &@block : Message, Subscription ->)
+    def initialize(@subject, @sid, @queue_group, @nats, @max_in_flight, *, @concurrency, &@block : Message, Subscription ->)
       @message_channel = MessageChannel.new(max_in_flight)
     end
 
     # This channel subclass doesn't eagerly allocate huge amounts of memory for
     # messages to be passed through. Subscriptions default to 64k elements
-    # which results in a huge amount of memory allocated when you have a lot of
-    # NATS subscriptions.
+    # which would result in a huge amount of memory allocated when you have a lot of
+    # NATS subscriptions if we were using the stdlib Channel type.
     private class Channel(T) < ::Channel(T)
       def initialize(@capacity = 0)
         @closed = false
@@ -955,26 +960,28 @@ module NATS
     end
 
     def start : self
-      spawn do
-        remaining = @messages_remaining
-        while remaining.nil? || remaining > 0
-          if result = message_channel.receive?
-            message, on_error = result
-            @processing = true
+      concurrency.times do
+        spawn do
+          remaining = @messages_remaining
+          while remaining.nil? || remaining > 0
+            if result = message_channel.receive?
+              message, on_error = result
+              @processing = true
 
-            LOG.trace { "Calling subscription handler for sid #{sid} (subscription to #{subject.inspect}, message subject #{message.subject.inspect})" }
-            begin
-              call message, on_error
-            ensure
-              @processing = false
+              LOG.trace { "Calling subscription handler for sid #{sid} (subscription to #{subject.inspect}, message subject #{message.subject.inspect})" }
+              begin
+                call message, on_error
+              ensure
+                @processing = false
+              end
+
+              remaining = @messages_remaining
+            else
+              break
             end
-
-            remaining = @messages_remaining
-          else
-            break
           end
+        rescue ex
         end
-      rescue ex
       end
 
       self

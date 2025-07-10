@@ -1,4 +1,6 @@
 require "./spec_helper"
+require "wait_group"
+
 require "../src/services"
 
 nats = NATS::Client.new
@@ -203,5 +205,29 @@ describe NATS::Services do
     nats.request("#{name}.a.stuff", "")
       .try(&.data_string)
       .should eq "yep"
+  end
+
+  it "allows concurrent requests to the same endpoint" do
+    name = "test-concurrent-requests-#{UUID.v7}"
+    svc = nats.services.add name,
+      version: "0.1.0",
+      description: "does a thing"
+    subject = "#{name}.call"
+    endpoint = svc.add_endpoint "lol", subject: subject, concurrency: 100 do |request, subscription|
+      sleep 10.milliseconds
+      nats.reply request, ""
+    end
+
+    start = Time.monotonic
+    WaitGroup.wait do |wg|
+      100.times do
+        wg.spawn do
+          unless response = nats.request subject
+            raise "Did not receive a response from the endpoint"
+          end
+        end
+      end
+    end
+    (Time.monotonic - start).should be_within 10.milliseconds, of: 10.milliseconds
   end
 end
