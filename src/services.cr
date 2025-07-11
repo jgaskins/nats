@@ -297,11 +297,13 @@ module NATS
         *,
         subject : String = name,
         queue_group : String = "q",
+        concurrency : Int = 1,
         &block : Message, Subscription ->
       ) : Endpoint
         service.add_endpoint name,
           subject: "#{@name}.#{subject}",
           queue_group: queue_group,
+          concurrency: concurrency,
           &block
       end
 
