@@ -433,6 +433,51 @@ module NATS
       end
     end
 
+    # Make a synchronous request to subscribers of the given `subject`, waiting
+    # up to `timeout` for responses from any of the subscribers. The first
+    # `reply_count` messages to come back will be returned. If fewer replies are
+    # received before the `timeout` elapses, only those will be returned.
+    #
+    # ```
+    # orders = nats.request("orders.info.#{order_id}", reply_count: 10).map do |response|
+    #   Order.from_json(response.data_string)
+    # end
+    # ```
+    def request(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil, *, reply_count : Int32, flush = true) : Array(Message)
+      replies = Array(Message).new(reply_count)
+      channel = Channel(Message).new(reply_count)
+      inbox = @nuid.next
+      key = "#{@inbox_prefix}.#{inbox}"
+      @inbox_handlers[key] = ->(msg : Message) { channel.send msg unless channel.closed? }
+      publish subject, message, reply_to: key, headers: headers
+      original_timeout = timeout
+
+      flush! if flush
+
+      start = Time.monotonic
+      begin
+        loop do
+          select
+          when msg = channel.receive?
+            if msg
+              unless msg.body.empty? && msg.headers.try(&.["Status"]?) == "503"
+                replies << msg
+              end
+            end
+            if replies.size >= reply_count || Time.monotonic - start >= original_timeout
+              return replies
+            end
+            timeout = original_timeout - (Time.monotonic - start)
+          when timeout(timeout)
+            channel.close
+            return replies
+          end
+        end
+      ensure
+        @inbox_handlers.delete key
+      end
+    end
+
     # Make an asynchronous request to subscribers of the given `subject`, not
     # waiting for a response. The first message to come back will be passed to
     # the block.

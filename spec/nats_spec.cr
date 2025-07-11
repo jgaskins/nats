@@ -122,6 +122,38 @@ describe NATS do
     (Time.monotonic - start).should be_within 10.milliseconds, of: 10.milliseconds
   end
 
+  it "can make a request and receive many replies" do
+    subject = "temp.#{UUID.random}"
+    nats.subscribe subject do |msg|
+      10.times do |i|
+        nats.reply msg, i.to_s
+      end
+    end
+
+    responses = nats.request subject, "", reply_count: 10, timeout: 1.second
+
+    responses.size.should eq 10
+  end
+
+  it "can make a request and receive many replies spaced out over time" do
+    subject = "temp.#{UUID.random}"
+    nats.subscribe subject do |msg|
+      3.times do |i|
+        nats.reply msg, i.to_s
+        sleep 50.milliseconds
+      end
+    end
+
+    # We ask for up to 10, but we only wait long enough to get 2 because they
+    # come in 50ms apart. We could reduce the duration to keep the test suite
+    # fast, but variances in VM performance would make the test unpredictable.
+    responses = nats.request subject, "",
+      reply_count: 10,
+      timeout: 100.milliseconds
+
+    responses.size.should eq 2
+  end
+
   it "assigns replies to the original requesters" do
     subject = "temp.#{UUID.random}"
     # Echoing requests back to their requesters
@@ -341,7 +373,7 @@ describe NATS do
   end
 end
 
-private def run_nats_on(port : Int32, config : String)
+private def run_nats_on(port : Int32, config : String, &)
   Process.run "nats-server", args: "-js --port #{port} --config #{__DIR__}/support/#{config}.conf".split do |process|
     wait_for_nats port
     client = NATS::Client.new(
