@@ -1,3 +1,5 @@
+require "http/headers"
+
 module NATS
   struct Message
     getter subject : String
@@ -6,7 +8,7 @@ module NATS
     getter headers : Headers { Headers.new }
     getter data_string : String { String.new data }
 
-    alias Headers = Hash(String, String)
+    alias Headers = HTTP::Headers
 
     def initialize(@subject, @data, @reply_to = nil, @headers = nil)
     end

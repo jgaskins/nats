@@ -6,6 +6,7 @@ require "openssl"
 require "log"
 
 require "./message"
+require "./headers"
 require "./nuid"
 require "./nkeys"
 require "./version"
@@ -33,7 +34,6 @@ require "./version"
 # ])
 # ```
 module NATS
-  alias Headers = Message::Headers
   alias Data = String | Bytes
 
   # Generic error
@@ -533,14 +533,19 @@ module NATS
         if headers
           nats_header_preamble = "NATS/1.0\r\n"
           initial_header_length = nats_header_preamble.bytesize + 2 # 2 extra bytes for final CR+LF
-          header_length = headers.reduce(initial_header_length) do |bytes, (key, value)|
-            bytes += key.bytesize + value.bytesize + 4 # 2 extra bytes for ": " and 2 for CR+LF
+          header_length = headers.reduce(initial_header_length) do |bytes, (key, values)|
+            values.each do |value|
+              bytes += key.bytesize + value.bytesize + 4 # 2 extra bytes for ": " and 2 for CR+LF
+            end
+            bytes
           end
           @io << ' ' << header_length
           @io << ' ' << header_length + message.bytesize << "\r\n"
           @io << nats_header_preamble
-          headers.each do |key, value|
-            @io << key << ": " << value << "\r\n"
+          headers.each do |key, values|
+            values.each do |value|
+              @io << key << ": " << value << "\r\n"
+            end
           end
           @io << "\r\n"
         else
@@ -697,7 +702,7 @@ module NATS
                 end
                 until (header_line = @socket.read_line).empty?
                   key, value = header_line.split(/:\s*/, 2)
-                  headers[key] = value
+                  headers.add key, value
                 end
                 LOG.trace { "Headers: #{headers.inspect}" }
               else

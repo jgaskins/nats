@@ -37,6 +37,42 @@ describe NATS do
     headers.should eq NATS::Message::Headers{"foo" => "bar"}
   end
 
+  it "can set multiple of the same message header" do
+    subject = "temp.#{UUID.random}"
+    nats.subscribe subject do |msg|
+      nats.reply msg, "", headers: NATS::Message::Headers{
+        "one"  => "one",
+        "many" => %w[one two],
+      }
+    end
+
+    unless response = nats.request subject, ""
+      raise "Did not receive a response from the endpoint"
+    end
+
+    response.headers.should eq NATS::Message::Headers{
+      "one"  => "one",
+      "many" => %w[one two],
+    }
+  end
+
+  it "treats header keys as case-insensitive" do
+    subject = "temp.#{UUID.random}"
+    nats.subscribe subject do |msg|
+      nats.reply msg, "", headers: NATS::Message::Headers{
+        "CASE" => "insensitive",
+      }
+    end
+
+    unless response = nats.request subject, ""
+      raise "Did not receive a response from the endpoint"
+    end
+
+    response.headers.should eq NATS::Message::Headers{
+      "case" => "insensitive",
+    }
+  end
+
   it "can set message headers with a reply-to" do
     subject = "temp.#{UUID.random}"
     headers = nil

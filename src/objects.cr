@@ -3,6 +3,7 @@ require "digest"
 require "./nats"
 require "./jetstream"
 require "./nuid"
+require "./headers_converter"
 
 module NATS
   # The NATS object store is S3-style object storage backed by NATS JetStream.
@@ -296,6 +297,7 @@ module NATS
         getter bucket : String
         getter name : String
         getter description : String?
+        @[JSON::Field(converter: NATS::HeadersConverter)]
         getter headers : Headers { Headers.new }
         getter nuid : String
         getter size : Int64

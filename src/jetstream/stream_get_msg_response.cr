@@ -49,7 +49,7 @@ module NATS::JetStream
             # line (it's blank).
             raw = Base64.decode_string(string)
             header_count = raw.count('\n') - 2
-            headers = Headers.new(initial_capacity: header_count)
+            headers = Headers.new
 
             raw.each_line do |line|
               if separator_index = line.index(':')
