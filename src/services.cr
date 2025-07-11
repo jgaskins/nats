@@ -224,6 +224,19 @@ module NATS
       group
     end
 
+    def error_reply(
+      request : Message,
+      body : String | Bytes = "",
+      *,
+      error : String,
+      error_code : String | Int,
+    ) : Nil
+      @nats.reply request, body, headers: Headers{
+        "Nats-Service-Error"      => error,
+        "Nats-Service-Error-Code" => error_code.to_s,
+      }
+    end
+
     # Execute the given block for all exceptions raised in this service's
     # endpoints. This is useful for returning a common error response.
     #

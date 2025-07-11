@@ -207,6 +207,26 @@ describe NATS::Services do
       .should eq "yep"
   end
 
+  it "provides for error replies" do
+    name = "test-error-replies-#{UUID.v7}"
+    svc = nats.services.add name,
+      version: "0.1.0",
+      description: "does a thing"
+    subject = "#{name}.call"
+    svc.add_endpoint "lol", subject: subject do |request|
+      svc.error_reply request, "omg",
+        error: "oops",
+        error_code: 555
+    end
+
+    unless response = nats.request subject
+      raise "Did not receive a response from the endpoint"
+    end
+
+    response.headers["Nats-Service-Error"].should eq "oops"
+    response.headers["Nats-Service-Error-Code"].should eq "555"
+  end
+
   it "allows concurrent requests to the same endpoint" do
     name = "test-concurrent-requests-#{UUID.v7}"
     svc = nats.services.add name,
