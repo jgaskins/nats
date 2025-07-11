@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.10.1">
-<meta name="crystal_docs.project_version" content="1.4.0">
+<meta name="crystal_docs.project_version" content="1.4.1">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::Service::Group - nats 1.4.0</title>
+  <title>NATS::Service::Group - nats 1.4.1</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.4.0
+        1.4.1
       </span>
     </div>
   </div>
@@ -760,7 +760,7 @@ for applying a common prefix to subjects or setting a common queue group.</p>
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L272" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L286" target="_blank">
         services.cr
       </a>
     
@@ -789,7 +789,7 @@ for applying a common prefix to subjects or setting a common queue group.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#add_endpoint%28name%3AString%2C%2A%2Csubject%3AString%3Dname%2Cqueue_group%3AString%3D%22q%22%2C%26block%3AMessage-%3E%29%3AEndpoint-instance-method" class="signature"><strong>#add_endpoint</strong>(name : String, *, subject : String = name, queue_group : String = <span class="s">&quot;q&quot;</span>, &block : Message -> ) : Endpoint</a>
+        <a href="#add_endpoint%28name%3AString%2C%2A%2Csubject%3AString%3Dname%2Cqueue_group%3AString%3D%22q%22%2C%26block%3AMessage%2CSubscription-%3E%29%3AEndpoint-instance-method" class="signature"><strong>#add_endpoint</strong>(name : String, *, subject : String = name, queue_group : String = <span class="s">&quot;q&quot;</span>, &block : Message, Subscription -> ) : Endpoint</a>
         
       </li>
     
@@ -863,18 +863,18 @@ for applying a common prefix to subjects or setting a common queue group.</p>
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="add_endpoint(name:String,*,subject:String=name,queue_group:String=&quot;q&quot;,&amp;block:Message-&gt;):Endpoint-instance-method">
+    <div class="entry-detail" id="add_endpoint(name:String,*,subject:String=name,queue_group:String=&quot;q&quot;,&amp;block:Message,Subscription-&gt;):Endpoint-instance-method">
       <div class="signature">
         
-        def <strong>add_endpoint</strong>(name : String, *, subject : String = name, queue_group : String = <span class="s">&quot;q&quot;</span>, &block : <a href="../../NATS/Message.html">Message</a> -> ) : <a href="../../NATS/Service/Endpoint.html">Endpoint</a>
+        def <strong>add_endpoint</strong>(name : String, *, subject : String = name, queue_group : String = <span class="s">&quot;q&quot;</span>, &block : <a href="../../NATS/Message.html">Message</a>, <a href="../../NATS/Subscription.html">Subscription</a> -> ) : <a href="../../NATS/Service/Endpoint.html">Endpoint</a>
 
-        <a class="method-permalink" href="#add_endpoint%28name%3AString%2C%2A%2Csubject%3AString%3Dname%2Cqueue_group%3AString%3D%22q%22%2C%26block%3AMessage-%3E%29%3AEndpoint-instance-method">#</a>
+        <a class="method-permalink" href="#add_endpoint%28name%3AString%2C%2A%2Csubject%3AString%3Dname%2Cqueue_group%3AString%3D%22q%22%2C%26block%3AMessage%2CSubscription-%3E%29%3AEndpoint-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L281" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L295" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -890,7 +890,7 @@ for applying a common prefix to subjects or setting a common queue group.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L294" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L308" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -906,7 +906,7 @@ for applying a common prefix to subjects or setting a common queue group.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L298" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L312" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -922,7 +922,7 @@ for applying a common prefix to subjects or setting a common queue group.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L275" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L289" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -938,7 +938,7 @@ for applying a common prefix to subjects or setting a common queue group.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L274" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L288" target="_blank">View source</a>]
         
       </div>
     </div>

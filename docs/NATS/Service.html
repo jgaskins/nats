@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.10.1">
-<meta name="crystal_docs.project_version" content="1.4.0">
+<meta name="crystal_docs.project_version" content="1.4.1">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::Service - nats 1.4.0</title>
+  <title>NATS::Service - nats 1.4.1</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.4.0
+        1.4.1
       </span>
     </div>
   </div>
@@ -767,7 +767,7 @@ inventory.add_endpoint <span class="s">&quot;inventory.products.get&quot;</span>
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L145" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L145" target="_blank">
         services.cr
       </a>
     
@@ -796,7 +796,7 @@ inventory.add_endpoint <span class="s">&quot;inventory.products.get&quot;</span>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#add_endpoint%28name%3AString%2C%2A%2Csubject%3AString%3Dname%2Cqueue_group%3AString%3D%22q%22%2C%26block%3AMessage-%3E%29%3AEndpoint-instance-method" class="signature"><strong>#add_endpoint</strong>(name : String, *, subject : String = name, queue_group : String = <span class="s">&quot;q&quot;</span>, &block : Message -> ) : Endpoint</a>
+        <a href="#add_endpoint%28name%3AString%2C%2A%2Csubject%3AString%3Dname%2Cqueue_group%3AString%3D%22q%22%2Cconcurrency%3AInt%3D1%2C%26block%3AMessage%2CSubscription-%3E%29%3AEndpoint-instance-method" class="signature"><strong>#add_endpoint</strong>(name : String, *, subject : String = name, queue_group : String = <span class="s">&quot;q&quot;</span>, concurrency : Int = <span class="n">1</span>, &block : Message, Subscription -> ) : Endpoint</a>
         
           <div class="summary"><p><code>service.add_endpoint &quot;endpoint-name&quot;, subject: &quot;endpoint.subject&quot; do |request|   nats.reply request, &quot;reply goes here&quot; end</code></p></div>
         
@@ -823,6 +823,11 @@ inventory.add_endpoint <span class="s">&quot;inventory.products.get&quot;</span>
     
       <li class="entry-summary">
         <a href="#endpoints%3AArray%28Endpoint%29-instance-method" class="signature"><strong>#endpoints</strong> : Array(Endpoint)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#error_reply%28request%3AMessage%2Cbody%3AString%7CBytes%3D%22%22%2C%2A%2Cerror%3AString%2Cerror_code%3AString%7CInt%29%3ANil-instance-method" class="signature"><strong>#error_reply</strong>(request : Message, body : String | Bytes = <span class="s">&quot;&quot;</span>, *, error : String, error_code : String | Int) : Nil</a>
         
       </li>
     
@@ -908,12 +913,12 @@ inventory.add_endpoint <span class="s">&quot;inventory.products.get&quot;</span>
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="add_endpoint(name:String,*,subject:String=name,queue_group:String=&quot;q&quot;,&amp;block:Message-&gt;):Endpoint-instance-method">
+    <div class="entry-detail" id="add_endpoint(name:String,*,subject:String=name,queue_group:String=&quot;q&quot;,concurrency:Int=1,&amp;block:Message,Subscription-&gt;):Endpoint-instance-method">
       <div class="signature">
         
-        def <strong>add_endpoint</strong>(name : String, *, subject : String = name, queue_group : String = <span class="s">&quot;q&quot;</span>, &block : <a href="../NATS/Message.html">Message</a> -> ) : <a href="../NATS/Service/Endpoint.html">Endpoint</a>
+        def <strong>add_endpoint</strong>(name : String, *, subject : String = name, queue_group : String = <span class="s">&quot;q&quot;</span>, concurrency : Int = <span class="n">1</span>, &block : <a href="../NATS/Message.html">Message</a>, <a href="../NATS/Subscription.html">Subscription</a> -> ) : <a href="../NATS/Service/Endpoint.html">Endpoint</a>
 
-        <a class="method-permalink" href="#add_endpoint%28name%3AString%2C%2A%2Csubject%3AString%3Dname%2Cqueue_group%3AString%3D%22q%22%2C%26block%3AMessage-%3E%29%3AEndpoint-instance-method">#</a>
+        <a class="method-permalink" href="#add_endpoint%28name%3AString%2C%2A%2Csubject%3AString%3Dname%2Cqueue_group%3AString%3D%22q%22%2Cconcurrency%3AInt%3D1%2C%26block%3AMessage%2CSubscription-%3E%29%3AEndpoint-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -926,7 +931,7 @@ inventory.add_endpoint <span class="s">&quot;inventory.products.get&quot;</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L175" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L175" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -952,7 +957,7 @@ inventory.add_endpoint <span class="s">&quot;inventory.products.get&quot;</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L215" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L216" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -973,7 +978,7 @@ inventory.add_endpoint <span class="s">&quot;inventory.products.get&quot;</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L220" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L221" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -989,7 +994,7 @@ inventory.add_endpoint <span class="s">&quot;inventory.products.get&quot;</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L150" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L150" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1005,7 +1010,23 @@ inventory.add_endpoint <span class="s">&quot;inventory.products.get&quot;</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L153" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="error_reply(request:Message,body:String|Bytes=&quot;&quot;,*,error:String,error_code:String|Int):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>error_reply</strong>(request : <a href="../NATS/Message.html">Message</a>, body : String | Bytes = <span class="s">&quot;&quot;</span>, *, error : String, error_code : String | Int) : Nil
+
+        <a class="method-permalink" href="#error_reply%28request%3AMessage%2Cbody%3AString%7CBytes%3D%22%22%2C%2A%2Cerror%3AString%2Cerror_code%3AString%7CInt%29%3ANil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L227" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1021,7 +1042,7 @@ inventory.add_endpoint <span class="s">&quot;inventory.products.get&quot;</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L147" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L147" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1037,7 +1058,7 @@ inventory.add_endpoint <span class="s">&quot;inventory.products.get&quot;</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L151" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L151" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1053,7 +1074,7 @@ inventory.add_endpoint <span class="s">&quot;inventory.products.get&quot;</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L148" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L148" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1081,7 +1102,7 @@ endpoints. This is useful for returning a common error response.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L237" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L251" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1097,7 +1118,7 @@ endpoints. This is useful for returning a common error response.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L152" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L152" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1113,7 +1134,7 @@ endpoints. This is useful for returning a common error response.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.0/src/services.cr#L149" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/services.cr#L149" target="_blank">View source</a>]
         
       </div>
     </div>
