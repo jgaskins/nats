@@ -3,23 +3,30 @@ require "./spec_helper"
 require "../src/kv"
 require "uuid"
 
-private macro test(name, bucket_options = {history: 10}, **options)
-  it {{name}}{% for key, value in options %}, {{key}}: {{value}}{% end %} do
+private def test(name, bucket_options = {history: 10}, **options, &block : NATS::KV::Bucket, String ->)
+  it name, **options do
     name = UUID.random.to_s
-    bucket = kv.create_bucket(name, {{bucket_options.id[1...-1]}})
+    bucket = kv.create_bucket(name, **bucket_options)
 
     begin
-      {{yield}}
+      block.call bucket, name
     ensure
       kv.delete bucket
     end
   end
 end
 
-describe NATS::KV do
-  nats = NATS::Client.new
-  kv = nats.kv
+private NATS_CLIENT = NATS::Client.new
 
+private def nats
+  NATS_CLIENT
+end
+
+def kv
+  nats.kv
+end
+
+describe NATS::KV do
   if ENV["CLEAN_OUT_BUCKETS"]? == "true"
     nats.jetstream.stream.list.each do |stream|
       if stream.config.name =~ /\AKV_[[:xdigit:]]{8}-([[:xdigit:]]{4}-){3}[[:xdigit:]]{12}\z/
@@ -39,7 +46,7 @@ describe NATS::KV do
     kv.get_bucket(name).should eq nil
   end
 
-  test "sets values" do
+  test "sets values" do |bucket, name|
     bucket.put "key", "value"
 
     if result = bucket.get("key")
@@ -53,7 +60,7 @@ describe NATS::KV do
     end
   end
 
-  test "sets values with a TTL", bucket_options: {allow_msg_ttl: true} do
+  test "sets values with a TTL", bucket_options: {allow_msg_ttl: true} do |bucket, name|
     # We create a lot of values with TTLs to mitigate false positive & negatives
     # due to sending/checking them at just the right time. I hate flaky tests.
     concurrency = 10_000
@@ -63,7 +70,7 @@ describe NATS::KV do
         key = "key-#{i}"
         bucket.put key, "value", ttl: 1.second
         bucket.get(key).should_not eq nil
-        sleep 1.second # per-message TTLs apparently have 1-second precision 😞
+        sleep 2.second # per-message TTLs apparently have 1-second precision 😞
         bucket.get(key).should eq nil
       rescue ex
         error = ex
@@ -79,7 +86,7 @@ describe NATS::KV do
     end
   end
 
-  test "gets a specific revision of a key" do
+  test "gets a specific revision of a key" do |bucket, name|
     bucket.put "key", "value1"
     bucket.put "key", "value2"
     revision = bucket.put "another-key", "another value"
@@ -89,7 +96,7 @@ describe NATS::KV do
     bucket.get!("key", revision: revision).value.should eq "value3".to_slice
   end
 
-  test "creates a key or returns nil if the key already exists" do
+  test "creates a key or returns nil if the key already exists" do |bucket, name|
     # Passes the first time because the key does not exist. Also, since this is
     # the first key being added to this store (see `test` macro above), the
     # revision is guaranteed to be `1`.
@@ -100,26 +107,26 @@ describe NATS::KV do
   end
 
   describe "updating a key" do
-    test "updates a key if the revision matches" do
+    test "updates a key if the revision matches" do |bucket, name|
       if revision = bucket.create "key", "value"
         bucket.update("key", "value2", revision).should eq 2
-        bucket.get("key").not_nil!.value.should eq "value2".to_slice
+        bucket.get!("key").value.should eq "value2".to_slice
       else
         raise "No revision returned from Bucket#create"
       end
     end
 
-    test "does not update a key if the revision does not match" do
+    test "does not update a key if the revision does not match" do |bucket, name|
       if revision = bucket.create "key", "value"
         bucket.put "key", "value2"
         bucket.update("key", "value3", revision).should eq nil
-        bucket.get("key").not_nil!.value.should eq "value2".to_slice
+        bucket["key"]?.should eq "value2".to_slice
       else
         raise "No revision returned from Bucket#create"
       end
     end
 
-    test "does not update a key if history is exceeded and discard_new_per_key is set", bucket_options: {history: 2, discard_new_per_key: true} do
+    test "does not update a key if history is exceeded and discard_new_per_key is set", bucket_options: {history: 2, discard_new_per_key: true} do |bucket, name|
       bucket.put "a", "1"
       bucket.put "a", "2"
 
@@ -128,7 +135,7 @@ describe NATS::KV do
       end
     end
 
-    test "updates a key if another key is updated since the last time the given key was set" do
+    test "updates a key if another key is updated since the last time the given key was set" do |bucket, name|
       bucket.put "key", "value"
       bucket.put "key2", "value2"
 
@@ -137,16 +144,16 @@ describe NATS::KV do
       # revision is #3.
       bucket.update("key", "value3", revision: 1).should eq 3
 
-      bucket.get("key").not_nil!.value.should eq "value3".to_slice
+      bucket["key"]?.should eq "value3".to_slice
     end
   end
 
   describe "getting a key" do
-    test "a key that does not exist at all returns nil" do
+    test "a key that does not exist at all returns nil" do |bucket, name|
       bucket.get("lol").should eq nil
     end
 
-    test "a key that does exist will return a KV::Entry for that key" do
+    test "a key that does exist will return a KV::Entry for that key" do |bucket, name|
       bucket.put "key", "value"
 
       result = bucket.get("key").not_nil!
@@ -154,7 +161,7 @@ describe NATS::KV do
       result.value.should eq "value".to_slice
     end
 
-    test "a key that has been deleted will return a KV::Entry whose `operation` is a `Delete`" do
+    test "a key that has been deleted will return a KV::Entry whose `operation` is a `Delete`" do |bucket, name|
       bucket.put "deleted", "value"
       bucket.delete "deleted"
 
@@ -164,7 +171,7 @@ describe NATS::KV do
       result.operation.delete?.should eq true
     end
 
-    test "a key that has been deleted can return `nil` if you ignore deleted" do
+    test "a key that has been deleted can return `nil` if you ignore deleted" do |bucket, name|
       bucket.put "deleted", "value"
       bucket.delete "deleted"
 
@@ -173,7 +180,7 @@ describe NATS::KV do
       result.should be_nil
     end
 
-    test "a key that is purged will show the purge item" do
+    test "a key that is purged will show the purge item" do |bucket, name|
       bucket.put "purged", "value"
       bucket.purge "purged"
 
@@ -184,7 +191,7 @@ describe NATS::KV do
   end
 
   describe "listing keys" do
-    test "lists keys from Put operations" do
+    test "lists keys from Put operations" do |bucket, name|
       bucket.put "a", "a"
       bucket.put "b", "b"
 
@@ -192,11 +199,11 @@ describe NATS::KV do
       bucket.keys.should contain "b"
     end
 
-    test "returns an empty set when there are no keys" do
+    test "returns an empty set when there are no keys" do |bucket, name|
       bucket.keys.should be_empty
     end
 
-    test "ignores keys that are deleted or purged" do
+    test "ignores keys that are deleted or purged" do |bucket, name|
       bucket.put "a", "a"
       bucket.put "b", "b"
       bucket.put "deleted", "lol"
@@ -211,7 +218,7 @@ describe NATS::KV do
       bucket.keys.should_not contain "purged"
     end
 
-    test "iterates over keys, ignoring history and deleted keys" do
+    test "iterates over keys, ignoring history and deleted keys" do |bucket, name|
       bucket["deleted"] = "delete me now plz"
       bucket.delete "deleted"
       bucket["a"] = "a"
@@ -226,7 +233,7 @@ describe NATS::KV do
   end
 
   describe "getting the history of a key" do
-    test "it gets the full history of the key in chronological order" do
+    test "it gets the full history of the key in chronological order" do |bucket, name|
       key = "key"
       10.times do |i|
         bucket[key] = i.to_s
@@ -235,7 +242,7 @@ describe NATS::KV do
       bucket.history(key).map(&.value).should eq Array.new(10, &.to_s.to_slice)
     end
 
-    test "it returns an empty array if there is no history" do
+    test "it returns an empty array if there is no history" do |bucket, name|
       bucket.history("my-key").should be_empty
     end
   end
