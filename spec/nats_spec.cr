@@ -377,7 +377,7 @@ describe NATS do
   end
 end
 
-private def run_nats_on(port : Int32, config : String)
+private def run_nats_on(port : Int32, config : String, &)
   Process.run "nats-server", args: "-js --port #{port} --config #{__DIR__}/support/#{config}.conf".split do |process|
     wait_for_nats port
     client = NATS::Client.new(
