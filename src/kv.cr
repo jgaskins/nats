@@ -318,6 +318,11 @@ module NATS
         Bucket.new(stream, self)
       end
 
+      def list_buckets(pattern : String)
+        stream_list = @nats.jetstream.stream.list("$KV.#{pattern}.>")
+        BucketListResponse.new(stream_list, @nats.kv)
+      end
+
       # Get the `Bucket` with the given name, or `nil` if that bucket does not exist.
       def get_bucket(name : String) : Bucket?
         validate_bucket! name
@@ -711,6 +716,24 @@ module NATS
 
         def next
           @channel.receive? || stop
+        end
+      end
+    end
+
+    struct BucketListResponse
+      include Enumerable(Bucket)
+
+      private getter stream_list_response : JetStream::StreamListResponse
+      private getter kv : NATS::KV::Client
+
+      def initialize(@stream_list_response, @kv)
+      end
+
+      delegate total, limit, offset, to: stream_list_response
+
+      def each
+        stream_list_response.each do |stream|
+          yield Bucket.new(stream, kv)
         end
       end
     end

@@ -46,6 +46,19 @@ describe NATS::KV do
     kv.get_bucket(name).should eq nil
   end
 
+  test "lists buckets" do |bucket, name|
+    bucket["one"] = "1"
+    bucket["two"] = "2"
+
+    buckets = kv.list_buckets(pattern: name)
+
+    buckets.total.should eq 1
+    buckets.limit.should eq 256
+    buckets.offset.should eq 0
+    buckets.first.name.should eq name
+    buckets.first.values.should eq 2
+  end
+
   test "sets values" do |bucket, name|
     bucket.put "key", "value"
 
