@@ -720,8 +720,7 @@ module NATS
             raise Error.new("Invalid message declaration: #{line.inspect}")
           end
 
-          body = Bytes.new(bytesize)
-          @socket.read_fully?(body) || raise Error.new("Unexpected EOF")
+          body = @socket.read_string(bytesize)
           @socket.skip 2 # CRLF
 
           if subscription = @subscriptions[sid]?
