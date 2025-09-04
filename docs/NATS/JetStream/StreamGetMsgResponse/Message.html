@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.10.1">
-<meta name="crystal_docs.project_version" content="1.4.1">
+<meta name="crystal_docs.project_version" content="1.5.0">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::StreamGetMsgResponse::Message - nats 1.4.1</title>
+  <title>NATS::JetStream::StreamGetMsgResponse::Message - nats 1.5.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.4.1
+        1.5.0
       </span>
     </div>
   </div>
@@ -99,6 +99,11 @@
   
   <li class=" " data-id="nats/NATS/Headers" data-name="nats::headers">
       <a href="../../../NATS/Headers.html">Headers</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/HeadersConverter" data-name="nats::headersconverter">
+      <a href="../../../NATS/HeadersConverter.html">HeadersConverter</a>
       
     </li>
   
@@ -507,6 +512,11 @@
       
     </li>
   
+  <li class=" " data-id="nats/NATS/KV/BucketListResponse" data-name="nats::kv::bucketlistresponse">
+      <a href="../../../NATS/KV/BucketListResponse.html">BucketListResponse</a>
+      
+    </li>
+  
   <li class=" " data-id="nats/NATS/KV/Client" data-name="nats::kv::client">
       <a href="../../../NATS/KV/Client.html">Client</a>
       
@@ -762,7 +772,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/jetstream/stream_get_msg_response.cr#L12" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/stream_get_msg_response.cr#L12" target="_blank">
         jetstream/stream_get_msg_response.cr
       </a>
     
@@ -790,7 +800,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#new%28%2A%2Csubject%3AString%2Cseq%3AInt64%2Cdata%3ASlice%28UInt8%29%2Cheaders%3ANil%7CHash%28String%2CString%29%2Ctime%3ATime%29-class-method" class="signature"><strong>.new</strong>(*, subject : String, seq : Int64, data : Slice(UInt8), headers : Nil | Hash(String, String), time : Time)</a>
+        <a href="#new%28%2A%2Csubject%3AString%2Cseq%3AInt64%2Cdata%3ASlice%28UInt8%29%2Cheaders%3AHTTP%3A%3AHeaders%7CNil%2Ctime%3ATime%29-class-method" class="signature"><strong>.new</strong>(*, subject : String, seq : Int64, data : Slice(UInt8), headers : HTTP::Headers | Nil, time : Time)</a>
         
       </li>
     
@@ -953,23 +963,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/jetstream/stream_get_msg_response.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/stream_get_msg_response.cr#L13" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="new(*,subject:String,seq:Int64,data:Slice(UInt8),headers:Nil|Hash(String,String),time:Time)-class-method">
+    <div class="entry-detail" id="new(*,subject:String,seq:Int64,data:Slice(UInt8),headers:HTTP::Headers|Nil,time:Time)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(*, subject : String, seq : Int64, data : Slice(UInt8), headers : Nil | Hash(String, String), time : Time)
+        def self.<strong>new</strong>(*, subject : String, seq : Int64, data : Slice(UInt8), headers : HTTP::Headers | Nil, time : Time)
 
-        <a class="method-permalink" href="#new%28%2A%2Csubject%3AString%2Cseq%3AInt64%2Cdata%3ASlice%28UInt8%29%2Cheaders%3ANil%7CHash%28String%2CString%29%2Ctime%3ATime%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28%2A%2Csubject%3AString%2Cseq%3AInt64%2Cdata%3ASlice%28UInt8%29%2Cheaders%3AHTTP%3A%3AHeaders%7CNil%2Ctime%3ATime%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/jetstream/stream_get_msg_response.cr#L23" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/stream_get_msg_response.cr#L23" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1001,7 +1011,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/jetstream/stream_get_msg_response.cr#L18" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/stream_get_msg_response.cr#L18" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1017,7 +1027,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/jetstream/stream_get_msg_response.cr#L20" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/stream_get_msg_response.cr#L20" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1033,7 +1043,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/jetstream/stream_get_msg_response.cr#L16" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/stream_get_msg_response.cr#L16" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1049,7 +1059,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/jetstream/stream_get_msg_response.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/stream_get_msg_response.cr#L15" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1065,7 +1075,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/jetstream/stream_get_msg_response.cr#L21" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/stream_get_msg_response.cr#L21" target="_blank">View source</a>]
         
       </div>
     </div>

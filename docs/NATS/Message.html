@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.10.1">
-<meta name="crystal_docs.project_version" content="1.4.1">
+<meta name="crystal_docs.project_version" content="1.5.0">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::Message - nats 1.4.1</title>
+  <title>NATS::Message - nats 1.5.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.4.1
+        1.5.0
       </span>
     </div>
   </div>
@@ -99,6 +99,11 @@
   
   <li class=" " data-id="nats/NATS/Headers" data-name="nats::headers">
       <a href="../NATS/Headers.html">Headers</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/HeadersConverter" data-name="nats::headersconverter">
+      <a href="../NATS/HeadersConverter.html">HeadersConverter</a>
       
     </li>
   
@@ -507,6 +512,11 @@
       
     </li>
   
+  <li class=" " data-id="nats/NATS/KV/BucketListResponse" data-name="nats::kv::bucketlistresponse">
+      <a href="../NATS/KV/BucketListResponse.html">BucketListResponse</a>
+      
+    </li>
+  
   <li class=" " data-id="nats/NATS/KV/Client" data-name="nats::kv::client">
       <a href="../NATS/KV/Client.html">Client</a>
       
@@ -748,7 +758,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/message.cr#L2" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/message.cr#L4" target="_blank">
         message.cr
       </a>
     
@@ -771,7 +781,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28subject%3AString%2Cdata%3ASlice%28UInt8%29%2Creply_to%3ANil%7CString%3Dnil%2Cheaders%3ANil%7CHash%28String%2CString%29%3Dnil%29-class-method" class="signature"><strong>.new</strong>(subject : String, data : Slice(UInt8), reply_to : Nil | String = <span class="n">nil</span>, headers : Nil | Hash(String, String) = <span class="n">nil</span>)</a>
+        <a href="#new%28subject%3AString%2Cdatadata_string%3AString%2Creply_to%3ANil%7CString%3Dnil%2Cheaders%3AHTTP%3A%3AHeaders%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(subject : String, data data_string : String, reply_to : Nil | String = <span class="n">nil</span>, headers : HTTP::Headers | Nil = <span class="n">nil</span>)</a>
         
       </li>
     
@@ -806,7 +816,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#data%3ABytes-instance-method" class="signature"><strong>#data</strong> : Bytes</a>
+        <a href="#data-instance-method" class="signature"><strong>#data</strong></a>
         
       </li>
     
@@ -887,18 +897,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(subject:String,data:Slice(UInt8),reply_to:Nil|String=nil,headers:Nil|Hash(String,String)=nil)-class-method">
+    <div class="entry-detail" id="new(subject:String,datadata_string:String,reply_to:Nil|String=nil,headers:HTTP::Headers|Nil=nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(subject : String, data : Slice(UInt8), reply_to : Nil | String = <span class="n">nil</span>, headers : Nil | Hash(String, String) = <span class="n">nil</span>)
+        def self.<strong>new</strong>(subject : String, data data_string : String, reply_to : Nil | String = <span class="n">nil</span>, headers : HTTP::Headers | Nil = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#new%28subject%3AString%2Cdata%3ASlice%28UInt8%29%2Creply_to%3ANil%7CString%3Dnil%2Cheaders%3ANil%7CHash%28String%2CString%29%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28subject%3AString%2Cdatadata_string%3AString%2Creply_to%3ANil%7CString%3Dnil%2Cheaders%3AHTTP%3A%3AHeaders%7CNil%3Dnil%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/message.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/message.cr#L12" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -930,7 +940,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/message.cr#L19" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/message.cr#L24" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -951,23 +961,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/message.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/message.cr#L20" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="data:Bytes-instance-method">
+    <div class="entry-detail" id="data-instance-method">
       <div class="signature">
         
-        def <strong>data</strong> : Bytes
+        def <strong>data</strong>
 
-        <a class="method-permalink" href="#data%3ABytes-instance-method">#</a>
+        <a class="method-permalink" href="#data-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/message.cr#L4" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/message.cr#L15" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -983,7 +993,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/message.cr#L7" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/message.cr#L8" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -999,7 +1009,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/message.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/message.cr#L7" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1015,7 +1025,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/message.cr#L5" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/message.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1031,7 +1041,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.4.1/src/message.cr#L3" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/message.cr#L5" target="_blank">View source</a>]
         
       </div>
     </div>
