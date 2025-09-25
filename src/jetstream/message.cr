@@ -29,17 +29,25 @@ module NATS::JetStream
     # How many messages follow this message for this consumer
     getter pending : Int64
 
-    # The original body of the message, encoded as binary. If you need text,
-    # wrap the body in a `String`.
+    # The message payload, encoded as binary. If you need text,
+    # use `data_string`.
     #
     # ```
     # jetstream.subscribe consumer do |msg|
-    #   body_string = String.new(msg.body)
-    #
-    #   # ...
+    #   data = MessagePack.parse(msg.data)
     # end
     # ```
-    getter body : Bytes
+    def data : Bytes
+      data_string.to_slice
+    end
+
+    # :ditto:
+    def body : Bytes
+      data
+    end
+
+    # The message payload, encoded as a UTF-8 string.
+    getter data_string : String
 
     # The original subject this message was published to, which can be (and
     # most likely is) different from the subject it was delivered to
@@ -70,7 +78,7 @@ module NATS::JetStream
           consumer_seq: consumer_seq.to_i64,
           timestamp: Time::UNIX_EPOCH + timestamp.to_i64.nanoseconds,
           pending: pending_messages.to_i64,
-          body: msg.body,
+          data_string: msg.data_string,
           subject: msg.subject,
           reply_to: reply_to,
           headers: msg.headers,
@@ -80,7 +88,7 @@ module NATS::JetStream
       end
     end
 
-    def initialize(@stream, @consumer, @delivered_count, @stream_seq, @consumer_seq, @timestamp, @pending, @body, @subject, @reply_to, @headers)
+    def initialize(@stream, @consumer, @delivered_count, @stream_seq, @consumer_seq, @timestamp, @pending, @data_string, @subject, @reply_to, @headers)
     end
 
     class InvalidJetStreamMessage < Exception

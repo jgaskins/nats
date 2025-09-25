@@ -14,8 +14,8 @@ module NATS::JetStream
 
       getter subject : String
       getter seq : Int64
-      @[JSON::Field(converter: ::NATS::JetStream::StreamGetMsgResponse::Message::Base64Data)]
-      getter data : Bytes = Bytes.empty
+      @[JSON::Field(key: "data", converter: ::NATS::JetStream::StreamGetMsgResponse::Message::Base64Data)]
+      getter data_string : String
       @[JSON::Field(key: "hdrs", converter: ::NATS::JetStream::StreamGetMsgResponse::Message::HeadersConverter)]
       getter headers : Headers { Headers.new }
       getter time : Time
@@ -24,15 +24,19 @@ module NATS::JetStream
         *,
         @subject,
         @seq,
-        @data,
+        @data_string,
         @headers,
         @time,
       )
       end
 
+      def data : Bytes
+        data_string.to_slice
+      end
+
       module Base64Data
         def self.from_json(json : JSON::PullParser)
-          ::Base64.decode json.read_string
+          ::Base64.decode_string json.read_string
         end
 
         def self.to_json(value : Bytes, json : JSON::Builder)
