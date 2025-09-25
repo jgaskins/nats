@@ -37,6 +37,18 @@ private macro test(name, stream_options = {} of String => String, **options)
   end
 end
 
+private struct CounterResponse
+  include JSON::Serializable
+  @[JSON::Field(key: "val", converter: CounterResponse::ValueConverter)]
+  getter value : Int64
+
+  module ValueConverter
+    def self.from_json(json : JSON::PullParser)
+      json.read_string.to_i64
+    end
+  end
+end
+
 describe NATS::JetStream do
   it "creates, lists, and deletes streams" do
     uuid = UUID.random
@@ -382,6 +394,28 @@ describe NATS::JetStream do
       ]
     ensure
       nats.jetstream.stream.delete stream
+    end
+  end
+
+  describe "counters" do
+    test "increments and checks", stream_options: {allow_msg_counter: true} do
+      # Incrementing returns the value
+      js.publish(write_subject, "", headers: NATS::Headers{"Nats-Incr" => "+1"})
+        .as(NATS::JetStream::PubAck)
+        .val.not_nil!
+        .to_i64
+        .should eq 1
+      js.publish(write_subject, "", headers: NATS::Headers{"Nats-Incr" => "+4"})
+        .as(NATS::JetStream::PubAck)
+        .val.not_nil!
+        .to_i64
+        .should eq 5
+
+      # Fetching the current value
+      unless response = js.stream.get_msg(stream.config.name, last_by_subject: write_subject)
+        raise "Didn't get a response from NATS JetStream"
+      end
+      CounterResponse.from_json(response.message.data_string).value.should eq 5
     end
   end
 
