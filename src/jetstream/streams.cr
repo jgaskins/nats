@@ -170,7 +170,7 @@ module NATS::JetStream
             message: StreamGetMsgResponse::Message.new(
               subject: headers["Nats-Subject"],
               seq: headers["Nats-Sequence"].to_i64,
-              data: response.body,
+              data_string: response.data_string,
               headers: headers,
               time: Time::Format::RFC_3339.parse(headers["Nats-Time-Stamp"]),
             ),
