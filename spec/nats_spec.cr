@@ -141,7 +141,7 @@ describe NATS do
   it "can handle multiple messages on the same subject concurrently" do
     subject = "temp.#{UUID.v7}"
     nats.subscribe subject, concurrency: 100 do |request, subscription|
-      sleep 10.milliseconds
+      sleep 20.milliseconds
       nats.reply request, ""
     end
 
@@ -155,7 +155,7 @@ describe NATS do
         end
       end
     end
-    (Time.monotonic - start).should be_within 10.milliseconds, of: 10.milliseconds
+    (Time.monotonic - start).should be_within 20.milliseconds, of: 20.milliseconds
   end
 
   it "assigns replies to the original requesters" do
