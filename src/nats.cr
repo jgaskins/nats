@@ -435,21 +435,21 @@ module NATS
 
     # Make a synchronous request to subscribers of the given `subject`, waiting
     # up to `timeout` for responses from any of the subscribers. The first
-    # `reply_count` messages to come back will be returned. If fewer replies are
+    # `max_replies` messages to come back will be returned. If fewer replies are
     # received before the `timeout` elapses, only those will be returned.
     #
     # ```
-    # orders = nats.request_many("orders.info.#{order_id}", reply_count: 10).map do |response|
+    # orders = nats.request_many("orders.info.#{order_id}", max_replies: 10).map do |response|
     #   Order.from_json(response.data_string)
     # end
     # ```
-    def request_many(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil, *, reply_count : Int32, flush = true) : Array(Message)
-      if reply_count.negative?
-        raise ArgumentError.new("reply_count must not be negative")
+    def request_many(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil, *, max_replies : Int32, flush = true) : Array(Message)
+      if max_replies.negative?
+        raise ArgumentError.new("max_replies must not be negative")
       end
 
-      replies = Array(Message).new(reply_count)
-      channel = Channel(Message).new(reply_count)
+      replies = Array(Message).new(max_replies)
+      channel = Channel(Message).new(max_replies)
       inbox = @nuid.next
       key = "#{@inbox_prefix}.#{inbox}"
       @inbox_handlers[key] = ->(msg : Message) { channel.send msg unless channel.closed? }
@@ -468,7 +468,7 @@ module NATS
                 replies << msg
               end
             end
-            if replies.size >= reply_count || Time.monotonic - start >= original_timeout
+            if replies.size >= max_replies || Time.monotonic - start >= original_timeout
               return replies
             end
             timeout = original_timeout - (Time.monotonic - start)
@@ -488,7 +488,7 @@ module NATS
     # `stall_timeout` elapses, the return value will be empty.
     #
     # ```
-    # orders = nats.request("orders.info.#{order_id}", reply_count: 10).map do |response|
+    # orders = nats.request("orders.info.#{order_id}", stall_timeout: 2.seconds).map do |response|
     #   Order.from_json(response.data_string)
     # end
     # ```
@@ -532,7 +532,7 @@ module NATS
     # return all messages received up to that point.
     #
     # ```
-    # orders = nats.request_many("orders.info.#{order_id}", reply_count: 10) do |response|
+    # orders = nats.request_many("orders.info.#{order_id}") do |response|
     #   # Our sentinel message will be empty
     #   response.data.empty?
     # end

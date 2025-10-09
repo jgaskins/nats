@@ -167,7 +167,7 @@ describe NATS do
         end
       end
 
-      responses = nats.request_many subject, "", reply_count: 10, timeout: 1.second
+      responses = nats.request_many subject, "", max_replies: 10, timeout: 1.second
 
       responses.size.should eq 10
     end
@@ -180,7 +180,7 @@ describe NATS do
         end
       end
 
-      responses = nats.request_many subject, "", reply_count: 10, timeout: 50.milliseconds
+      responses = nats.request_many subject, "", max_replies: 10, timeout: 50.milliseconds
 
       responses.size.should eq 9
     end
@@ -198,15 +198,15 @@ describe NATS do
       # come in 50ms apart. We could reduce the duration to keep the test suite
       # fast, but variances in VM performance would make the test unpredictable.
       responses = nats.request_many subject, "",
-        reply_count: 10,
+        max_replies: 10,
         timeout: 100.milliseconds
 
       responses.size.should eq 2
     end
 
-    it "raises when passing a negative reply_count" do
+    it "raises when passing a negative max_replies" do
       expect_raises ArgumentError do
-        nats.request_many "asdf", reply_count: -1
+        nats.request_many "asdf", max_replies: -1
       end
     end
 
