@@ -478,6 +478,46 @@ module NATS
       end
     end
 
+    # Make a synchronous request to subscribers of the given `subject`,
+    # receiving as many messages as are sent until `stall_timeout` has passed
+    # without receiving any messages. If no replies are received before the
+    # `stall_timeout` elapses, the return value will be empty.
+    #
+    # ```
+    # orders = nats.request("orders.info.#{order_id}", reply_count: 10).map do |response|
+    #   Order.from_json(response.data_string)
+    # end
+    # ```
+    def request_many(subject : String, message : Data = "", headers : Headers? = nil, *, stall_timeout : Time::Span = 2.seconds, flush = true) : Array(Message)
+      replies = Array(Message).new
+      channel = Channel(Message).new(1)
+      inbox = @nuid.next
+      key = "#{@inbox_prefix}.#{inbox}"
+      @inbox_handlers[key] = ->(msg : Message) { channel.send msg unless channel.closed? }
+      publish subject, message, reply_to: key, headers: headers
+
+      flush! if flush
+
+      start = Time.monotonic
+      begin
+        loop do
+          select
+          when msg = channel.receive?
+            if msg
+              unless msg.body.empty? && msg.headers.try(&.["Status"]?) == "503"
+                replies << msg
+              end
+            end
+          when timeout(stall_timeout)
+            channel.close
+            return replies
+          end
+        end
+      ensure
+        @inbox_handlers.delete key
+      end
+    end
+
     # Make an asynchronous request to subscribers of the given `subject`, not
     # waiting for a response. The first message to come back will be passed to
     # the block.

@@ -160,11 +160,26 @@ describe NATS do
     # We ask for up to 10, but we only wait long enough to get 2 because they
     # come in 50ms apart. We could reduce the duration to keep the test suite
     # fast, but variances in VM performance would make the test unpredictable.
-    responses = nats.request subject, "",
+    responses = nats.request_many subject, "",
       reply_count: 10,
       timeout: 100.milliseconds
 
     responses.size.should eq 2
+  end
+
+  it "can make a request and receive an unbounded number of messages until N seconds have passed without a message" do
+    subject = "temp.#{UUID.random}"
+    nats.subscribe subject do |msg|
+      9.times do |i|
+        nats.reply msg, i.to_s
+      end
+      sleep 100.milliseconds
+      nats.reply msg, "this is never received"
+    end
+
+    responses = nats.request_many subject, "", stall_timeout: 50.milliseconds
+
+    responses.size.should eq 9
   end
 
   it "assigns replies to the original requesters" do
