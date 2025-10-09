@@ -318,6 +318,11 @@ module NATS
         Bucket.new(stream, self)
       end
 
+      def list_buckets(pattern : String)
+        stream_list = @nats.jetstream.stream.list("$KV.#{pattern}.>")
+        BucketListResponse.new(stream_list, @nats.kv)
+      end
+
       # Get the `Bucket` with the given name, or `nil` if that bucket does not exist.
       def get_bucket(name : String) : Bucket?
         validate_bucket! name
@@ -386,7 +391,7 @@ module NATS
           Entry.new(
             bucket: bucket_name,
             key: key_name,
-            value: response.message.data,
+            value_string: response.message.data_string,
             revision: response.message.seq,
             created_at: response.message.time,
             operation: operation,
@@ -621,11 +626,15 @@ module NATS
     struct Entry
       getter bucket : String
       getter key : String
-      getter value : Bytes
+      getter value_string : String
       getter revision : Int64
       getter created_at : Time
       getter delta : Int64
       getter operation : Operation
+
+      def value : Bytes
+        value_string.to_slice
+      end
 
       enum Operation
         Put
@@ -633,11 +642,7 @@ module NATS
         Purge
       end
 
-      def initialize(@bucket, @key, @value, @revision, @created_at, @operation, @delta = 0i64)
-      end
-
-      def value_string
-        String.new value
+      def initialize(@bucket, @key, @value_string, @revision, @created_at, @operation, @delta = 0i64)
       end
 
       def latest?
@@ -677,7 +682,7 @@ module NATS
             entry = Entry.new(
               bucket: bucket_name,
               key: key_name,
-              value: msg.body,
+              value_string: msg.data_string,
               revision: js_msg.stream_seq,
               created_at: js_msg.timestamp,
               delta: js_msg.pending,
@@ -711,6 +716,24 @@ module NATS
 
         def next
           @channel.receive? || stop
+        end
+      end
+    end
+
+    struct BucketListResponse
+      include Enumerable(Bucket)
+
+      private getter stream_list_response : JetStream::StreamListResponse
+      private getter kv : NATS::KV::Client
+
+      def initialize(@stream_list_response, @kv)
+      end
+
+      delegate total, limit, offset, to: stream_list_response
+
+      def each(&)
+        stream_list_response.each do |stream|
+          yield Bucket.new(stream, kv)
         end
       end
     end

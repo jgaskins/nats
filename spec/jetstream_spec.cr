@@ -1,13 +1,14 @@
 require "./spec_helper"
 require "../src/jetstream"
 require "uuid"
+require "wait_group"
 
-private macro create_stream(subjects, **bucket_options)
+private macro create_stream(subjects, **stream_options)
   nats.jetstream.stream.create(
     name: "test-stream-#{UUID.random}",
     subjects: {{subjects}},
     storage: :memory,
-    {{bucket_options.double_splat}}
+    {{stream_options.double_splat}}
   )
 end
 
@@ -23,15 +24,27 @@ nats = NATS::Client.new
   .on_error { |ex| Log.for(NATS).error(exception: ex) }
 js = nats.jetstream
 
-private macro test(name, bucket_options = {} of String => String, **options)
+private macro test(name, stream_options = {} of String => String, **options)
   it({{name}}, {{options.double_splat}}) do
     write_subject = UUID.random.to_s
-    stream = create_stream([write_subject], {{bucket_options.double_splat}})
+    stream = create_stream([write_subject], {{stream_options.double_splat}})
 
     begin
       {{yield}}
     ensure
       js.stream.delete stream
+    end
+  end
+end
+
+private struct CounterResponse
+  include JSON::Serializable
+  @[JSON::Field(key: "val", converter: CounterResponse::ValueConverter)]
+  getter value : Int64
+
+  module ValueConverter
+    def self.from_json(json : JSON::PullParser)
+      json.read_string.to_i64
     end
   end
 end
@@ -69,16 +82,25 @@ describe NATS::JetStream do
   end
 
   it "paginates streams" do
-    a_bunch_of_streams = Array.new(1000) do |id|
-      js.stream.create(
-        name: "test-#{id}",
-        storage: :memory,
-        subjects: ["test.jetstream.pagination.#{id}"],
-      )
+    a_bunch_of_streams = [] of NATS::JetStream::Stream
+    # Create 1k streams concurrently and store them in the array
+    WaitGroup.wait do |wg|
+      mutex = Mutex.new
+      1_000.times do |id|
+        wg.spawn do
+          stream = js.stream.create(
+            name: "test-#{id}",
+            storage: :memory,
+            subjects: ["test.jetstream.pagination.#{id}"],
+          )
+          mutex.synchronize { a_bunch_of_streams << stream }
+        end
+      end
     end
 
     begin
-      streams = nats.jetstream.stream.list.to_a
+      streams = js.stream.list.to_a
+      streams.size.should eq a_bunch_of_streams.size
       a_bunch_of_streams.each do |stream|
         streams.map(&.config.name).should contain stream.config.name
       end
@@ -375,12 +397,34 @@ describe NATS::JetStream do
     end
   end
 
+  describe "counters" do
+    test "increments and checks", stream_options: {allow_msg_counter: true} do
+      # Incrementing returns the value
+      js.publish(write_subject, "", headers: NATS::Headers{"Nats-Incr" => "+1"})
+        .as(NATS::JetStream::PubAck)
+        .val.not_nil!
+        .to_i64
+        .should eq 1
+      js.publish(write_subject, "", headers: NATS::Headers{"Nats-Incr" => "+4"})
+        .as(NATS::JetStream::PubAck)
+        .val.not_nil!
+        .to_i64
+        .should eq 5
+
+      # Fetching the current value
+      unless response = js.stream.get_msg(stream.config.name, last_by_subject: write_subject)
+        raise "Didn't get a response from NATS JetStream"
+      end
+      CounterResponse.from_json(response.message.data_string).value.should eq 5
+    end
+  end
+
   describe "compression" do
-    test "creates streams with S2 compression", bucket_options: {compression: :s2} do
+    test "creates streams with S2 compression", stream_options: {compression: :s2} do
       stream.config.compression.s2?.should eq true
     end
 
-    test "creates streams with no compression", bucket_options: {compression: :none} do
+    test "creates streams with no compression", stream_options: {compression: :none} do
       stream.config.compression.none?.should eq true
     end
   end

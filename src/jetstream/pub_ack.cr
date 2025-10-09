@@ -8,6 +8,7 @@ module NATS::JetStream
     getter sequence : Int64
     getter? duplicate : Bool = false
     getter domain : String?
+    getter val : String?
   end
 
   deprecate_api_v1 PubAck

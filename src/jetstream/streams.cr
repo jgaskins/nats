@@ -54,7 +54,7 @@ module NATS::JetStream
 
     # List all available streams
     def list(subject : String? = nil, offset : Int? = nil, limit : Int? = nil)
-      body = {subject: subject, offset: offset, limit: limit}.to_json
+      body = ListRequest.new(subject: subject, offset: offset, limit: limit).to_json
 
       if response = @nats.request "$JS.API.STREAM.LIST", body
         StreamListResponse.new @nats.jetstream,
@@ -62,6 +62,18 @@ module NATS::JetStream
           subject: subject
       else
         raise Error.new("Did not receive a response from NATS JetStream")
+      end
+    end
+
+    private struct ListRequest
+      include JSON::Serializable
+      getter subject : String?
+      getter offset : Int64?
+      getter limit : Int32?
+
+      def initialize(@subject, offset, limit)
+        @offset = offset.to_i64 if offset
+        @limit = limit.to_i32 if limit
       end
     end
 
@@ -158,7 +170,7 @@ module NATS::JetStream
             message: StreamGetMsgResponse::Message.new(
               subject: headers["Nats-Subject"],
               seq: headers["Nats-Sequence"].to_i64,
-              data: response.body,
+              data_string: response.data_string,
               headers: headers,
               time: Time::Format::RFC_3339.parse(headers["Nats-Time-Stamp"]),
             ),
