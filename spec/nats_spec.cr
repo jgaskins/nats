@@ -230,6 +230,22 @@ describe NATS do
         nats.request_many "asdf", stall_timeout: -1.second
       end
     end
+
+    it "can make a request for many responses with a block determining whether to continue waiting" do
+      subject = "temp.#{UUID.random}"
+      nats.subscribe subject do |msg|
+        10.times do |i|
+          nats.reply msg, i.to_s
+        end
+        nats.reply msg, headers: NATS::Headers{"stop" => "true"}
+      end
+
+      responses = nats.request_many subject do |response|
+        response.headers["stop"]?
+      end
+
+      responses.size.should eq 10
+    end
   end
 
   it "assigns replies to the original requesters" do

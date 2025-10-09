@@ -525,6 +525,56 @@ module NATS
       end
     end
 
+    # Make a synchronous request to subscribers of the given `subject`, waiting
+    # up to `timeout` for responses from any of the subscribers and yielding
+    # each message to the given block to check for a sentinel message. The first
+    # message that returns `true` for the block will terminate the request and
+    # return all messages received up to that point.
+    #
+    # ```
+    # orders = nats.request_many("orders.info.#{order_id}", reply_count: 10) do |response|
+    #   # Our sentinel message will be empty
+    #   response.data.empty?
+    # end
+    # ```
+    def request_many(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil, *, flush = true) : Array(Message)
+      replies = Array(Message).new
+      channel = Channel(Message).new(10)
+      inbox = @nuid.next
+      key = "#{@inbox_prefix}.#{inbox}"
+      @inbox_handlers[key] = ->(msg : Message) { channel.send msg unless channel.closed? }
+      publish subject, message, reply_to: key, headers: headers
+      original_timeout = timeout
+
+      flush! if flush
+
+      start = Time.monotonic
+      begin
+        loop do
+          select
+          when msg = channel.receive?
+            if msg
+              unless msg.body.empty? && msg.headers.try(&.["Status"]?) == "503"
+                if yield msg
+                  return replies
+                end
+                replies << msg
+              end
+            end
+            if Time.monotonic - start >= original_timeout
+              return replies
+            end
+            timeout = original_timeout - (Time.monotonic - start)
+          when timeout(timeout)
+            channel.close
+            return replies
+          end
+        end
+      ensure
+        @inbox_handlers.delete key
+      end
+    end
+
     # Make an asynchronous request to subscribers of the given `subject`, not
     # waiting for a response. The first message to come back will be passed to
     # the block.
