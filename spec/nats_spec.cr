@@ -130,9 +130,22 @@ describe NATS do
       end
     end
 
-    responses = nats.request subject, "", reply_count: 10, timeout: 1.second
+    responses = nats.request_many subject, "", reply_count: 10, timeout: 1.second
 
     responses.size.should eq 10
+  end
+
+  it "can make a request and receive less than the specified number of replies" do
+    subject = "temp.#{UUID.random}"
+    nats.subscribe subject do |msg|
+      9.times do |i|
+        nats.reply msg, i.to_s
+      end
+    end
+
+    responses = nats.request_many subject, "", reply_count: 10, timeout: 50.milliseconds
+
+    responses.size.should eq 9
   end
 
   it "can make a request and receive many replies spaced out over time" do

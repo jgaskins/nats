@@ -439,11 +439,11 @@ module NATS
     # received before the `timeout` elapses, only those will be returned.
     #
     # ```
-    # orders = nats.request("orders.info.#{order_id}", reply_count: 10).map do |response|
+    # orders = nats.request_many("orders.info.#{order_id}", reply_count: 10).map do |response|
     #   Order.from_json(response.data_string)
     # end
     # ```
-    def request(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil, *, reply_count : Int32, flush = true) : Array(Message)
+    def request_many(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil, *, reply_count : Int32, flush = true) : Array(Message)
       replies = Array(Message).new(reply_count)
       channel = Channel(Message).new(reply_count)
       inbox = @nuid.next
