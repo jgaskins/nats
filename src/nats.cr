@@ -444,6 +444,10 @@ module NATS
     # end
     # ```
     def request_many(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil, *, reply_count : Int32, flush = true) : Array(Message)
+      if reply_count.negative?
+        raise ArgumentError.new("reply_count must not be negative")
+      end
+
       replies = Array(Message).new(reply_count)
       channel = Channel(Message).new(reply_count)
       inbox = @nuid.next
@@ -489,6 +493,9 @@ module NATS
     # end
     # ```
     def request_many(subject : String, message : Data = "", headers : Headers? = nil, *, stall_timeout : Time::Span = 2.seconds, flush = true) : Array(Message)
+      if stall_timeout.negative?
+        raise ArgumentError.new("stall_timeout must not be negative")
+      end
       replies = Array(Message).new
       channel = Channel(Message).new(1)
       inbox = @nuid.next

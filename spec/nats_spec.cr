@@ -122,64 +122,78 @@ describe NATS do
     (Time.monotonic - start).should be_within 10.milliseconds, of: 10.milliseconds
   end
 
-  it "can make a request and receive many replies" do
-    subject = "temp.#{UUID.random}"
-    nats.subscribe subject do |msg|
-      10.times do |i|
-        nats.reply msg, i.to_s
+  describe "#request_many" do
+    it "can make a request and receive many replies" do
+      subject = "temp.#{UUID.random}"
+      nats.subscribe subject do |msg|
+        10.times do |i|
+          nats.reply msg, i.to_s
+        end
+      end
+
+      responses = nats.request_many subject, "", reply_count: 10, timeout: 1.second
+
+      responses.size.should eq 10
+    end
+
+    it "can make a request and receive less than the specified number of replies" do
+      subject = "temp.#{UUID.random}"
+      nats.subscribe subject do |msg|
+        9.times do |i|
+          nats.reply msg, i.to_s
+        end
+      end
+
+      responses = nats.request_many subject, "", reply_count: 10, timeout: 50.milliseconds
+
+      responses.size.should eq 9
+    end
+
+    it "can make a request and receive many replies spaced out over time" do
+      subject = "temp.#{UUID.random}"
+      nats.subscribe subject do |msg|
+        3.times do |i|
+          nats.reply msg, i.to_s
+          sleep 50.milliseconds
+        end
+      end
+
+      # We ask for up to 10, but we only wait long enough to get 2 because they
+      # come in 50ms apart. We could reduce the duration to keep the test suite
+      # fast, but variances in VM performance would make the test unpredictable.
+      responses = nats.request_many subject, "",
+        reply_count: 10,
+        timeout: 100.milliseconds
+
+      responses.size.should eq 2
+    end
+
+    it "raises when passing a negative reply_count" do
+      expect_raises ArgumentError do
+        nats.request_many "asdf", reply_count: -1
       end
     end
 
-    responses = nats.request_many subject, "", reply_count: 10, timeout: 1.second
-
-    responses.size.should eq 10
-  end
-
-  it "can make a request and receive less than the specified number of replies" do
-    subject = "temp.#{UUID.random}"
-    nats.subscribe subject do |msg|
-      9.times do |i|
-        nats.reply msg, i.to_s
+    it "can make a request and receive an unbounded number of messages until N seconds have passed without a message" do
+      subject = "temp.#{UUID.random}"
+      nats.subscribe subject do |msg|
+        9.times do |i|
+          nats.reply msg, i.to_s
+        end
+        sleep 100.milliseconds
+        nats.reply msg, "this is never received"
       end
+
+      responses = nats.request_many subject, stall_timeout: 50.milliseconds
+
+      responses.size.should eq 9
     end
 
-    responses = nats.request_many subject, "", reply_count: 10, timeout: 50.milliseconds
-
-    responses.size.should eq 9
-  end
-
-  it "can make a request and receive many replies spaced out over time" do
-    subject = "temp.#{UUID.random}"
-    nats.subscribe subject do |msg|
-      3.times do |i|
-        nats.reply msg, i.to_s
-        sleep 50.milliseconds
+    it "raises when passing a negative stall_timeout" do
+      expect_raises ArgumentError do
+        nats.request_many "asdf", stall_timeout: -1.second
       end
     end
-
-    # We ask for up to 10, but we only wait long enough to get 2 because they
-    # come in 50ms apart. We could reduce the duration to keep the test suite
-    # fast, but variances in VM performance would make the test unpredictable.
-    responses = nats.request_many subject, "",
-      reply_count: 10,
-      timeout: 100.milliseconds
-
-    responses.size.should eq 2
-  end
-
-  it "can make a request and receive an unbounded number of messages until N seconds have passed without a message" do
-    subject = "temp.#{UUID.random}"
-    nats.subscribe subject do |msg|
-      9.times do |i|
-        nats.reply msg, i.to_s
-      end
-      sleep 100.milliseconds
-      nats.reply msg, "this is never received"
-    end
-
-    responses = nats.request_many subject, "", stall_timeout: 50.milliseconds
-
-    responses.size.should eq 9
   end
 
   it "assigns replies to the original requesters" do
