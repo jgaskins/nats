@@ -537,7 +537,7 @@ module NATS
     #   response.data.empty?
     # end
     # ```
-    def request_many(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil, *, flush = true) : Array(Message)
+    def request_many(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil, *, flush = true, &) : Array(Message)
       replies = Array(Message).new
       channel = Channel(Message).new(10)
       inbox = @nuid.next
