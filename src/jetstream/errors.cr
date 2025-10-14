@@ -1,8 +1,9 @@
 require "json"
 
 module NATS::JetStream
-  # https://github.com/nats-io/nats-server/blob/main/server/errors.json
-  enum Errors : Int32 # Should be wide enough?
+  enum Errors : Int32
+    # https://github.com/nats-io/nats-server/blob/main/server/errors.json
+
     None                              =     0
     ConsumerNotFound                  = 10014
     NoMessageFound                    = 10037
