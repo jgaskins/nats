@@ -28,6 +28,10 @@ module NATS::JetStream
 
     # When consuming from a Stream with many subjects, or wildcards, select only a specific incoming subjects, supports wildcards
     getter filter_subject : String?
+
+    # When consuming from a Stream with many subjects, or wildcards, select only a specific incoming subjects, supports wildcards
+    getter filter_subjects : Array(String)?
+
     # Maximum number of times a message will be delivered via this consumer. Use this to avoid poison pills crashing all your services forever.
     getter max_deliver : Int64?
     # When first consuming messages from the Stream start at this particular message in the set
@@ -72,6 +76,7 @@ module NATS::JetStream
       @replay_policy : ReplayPolicy = :instant,
       @ack_wait = nil,
       @filter_subject = nil,
+      @filter_subjects = nil,
       max_deliver = nil,
       @opt_start_seq = nil,
       @sample_frequency = nil,
