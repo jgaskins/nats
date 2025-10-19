@@ -201,16 +201,16 @@ module NATS
       host = uri.host.presence || "localhost"
       port = uri.port || default_port
       LOG.trace { "Connecting to #{host}:#{port}..." }
-      s = TCPSocket.new(host, port, connect_timeout: 5.seconds)
-      s.tcp_nodelay = true
-      s.sync = false
-      s.read_buffering = true
-      s.write_timeout = 10.seconds
-      s.tcp_keepalive_count = 10
-      s.tcp_keepalive_interval = 1 # second
-      s.buffer_size = BUFFER_SIZE
+      socket = TCPSocket.new(host, port, connect_timeout: 5.seconds)
+      socket.tcp_nodelay = true
+      socket.sync = false
+      socket.read_buffering = true
+      socket.write_timeout = 10.seconds
+      socket.tcp_keepalive_count = 10
+      socket.tcp_keepalive_interval = 1 # second
+      socket.buffer_size = BUFFER_SIZE
 
-      info_line = s.read_line
+      info_line = socket.read_line
       LOG.trace { "RECEIVED: #{info_line}" }
       @server_info = ServerInfo.from_json info_line[5..-1]
 
@@ -221,15 +221,12 @@ module NATS
           OpenSSL::SSL::Options::NO_SSL_V2 | # disable overly deprecated SSLv2
           OpenSSL::SSL::Options::NO_SSL_V3   # disable deprecated SSLv3
         )
-        s = OpenSSL::SSL::Socket::Client.new(s, context)
-        s.sync = false
-        s.read_buffering = true
+        socket = OpenSSL::SSL::Socket::Client.new(socket, context)
+        socket.sync = false
+        socket.read_buffering = true
       end
 
-      @socket = s
-      @io = s
-
-      @io << "CONNECT "
+      socket << "CONNECT "
       connect = {
         verbose:       false,
         pedantic:      false,
@@ -264,18 +261,18 @@ module NATS
           raise Error.new("Server requires auth and supplied a nonce, but no NKEYS file specified")
         end
       end
-      connect.to_json @io
-      @io << "\r\n"
-      ping
-      @socket.flush
-      until (line = @socket.read_line) == "PONG"
+      connect.to_json socket
+      socket << "\r\n"
+      socket << "PING\r\n"
+      socket.flush
+      until (line = socket.read_line) == "PONG"
         LOG.trace { line }
         if line.starts_with? "-ERR "
           raise Error.new(line.lchop("-ERR "))
         end
       end
-      @pings.receive
-
+      @socket = socket
+      @io = socket
       if @state.reconnecting?
         subscriptions = @subscriptions
         @subscriptions = {} of Int64 => Subscription
@@ -283,13 +280,13 @@ module NATS
           LOG.trace { "Resubscribing to subscription #{subscription.subject}#{" (queue_group: #{subscription.queue_group}}" if subscription.queue_group} on subscription id #{subscription.sid}..." }
           resubscribe subscription
         end
-        IO.copy @disconnect_buffer.rewind, @io
-        @socket.flush
+        IO.copy @disconnect_buffer.rewind, socket
+        socket.flush
         @disconnect_buffer = IO::Memory.new
       else
-        spawn begin_pings
-        spawn begin_outbound
-        spawn begin_inbound
+        spawn name: "NATS::Client#begin_pings (#{object_id})" { begin_pings }
+        spawn name: "NATS::Client#begin_outbound (#{object_id})" { begin_outbound }
+        spawn name: "NATS::Client#begin_inbound (#{object_id})" { begin_inbound }
 
         inbox_subject = "#{@inbox_prefix}.*"
         LOG.trace { "Subscribing to inbox: #{inbox_subject}" }
@@ -302,8 +299,8 @@ module NATS
 
       @state = :connected
 
-      # #### ALL SOCKET READS SHOULD BE DONE IN #begin_inbound PAST THIS POINT
-      # #### NO DIRECT SOCKET READS PAST THIS POINT
+      # NO DIRECT SOCKET READS PAST THIS POINT
+      # ALL SOCKET READS MUST BE DONE IN #begin_inbound PAST THIS POINT
     end
 
     # Subscribe to the given `subject`, optionally with a `queue_group` (so that
@@ -792,8 +789,10 @@ module NATS
     private def begin_inbound
       backoff = 1.millisecond
       loop do
-        if @socket.closed?
-          break if state.closed?
+        break if @socket.closed? && state.closed?
+        unless state.connected?
+          Fiber.yield
+          next
         end
 
         line = @socket.read_line
@@ -1022,41 +1021,42 @@ module NATS
     end
 
     private def handle_disconnect!(backoff : Time::Span = 1.millisecond)
-      loop do
-        @out.synchronize do
-          unless @state.closed? || @state.connecting?
-            @socket.close unless @socket.closed?
-            @state = :disconnected
-            @on_disconnect.call
-            # Redirect all writes to the buffer until we reconnect to the server
-            @io = @disconnect_buffer
-            LOG.trace { "Output set to in-memory buffer pending reconnection" }
-            sleep backoff
-            backoff = {backoff * 2, 10.seconds}.min
-            reconnect!
-          end
-        end
+      @reconnect_mutex.synchronize do
+        @on_disconnect.call
 
-        return
-      rescue ex
-        spawn @on_error.call(ex)
+        loop do
+          @out.synchronize do
+            unless @state.closed? || @state.connecting?
+              @socket.close unless @socket.closed?
+              @state = :disconnected
+              # Redirect all writes to the buffer until we reconnect to the server
+              @io = @disconnect_buffer
+              LOG.trace { "Output set to in-memory buffer pending reconnection" }
+              sleep backoff
+              backoff = {backoff * 2, 10.seconds}.min
+              reconnect!
+            end
+          end
+
+          return
+        rescue ex
+          spawn @on_error.call(ex)
+        end
       end
     end
 
     private def reconnect!
       return unless @state.disconnected?
       @state = :reconnecting
+      LOG.warn &.emit "Reconnecting", servers: @servers.map(&.to_s)
 
-      @reconnect_mutex.synchronize do
-        LOG.warn &.emit "Reconnecting", servers: @servers.map(&.to_s)
-        initialize(
-          servers: @servers,
-          ping_interval: @ping_interval,
-          max_pings_out: @max_pings_out,
-          nkeys_file: @nkeys_file,
-          user_credentials: @user_credentials,
-        )
-      end
+      initialize(
+        servers: @servers,
+        ping_interval: @ping_interval,
+        max_pings_out: @max_pings_out,
+        nkeys_file: @nkeys_file,
+        user_credentials: @user_credentials,
+      )
       @on_reconnect.call
     end
 
