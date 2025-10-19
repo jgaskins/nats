@@ -7,12 +7,6 @@ lib LibCrypto
     ED25519 = 1087
   end
 
-  alias EVP_PKEY_CTX = Void
-
-  fun evp_pkey_ctx_new = EVP_PKEY_CTX_new(pkey : EvpPKey*, engine : Engine*) : EVP_PKEY_CTX*
-
-  fun evp_pkey_ctx_free = EVP_PKEY_CTX_free(pkey : EVP_PKEY_CTX*) : Void
-
   fun evp_pkey_new_raw_private_key = EVP_PKEY_new_raw_private_key(
     type : PKEY,
     engine : Engine*,
