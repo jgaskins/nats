@@ -81,6 +81,7 @@ module NATS::JetStream
       max_waiting : Int? = nil,
       @idle_heartbeat = nil,
       @flow_control = nil,
+      @headers_only = nil,
       @deliver_group = durable_name,
       @max_request_batch = nil,
       @max_request_expires = nil,
