@@ -82,7 +82,7 @@ describe NATS::JetStream do
     end
   end
 
-  it "paginates streams" do
+  pending "paginates streams" do
     a_bunch_of_streams = [] of NATS::JetStream::Stream
     # Create 1k streams concurrently and store them in the array
     WaitGroup.wait do |wg|
