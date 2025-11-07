@@ -20,6 +20,19 @@ describe NATS do
     string.should eq "foo"
   end
 
+  Hash(Char, String){
+    '\0' => "foo\0",
+    ' '  => "foo bar",
+    '*'  => "foo*",
+    '>'  => "<foo>",
+  }.each do |invalid_char, subject|
+    it "raises ArgumentError if the subject contains #{invalid_char.inspect}" do
+      expect_raises ArgumentError do
+        nats.publish subject, ""
+      end
+    end
+  end
+
   it "can set message headers without a reply-to" do
     subject = "temp.#{UUID.random}"
     headers = nil

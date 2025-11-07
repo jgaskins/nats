@@ -319,6 +319,8 @@ module NATS
     # end
     # ```
     def subscribe(subject : String, queue_group : String? = nil, sid = @current_sid.add(1), max_in_flight = 64_000, *, concurrency = 1, &block : Message, Subscription ->) : Subscription
+      validate_subscribe_subject! subject
+
       LOG.trace { "Subscribing to #{subject.inspect}, queue_group: #{queue_group.inspect}, sid: #{sid}" }
       write do
         @io << "SUB " << subject << ' '
@@ -507,6 +509,8 @@ module NATS
     # }
     # ```
     def publish(subject : String, message : Data = Bytes.empty, reply_to : String? = nil, headers : Message::Headers? = nil) : Nil
+      validate_publish_subject! subject
+
       if subject.includes? ' '
         raise ArgumentError.new("Cannot publish to a subject that contains a space")
       end
@@ -857,6 +861,44 @@ module NATS
     # ```
     def on_pong(&@on_pong)
       self
+    end
+
+    private def validate_publish_subject!(subject : String)
+      unless valid_publish_subject? subject
+        raise ArgumentError.new("Invalid subject: #{subject.inspect}. NATS subjects may not contain spaces, `.`, `*`, `>`, or null bytes.")
+      end
+    end
+
+    private def validate_subscribe_subject!(subject : String)
+      unless valid_subscribe_subject? subject
+        raise ArgumentError.new("Invalid subject: #{subject.inspect}. NATS subjects may not contain spaces, `.`, `*`, `>`, or null bytes.")
+      end
+    end
+
+    private INVALID_SUBJECT_CHARS = {
+      '\0',
+      '\n',
+      ' ',
+      '*',
+      '>',
+    }
+
+    private INVALID_SUBSCRIBE_SUBJECT_CHARS = {'\0', ' ', '\n'}
+
+    def valid_publish_subject?(subject : String) : Bool
+      subject.each_char do |char|
+        return false if char.in?(INVALID_SUBJECT_CHARS)
+      end
+
+      true
+    end
+
+    def valid_subscribe_subject?(subject : String) : Bool
+      subject.each_char do |char|
+        return false if char.in?(INVALID_SUBSCRIBE_SUBJECT_CHARS)
+      end
+
+      true
     end
 
     private def write(&) : Nil
