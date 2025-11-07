@@ -17,6 +17,7 @@ private macro create_consumer(stream, deliver_subject = UUID.random.to_s)
     stream_name: stream.config.name,
     deliver_group: UUID.random.to_s,
     deliver_subject: {{deliver_subject}},
+    memory_storage: true,
   )
 end
 
