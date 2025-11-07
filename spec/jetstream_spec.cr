@@ -298,6 +298,30 @@ describe NATS::JetStream do
     end
   end
 
+  it "can unsubscribe from a consumer within the message block" do
+    write_subject = UUID.random.to_s
+    stream = create_stream([write_subject])
+    consumer_name = UUID.random.to_s
+    consumer = create_consumer(stream, deliver_subject: consumer_name)
+    3.times do |i|
+      nats.jetstream.publish write_subject, i.to_s
+    end
+    received = 0
+
+    sub = nats.jetstream.subscribe consumer do |msg, subscription|
+      received += 1
+      subscription.close if msg.pending == 0
+    end
+
+    start = Time.monotonic
+    until sub.closed?
+      sleep 10.milliseconds
+      if Time.monotonic - start >= 1.second
+        raise "Timed out waiting for subscription to close. Received #{received} messages"
+      end
+    end
+  end
+
   it "gets idle heartbeats" do
     write_subject = UUID.random.to_s
     stream = create_stream([write_subject])

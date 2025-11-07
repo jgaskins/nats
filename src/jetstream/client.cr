@@ -61,7 +61,7 @@ module NATS::JetStream
     #   js.ack msg
     # end
     # ```
-    def subscribe(consumer : JetStream::Consumer, concurrency : Int = 1, &block : Message ->)
+    def subscribe(consumer : JetStream::Consumer, concurrency : Int = 1, &block : Message, Subscription ->)
       if subject = consumer.config.deliver_subject
         subscribe subject,
           queue_group: consumer.config.deliver_group,
@@ -87,10 +87,10 @@ module NATS::JetStream
     # ```
     #
     # _NOTE:_ If provided, the `queue_group` _must_ be the same as a `Consumer`'s `deliver_group` for NATS server 2.4.0 and above.
-    def subscribe(subject : String, queue_group : String? = nil, concurrency : Int = 1, &block : Message ->)
-      @nats.subscribe subject, queue_group: queue_group, concurrency: concurrency do |msg|
+    def subscribe(subject : String, queue_group : String? = nil, concurrency : Int = 1, &block : Message, Subscription ->)
+      @nats.subscribe subject, queue_group: queue_group, concurrency: concurrency do |msg, subscription|
         unless (headers = msg.headers) && headers["Status"]? == "100 Idle Heartbeat"
-          block.call Message.new(msg)
+          block.call Message.new(msg), subscription
         end
       end
     end

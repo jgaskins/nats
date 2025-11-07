@@ -933,6 +933,7 @@ module NATS
     getter messages_remaining : Int32?
     getter concurrency : Int32
     getter max_in_flight : Int32
+    getter? closed = false
     private getter nats : Client
     private getter message_channel : MessageChannel
     private getter? processing = false
@@ -1000,6 +1001,7 @@ module NATS
     def close
       @nats.unsubscribe self
       @message_channel.close
+      @closed = true
     end
 
     def send(message, &on_error : Exception ->) : Nil
