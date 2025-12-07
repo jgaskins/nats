@@ -303,10 +303,14 @@ module NATS
         getter size : Int64
         property mtime : Time
         getter chunks : Int32
-        getter digest : String
+        getter digest : String?
         getter deleted : Bool?
 
         def initialize(*, @bucket, @name, @description, @headers, @nuid, @size, @chunks, @digest, @mtime = Time.new(0, 0), @deleted = nil)
+        end
+
+        def digest!
+          digest.not_nil!
         end
       end
 
