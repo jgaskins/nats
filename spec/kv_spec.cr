@@ -250,9 +250,16 @@ describe NATS::KV do
       bucket["excluded.1"] = "nope"
 
       count = 0
-      bucket.each_key pattern: "included.>" do |key|
+      bucket.each_key pattern: "included.*" do |key|
         count += 1
         key.should start_with "included."
+      end
+      count.should eq 2
+
+      count = 0
+      bucket.each_key pattern: "*.1" do |key|
+        count += 1
+        key.should end_with ".1"
       end
       count.should eq 2
     end

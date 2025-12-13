@@ -605,7 +605,7 @@ module NATS
       private def validate_pattern!(pattern : String)
         return if pattern == ">"
         return if pattern == "*"
-        return if pattern =~ %r{\A[-/_=\.a-zA-Z0-9]+(\.\*|\>)?\z}
+        return if pattern =~ %r{\A[-/_=\.a-zA-Z0-9\*]+(\.\*|\>)?\z}
 
         validate_key! pattern
       end
