@@ -243,6 +243,19 @@ describe NATS::KV do
         %w[a b].should contain key
       end
     end
+
+    test "iterates over keys with a specific pattern" do |bucket|
+      bucket["included.1"] = "1"
+      bucket["included.2"] = "2"
+      bucket["excluded.1"] = "nope"
+
+      count = 0
+      bucket.each_key pattern: "included.>" do |key|
+        count += 1
+        key.should start_with "included."
+      end
+      count.should eq 2
+    end
   end
 
   describe "getting the history of a key" do

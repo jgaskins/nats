@@ -221,8 +221,8 @@ module NATS
         @kv.keys(name, pattern)
       end
 
-      def each_key(&)
-        @kv.each_key(name) { |key| yield key }
+      def each_key(pattern : String = ">", &)
+        @kv.each_key(name, pattern) { |key| yield key }
       end
 
       # Get the history
