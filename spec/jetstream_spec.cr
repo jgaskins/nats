@@ -475,4 +475,57 @@ describe NATS::JetStream do
       js.stream.delete stream if stream
     end
   end
+
+  describe "message schedules" do
+    it "schedules a message on the stream" do
+      prefix = UUID.v7.to_s
+      stream = create_stream(
+        [
+          "schedule.#{prefix}.>",
+          "deliver.#{prefix}.>",
+        ],
+        allow_msg_schedules: true
+      )
+      received = false
+      delivered_subject = nil
+
+      begin
+        consumer = js.consumer.create(
+          stream_name: stream.config.name,
+          deliver_subject: UUID.v7.to_s,
+          memory_storage: true,
+          ack_policy: :none,
+        )
+        deliver_at = 250.milliseconds.from_now
+        js.subscribe consumer do |msg|
+          # Ignore receiving the initial schedule message
+          received = msg.headers.has_key?("Nats-Scheduler")
+          delivered_subject = msg.subject
+        end
+
+        js.publish "schedule.#{prefix}.foo", "test",
+          headers: NATS::Headers{
+            "Nats-Schedule"        => "@at #{deliver_at.to_rfc3339(fraction_digits: 9)}",
+            "Nats-Schedule-Target" => "deliver.#{prefix}.foo",
+          }
+
+        start = Time.monotonic
+        until received
+          sleep 1.millisecond
+          if Time.monotonic - start > 5.seconds
+            raise "Timed out waiting for message to be received"
+          end
+        end
+        Time.utc.should be_within 50.milliseconds, of: deliver_at
+        (Time.monotonic - start).should be_within 1.second, of: 1.second
+        delivered_subject.should eq "deliver.#{prefix}.foo"
+      ensure
+        js.stream.delete stream
+      end
+    end
+  end
+end
+
+private def be_within(delta, of value)
+  be_close value, delta
 end
