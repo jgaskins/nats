@@ -145,7 +145,15 @@ module NATS
             body: msg.to_json,
             headers: Headers{"Nats-Rollup" => "sub"}
         rescue ex
-          @nats.jetstream.stream.purge stream_name, subject: chunk_subject
+          # If we couldn't get all the way up to publishing the metadata object,
+          # at least the old metadata is still pointing at the old object. So we
+          # can just attempt to delete the new object data. This makes for an
+          # atomic operation: either the entire object and metadata are put into
+          # place or none of them are.
+          begin
+            @nats.jetstream.stream.purge stream_name, subject: chunk_subject
+          rescue
+          end
           raise ex
         end
 
@@ -167,7 +175,7 @@ module NATS
         if response = @nats.jetstream.stream.get_msg(stream, last_by_subject: meta)
           info = ObjectInfo.from_json(String.new(response.message.data))
           info.mtime = response.message.time
-          info
+          info unless info.deleted
         end
       end
 
@@ -212,6 +220,23 @@ module NATS
           @nats.unsubscribe subscription
         end
         read
+      end
+
+      def delete(bucket : String, key : String)
+        if info = get_info(bucket, key)
+          stream_name = "OBJ_#{bucket}"
+          chunk_subject = "$O.#{bucket}.C.#{info.nuid}"
+          meta_subject = "$O.#{bucket}.M.#{sanitize_key(key)}"
+          info = info.delete
+
+          # We must overwrite the metadata object first so that a concurrent
+          # request doesn't return object metadata for an object that has
+          # already been deleted.
+          @nats.publish "$O.#{bucket}.M.#{sanitize_key(key)}",
+            message: info.to_json,
+            headers: info.headers
+          @nats.jetstream.stream.purge stream_name, subject: chunk_subject
+        end
       end
 
       def keys(bucket : String, pattern : String = ">") : Set(String)
@@ -301,12 +326,35 @@ module NATS
         getter headers : Headers { Headers.new }
         getter nuid : String
         getter size : Int64
+        # TODO: Don't store this, it should be set via the message timestamp
         property mtime : Time
         getter chunks : Int32
-        getter digest : String
+        getter digest : String?
         getter deleted : Bool?
 
         def initialize(*, @bucket, @name, @description, @headers, @nuid, @size, @chunks, @digest, @mtime = Time.new(0, 0), @deleted = nil)
+        end
+
+        def digest!
+          digest.not_nil!
+        end
+
+        def delete
+          self.class.new(
+            bucket: bucket,
+            description: description,
+            digest: nil,
+            headers: headers,
+            name: name,
+            nuid: nuid,
+
+            # If we're deleting the file, object, it now contains 0 bytes
+            size: 0,
+            # ... in 0 chunks
+            chunks: 0,
+            deleted: true,
+            mtime: Time.utc,
+          )
         end
       end
 
@@ -361,6 +409,10 @@ module NATS
 
       def get(key : String)
         @client.get name, key
+      end
+
+      def delete(key : String)
+        @client.delete name, key
       end
 
       def keys(pattern : String = ">")

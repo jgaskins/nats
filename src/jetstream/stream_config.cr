@@ -109,6 +109,7 @@ module NATS::JetStream
     getter? discard_new_per_subject : Bool?
     getter? allow_msg_ttl : Bool?
     getter? allow_msg_counter : Bool?
+    getter? allow_msg_schedules : Bool?
     getter republish : Republish?
     getter compression : Compression
 
@@ -137,6 +138,7 @@ module NATS::JetStream
       @discard : DiscardPolicy? = nil,
       @allow_msg_ttl = false,
       @allow_msg_counter = false,
+      @allow_msg_schedules = false,
       @storage : Storage = :file,
       @compression = :none,
     )

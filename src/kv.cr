@@ -221,8 +221,8 @@ module NATS
         @kv.keys(name, pattern)
       end
 
-      def each_key(&)
-        @kv.each_key(name) { |key| yield key }
+      def each_key(pattern : String = ">", &)
+        @kv.each_key(name, pattern) { |key| yield key }
       end
 
       # Get the history
@@ -605,7 +605,7 @@ module NATS
       private def validate_pattern!(pattern : String)
         return if pattern == ">"
         return if pattern == "*"
-        return if pattern =~ %r{\A[-/_=\.a-zA-Z0-9]+(\.\*|\>)?\z}
+        return if pattern =~ %r{\A[-/_=\.a-zA-Z0-9\*]+(\.\*|\>)?\z}
 
         validate_key! pattern
       end

@@ -20,6 +20,19 @@ describe NATS do
     string.should eq "foo"
   end
 
+  Hash(Char, String){
+    '\0' => "foo\0",
+    ' '  => "foo bar",
+    '*'  => "foo*",
+    '>'  => "<foo>",
+  }.each do |invalid_char, subject|
+    it "raises ArgumentError if the subject contains #{invalid_char.inspect}" do
+      expect_raises ArgumentError do
+        nats.publish subject, ""
+      end
+    end
+  end
+
   it "can set message headers without a reply-to" do
     subject = "temp.#{UUID.random}"
     headers = nil
@@ -450,17 +463,23 @@ describe NATS do
     )
     disconnected = false
     n.on_disconnect { disconnected = true }
+    pings = 0
+    n.on_ping do
+      pings += 1
+    end
 
     begin
-      sleep 40.milliseconds
+      sleep 50.milliseconds
       # We have only send out 2 unanswered pings at this point, so we should
       # not have tried to reconnect
       disconnected.should eq false
+      pings.should eq 2
 
       sleep 40.milliseconds
       # At this point, we should have sent too many unanswered pings and
       # been disconnected.
       disconnected.should eq true
+      pings.should eq 4
     ensure
       fake_nats_server.close
     end

@@ -2,8 +2,8 @@ require "./spec_helper"
 require "../src/objects"
 require "uuid"
 
-private macro test(name)
-  it {{name}} do
+private macro test(name, **options)
+  it({{name}}, {{options.double_splat}}) do
     name = UUID.random.to_s
     bucket = obj.create_bucket(name)
     begin
@@ -56,8 +56,8 @@ module NATS
       file.delete if file
     end
 
-    test "deals with objects large enough to invoke flow control" do
-      io = IO::Memory.new("*" * 10_000_000)
+    test "gets large objects" do
+      io = IO::Memory.new(Random::Secure.random_bytes(10_000_000))
 
       bucket.put "key", io
       info = bucket.get_info!("key")
@@ -66,16 +66,27 @@ module NATS
       data.should eq io.to_s
     end
 
-    test "gets keys for a bucket" do
-      bucket.put "key", "value", headers: Headers{"foo" => "bar"}
-
-      obj.keys(bucket.name).should contain "key"
-    end
-
     test "gets info for a key that has dots in it" do
       bucket.put "key.value", "value"
 
       obj.get_info(bucket.name, "key.value").should_not be_nil
+    end
+
+    test "deletes an object" do
+      bucket.put "key", "value"
+      object = bucket.get_info("key")
+
+      object.should_not eq nil
+      bucket.delete("key")
+      # A deleted object not being returned from `get_info` is implicitly tested
+      # here. There is still an object in the metadata subject after deletion.
+      bucket.get_info("key").should eq nil
+    end
+
+    test "gets keys for a bucket" do
+      bucket.put "key", "value", headers: Headers{"foo" => "bar"}
+
+      obj.keys(bucket.name).should contain "key"
     end
   end
 end
