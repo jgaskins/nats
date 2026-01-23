@@ -43,7 +43,12 @@ module NATS::JetStream
       headers["Nats-Expected-Last-Subject-Sequence"] = expected_last_subject_sequence.to_s if expected_last_subject_sequence
 
       if response = @nats.request(subject, body, timeout: timeout, headers: headers)
-        (PubAck | ErrorResponse).from_json(String.new(response.body))
+        case parsed = (PubAck | ErrorResponse).from_json(String.new(response.body))
+        in PubAck
+          parsed
+        in ErrorResponse
+          raise Error.new(parsed.error.description)
+        end
       end
     end
 
