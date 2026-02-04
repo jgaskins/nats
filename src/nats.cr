@@ -122,6 +122,7 @@ module NATS
     @subscriptions = {} of Int64 => Subscription
     @out = Mutex.new(protection: :reentrant)
     @reconnect_mutex = Mutex.new(protection: :reentrant)
+    @handler_mutex = Mutex.new
     @ping_count : Atomic(Int32)
     @pings : Channel(Channel(Nil)) # For flushing the connection
     @disconnect_buffer = IO::Memory.new
@@ -288,7 +289,7 @@ module NATS
         spawn name: "NATS::Client#begin_outbound (#{object_id})" { begin_outbound }
         spawn name: "NATS::Client#begin_inbound (#{object_id})" { begin_inbound }
 
-        inbox_subject = "#{@inbox_prefix}.*"
+        inbox_subject = "#{@inbox_prefix}.>"
         LOG.trace { "Subscribing to inbox: #{inbox_subject}" }
         subscribe inbox_subject do |msg|
           if handler = @inbox_handlers[msg.subject]?
@@ -403,7 +404,11 @@ module NATS
       channel = Channel(Message).new(1)
       inbox = @nuid.next
       key = "#{@inbox_prefix}.#{inbox}"
-      @inbox_handlers[key] = ->(msg : Message) { channel.send msg unless channel.closed? }
+      @handler_mutex.synchronize do
+        @inbox_handlers[key] = ->(msg : Message) do
+          channel.send msg unless channel.closed?
+        end
+      end
       publish subject, message, reply_to: key, headers: headers
 
       # TODO: Track how often we're making requests. If we're making requests
@@ -451,7 +456,11 @@ module NATS
       channel = Channel(Message).new(max_replies)
       inbox = @nuid.next
       key = "#{@inbox_prefix}.#{inbox}"
-      @inbox_handlers[key] = ->(msg : Message) { channel.send msg unless channel.closed? }
+      @handler_mutex.synchronize do
+        @inbox_handlers[key] = ->(msg : Message) do
+          channel.send msg unless channel.closed?
+        end
+      end
       publish subject, message, reply_to: key, headers: headers
       original_timeout = timeout
 
@@ -481,6 +490,51 @@ module NATS
       end
     end
 
+    def request_many(messages : Enumerable(Message), timeout : Time::Span = 2.seconds, flush = true)
+      channel = Channel({Message, Int32}).new(messages.size)
+      replies = Array(Message?).new(messages.size) { nil }
+      inbox_prefix = "#{@inbox_prefix}.#{UUID.v7}"
+      handler_keys = [] of String
+      begin
+        @handler_mutex.synchronize do
+          messages.each_with_index do |message, index|
+            reply_subject = "#{inbox_prefix}.#{index}"
+            handler_keys << reply_subject
+
+            @inbox_handlers[reply_subject] = Proc(Message, Nil).new do |msg|
+              # mutex.synchronize { replies[index] = msg }
+              channel.send({msg, index})
+            end
+            message.reply_to = reply_subject
+            publish message
+          end
+        end
+        flush! if flush
+
+        start = Time.monotonic
+        messages.size.times do
+          elapsed = Time.monotonic - start
+          remaining = timeout - elapsed
+
+          select
+          when reply = channel.receive
+            msg, index = reply
+            replies[index] = msg
+          when timeout(timeout)
+            break
+          end
+        end
+
+        replies
+      ensure
+        @handler_mutex.synchronize do
+          handler_keys.each do |key|
+            @inbox_handlers.delete key
+          end
+        end
+      end
+    end
+
     # Make a synchronous request to subscribers of the given `subject`,
     # receiving as many messages as are sent until `stall_timeout` has passed
     # without receiving any messages. If no replies are received before the
@@ -499,7 +553,11 @@ module NATS
       channel = Channel(Message).new(1)
       inbox = @nuid.next
       key = "#{@inbox_prefix}.#{inbox}"
-      @inbox_handlers[key] = ->(msg : Message) { channel.send msg unless channel.closed? }
+      @handler_mutex.synchronize do
+        @inbox_handlers[key] = ->(msg : Message) do
+          channel.send msg unless channel.closed?
+        end
+      end
       publish subject, message, reply_to: key, headers: headers
 
       flush! if flush
@@ -520,7 +578,9 @@ module NATS
           end
         end
       ensure
-        @inbox_handlers.delete key
+        @handler_mutex.synchronize do
+          @inbox_handlers.delete key
+        end
       end
     end
 
@@ -541,7 +601,11 @@ module NATS
       channel = Channel(Message).new(10)
       inbox = @nuid.next
       key = "#{@inbox_prefix}.#{inbox}"
-      @inbox_handlers[key] = ->(msg : Message) { channel.send msg unless channel.closed? }
+      @handler_mutex.synchronize do
+        @inbox_handlers[key] = ->(msg : Message) do
+          channel.send msg unless channel.closed?
+        end
+      end
       publish subject, message, reply_to: key, headers: headers
       original_timeout = timeout
 
@@ -570,7 +634,9 @@ module NATS
           end
         end
       ensure
-        @inbox_handlers.delete key
+        @handler_mutex.synchronize do
+          @inbox_handlers.delete key
+        end
       end
     end
 
@@ -580,18 +646,19 @@ module NATS
     def request(subject : String, message : Data = "", timeout = 2.seconds, &block : Message ->) : Nil
       inbox = @nuid.next
       key = "#{@inbox_prefix}.#{inbox}"
-      @inbox_handlers[key] = ->(msg : Message) do
+      handler = ->(msg : Message) do
         block.call msg
-        @inbox_handlers.delete key
+        remove_key key
       end
+      @handler_mutex.synchronize { @inbox_handlers[key] = handler }
       publish subject, message, reply_to: key
 
       spawn remove_key(key, after: timeout)
     end
 
-    private def remove_key(key, after timeout)
-      sleep timeout
-      @inbox_handlers.delete key
+    private def remove_key(key, after timeout = nil)
+      sleep timeout if timeout
+      @handler_mutex.synchronize { @inbox_handlers.delete key }
     end
 
     # Send the given `body` to the `msg`'s `reply_to` subject, often used in a
@@ -615,6 +682,10 @@ module NATS
       else
         raise NotAReply.new("Cannot reply to a message that has no return address", msg)
       end
+    end
+
+    protected def publish(msg : Message)
+      publish msg.subject, msg.data, reply_to: msg.reply_to, headers: msg.headers
     end
 
     # Publish the given message body (either `Bytes` for binary data or `String` for text) on the given NATS subject, optionally supplying a `reply_to` subject (if expecting a reply or to notify the receiver where to send updates) and any `headers`.

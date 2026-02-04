@@ -185,6 +185,58 @@ describe NATS do
       responses.size.should eq 10
     end
 
+    it "can make many requests and receive a reply for each one" do
+      subjects = Array.new(10) { "temp.#{UUID.v4}" }
+      subjects.each_with_index do |subject, index|
+        nats.subscribe subject do |msg|
+          # Make each reply take a different amount of time to avoid a situation
+          # where the messages are returned in the same order by accident.
+          sleep (10 - index).milliseconds
+          nats.reply msg, subject
+        end
+      end
+      msgs = subjects.map do |subject|
+        NATS::Message.new(
+          subject: subject,
+          data: "",
+        )
+      end
+
+      responses = nats.request_many msgs
+
+      # The messages must be returned in the order in which the original
+      # requests were sent.
+      responses.map(&.try(&.data_string)).should eq subjects
+    end
+
+    it "can make many requests and receive a reply for some of them" do
+
+      subjects = Array.new(10) { "temp.#{UUID.v4}" }
+      subjects.each_with_index do |subject, index|
+        nats.subscribe subject do |msg|
+          # Some of the messages (in this case, the second half of them) take
+          # longer than the timeout on purpose. We expect not to get replies
+          # for those.
+          if index >= 5
+            sleep 100.milliseconds
+          end
+          nats.reply msg, subject
+        end
+      end
+      msgs = subjects.map do |subject|
+        NATS::Message.new(
+          subject: subject,
+          data: "",
+        )
+      end
+
+      responses = nats.request_many msgs, timeout: 10.milliseconds
+
+      # We expect to receive the first 5 messages, but we timeout far too
+      # quickly (10ms) to receive the second half (which each take 100ms).
+      responses.map(&.try(&.data_string)).should eq subjects[0...5] + [nil] * 5
+    end
+
     it "can make a request and receive less than the specified number of replies" do
       subject = "temp.#{UUID.random}"
       nats.subscribe subject do |msg|
