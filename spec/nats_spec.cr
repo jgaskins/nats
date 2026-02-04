@@ -171,6 +171,148 @@ describe NATS do
     (Time.monotonic - start).should be_within 20.milliseconds, of: 20.milliseconds
   end
 
+  describe "#request_many" do
+    it "can make a request and receive many replies" do
+      subject = "temp.#{UUID.random}"
+      nats.subscribe subject do |msg|
+        10.times do |i|
+          nats.reply msg, i.to_s
+        end
+      end
+
+      responses = nats.request_many subject, "", max_replies: 10, timeout: 1.second
+
+      responses.size.should eq 10
+    end
+
+    it "can make many requests and receive a reply for each one" do
+      subjects = Array.new(10) { "temp.#{UUID.v4}" }
+      subjects.each_with_index do |subject, index|
+        nats.subscribe subject do |msg|
+          # Make each reply take a different amount of time to avoid a situation
+          # where the messages are returned in the same order by accident.
+          sleep (10 - index).milliseconds
+          nats.reply msg, subject
+        end
+      end
+      msgs = subjects.map do |subject|
+        NATS::Message.new(
+          subject: subject,
+          data: "",
+        )
+      end
+
+      responses = nats.request_many msgs
+
+      # The messages must be returned in the order in which the original
+      # requests were sent.
+      responses.map(&.try(&.data_string)).should eq subjects
+    end
+
+    it "can make many requests and receive a reply for some of them" do
+
+      subjects = Array.new(10) { "temp.#{UUID.v4}" }
+      subjects.each_with_index do |subject, index|
+        nats.subscribe subject do |msg|
+          # Some of the messages (in this case, the second half of them) take
+          # longer than the timeout on purpose. We expect not to get replies
+          # for those.
+          if index >= 5
+            sleep 100.milliseconds
+          end
+          nats.reply msg, subject
+        end
+      end
+      msgs = subjects.map do |subject|
+        NATS::Message.new(
+          subject: subject,
+          data: "",
+        )
+      end
+
+      responses = nats.request_many msgs, timeout: 10.milliseconds
+
+      # We expect to receive the first 5 messages, but we timeout far too
+      # quickly (10ms) to receive the second half (which each take 100ms).
+      responses.map(&.try(&.data_string)).should eq subjects[0...5] + [nil] * 5
+    end
+
+    it "can make a request and receive less than the specified number of replies" do
+      subject = "temp.#{UUID.random}"
+      nats.subscribe subject do |msg|
+        9.times do |i|
+          nats.reply msg, i.to_s
+        end
+      end
+
+      responses = nats.request_many subject, "", max_replies: 10, timeout: 50.milliseconds
+
+      responses.size.should eq 9
+    end
+
+    it "can make a request and receive many replies spaced out over time" do
+      subject = "temp.#{UUID.random}"
+      nats.subscribe subject do |msg|
+        3.times do |i|
+          nats.reply msg, i.to_s
+          sleep 50.milliseconds
+        end
+      end
+
+      # We ask for up to 10, but we only wait long enough to get 2 because they
+      # come in 50ms apart. We could reduce the duration to keep the test suite
+      # fast, but variances in VM performance would make the test unpredictable.
+      responses = nats.request_many subject, "",
+        max_replies: 10,
+        timeout: 100.milliseconds
+
+      responses.size.should eq 2
+    end
+
+    it "raises when passing a negative max_replies" do
+      expect_raises ArgumentError do
+        nats.request_many "asdf", max_replies: -1
+      end
+    end
+
+    it "can make a request and receive an unbounded number of messages until N seconds have passed without a message" do
+      subject = "temp.#{UUID.random}"
+      nats.subscribe subject do |msg|
+        9.times do |i|
+          nats.reply msg, i.to_s
+        end
+        sleep 100.milliseconds
+        nats.reply msg, "this is never received"
+      end
+
+      responses = nats.request_many subject, stall_timeout: 50.milliseconds
+
+      responses.size.should eq 9
+    end
+
+    it "raises when passing a negative stall_timeout" do
+      expect_raises ArgumentError do
+        nats.request_many "asdf", stall_timeout: -1.second
+      end
+    end
+
+    it "can make a request for many responses with a block determining whether to continue waiting" do
+      subject = "temp.#{UUID.random}"
+      nats.subscribe subject do |msg|
+        10.times do |i|
+          nats.reply msg, i.to_s
+        end
+        nats.reply msg, headers: NATS::Headers{"stop" => "true"}
+      end
+
+      responses = nats.request_many subject do |response|
+        response.headers["stop"]?
+      end
+
+      responses.size.should eq 10
+    end
+  end
+
   it "assigns replies to the original requesters" do
     subject = "temp.#{UUID.random}"
     # Echoing requests back to their requesters
