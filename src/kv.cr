@@ -1,4 +1,6 @@
 require "json"
+require "wait_group"
+
 require "./nats"
 require "./jetstream"
 require "./jetstream/pub_ack"
@@ -163,6 +165,10 @@ module NATS
       # ignore deleted messages.
       def get(key : String, *, revision : Int? = nil, ignore_deletes = false) : Entry?
         @kv.get name, key, revision: revision, ignore_deletes: ignore_deletes
+      end
+
+      def get(keys : Enumerable(String), *, revision : Int? = nil, ignore_deletes = false) # : Array(Entry?)
+        @kv.get name, keys, revision: revision, ignore_deletes: ignore_deletes
       end
 
       # Get the value of a key, if it exists (not counting `Delete` operations),
@@ -349,6 +355,8 @@ module NATS
         in Nil
           raise Error.new("No response received from the NATS server when setting #{key.inspect} on KV #{bucket.inspect}")
         end
+      rescue ex : JetStream::Error
+        raise Error.new(ex.message, cause: ex)
       end
 
       # Assign `value` to `key` in `bucket` without waiting for acknowledgement
@@ -361,6 +369,24 @@ module NATS
         end
 
         @nats.publish("$KV.#{bucket}.#{key}", value, headers: headers)
+      end
+
+      def get(bucket : String, keys : Enumerable(String), *, revision : Int? = nil, ignore_deletes = false) : Array(Entry?)
+        validate_bucket! bucket
+        keys.each { |key| validate_pattern! key }
+
+        entries = Array(Entry?).new(keys.size) { nil }
+        WaitGroup.wait do |wg|
+          keys.each_with_index do |key, index|
+            wg.spawn do
+              entries[index] = get bucket, key,
+                revision: revision,
+                ignore_deletes: ignore_deletes
+            end
+          end
+        end
+
+        entries
       end
 
       # Get the `KV::Entry` for the given `key` in `bucket`, or `nil` if the key

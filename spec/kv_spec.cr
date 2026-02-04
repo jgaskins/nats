@@ -109,6 +109,13 @@ describe NATS::KV do
     bucket.get!("key", revision: revision).value.should eq "value3".to_slice
   end
 
+  test "gets many keys in a single request" do |bucket, name|
+    bucket.put "key1", "value1"
+    bucket.put "key2", "value2"
+
+    bucket.get(%w[key1 key2]).map(&.try(&.value_string)).should eq %w[value1 value2]
+  end
+
   test "creates a key or returns nil if the key already exists" do |bucket, name|
     # Passes the first time because the key does not exist. Also, since this is
     # the first key being added to this store (see `test` macro above), the

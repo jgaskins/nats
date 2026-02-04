@@ -4,6 +4,7 @@ require "./consumers"
 require "./nak_backoff"
 require "./pub_ack"
 require "./pull_subscription"
+require "./errors"
 
 module NATS::JetStream
   # This class provides a client for NATS JetStream for at-least-once delivery.
@@ -25,6 +26,32 @@ module NATS::JetStream
       Consumers.new(@nats)
     end
 
+    def publish!(
+      subject : String,
+      body : Data,
+      timeout : Time::Span = 2.seconds,
+      headers : Headers = Headers.new,
+      message_id : String? = nil,
+      expected_last_message_id : String? = nil,
+      expected_last_sequence : Int64? = nil,
+      expected_stream : String? = nil,
+      expected_last_subject_sequence : Int64? = nil,
+    )
+      publish(
+        subject: subject,
+        body: body,
+        timeout: timeout,
+        headers: headers,
+        message_id: message_id,
+        expected_last_message_id: expected_last_message_id,
+        expected_last_sequence: expected_last_sequence,
+        expected_stream: expected_stream,
+        expected_last_subject_sequence: expected_last_subject_sequence,
+      ) do |response|
+        raise Error.new(parsed.error.description)
+      end
+    end
+
     def publish(
       subject : String,
       body : Data,
@@ -35,6 +62,33 @@ module NATS::JetStream
       expected_last_sequence : Int64? = nil,
       expected_stream : String? = nil,
       expected_last_subject_sequence : Int64? = nil,
+    )
+      publish(
+        subject: subject,
+        body: body,
+        timeout: timeout,
+        headers: headers,
+        message_id: message_id,
+        expected_last_message_id: expected_last_message_id,
+        expected_last_sequence: expected_last_sequence,
+        expected_stream: expected_stream,
+        expected_last_subject_sequence: expected_last_subject_sequence,
+      ) do |response|
+        response
+      end
+    end
+
+    def publish(
+      subject : String,
+      body : Data,
+      timeout : Time::Span = 2.seconds,
+      headers : Headers = Headers.new,
+      message_id : String? = nil,
+      expected_last_message_id : String? = nil,
+      expected_last_sequence : Int64? = nil,
+      expected_stream : String? = nil,
+      expected_last_subject_sequence : Int64? = nil,
+      &
     )
       headers["Nats-Msg-Id"] = message_id if message_id
       headers["Nats-Expected-Last-Msg-Id"] = expected_last_message_id if expected_last_message_id
@@ -47,7 +101,7 @@ module NATS::JetStream
         in PubAck
           parsed
         in ErrorResponse
-          raise Error.new(parsed.error.description)
+          yield parsed
         end
       end
     end

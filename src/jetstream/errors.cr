@@ -15,4 +15,16 @@ module NATS::JetStream
       new json.read_int.to_i
     end
   end
+
+  class Error < NATS::Error
+    getter jetstream_message : Message?
+
+    def initialize(
+      message : String?,
+      @jetstream_message = nil,
+      cause : Exception? = nil,
+    )
+      super message, cause: cause
+    end
+  end
 end
