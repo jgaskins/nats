@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.10.1">
-<meta name="crystal_docs.project_version" content="1.5.0">
+<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="crystal_docs.project_version" content="1.6.0">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::Objects::Client::ObjectInfo - nats 1.5.0</title>
+  <title>NATS::Objects::Client::ObjectInfo - nats 1.6.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.5.0
+        1.6.0
       </span>
     </div>
   </div>
@@ -79,6 +79,26 @@
   
   <li class=" " data-id="nats/NATS/Client/State" data-name="nats::client::state">
       <a href="../../../NATS/Client/State.html">State</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Counter" data-name="nats::counter">
+      <a href="../../../NATS/Counter.html">Counter</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Counter/Error" data-name="nats::counter::error">
+      <a href="../../../NATS/Counter/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Counter/MissingCounter" data-name="nats::counter::missingcounter">
+      <a href="../../../NATS/Counter/MissingCounter.html">MissingCounter</a>
       
     </li>
   
@@ -772,7 +792,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L294" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L319" target="_blank">
         objects.cr
       </a>
     
@@ -800,7 +820,12 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#new%28%2A%2Cbucket%3AString%2Cname%3AString%2Cdescription%3ANil%7CString%2Cheaders%3AHTTP%3A%3AHeaders%7CNil%2Cnuid%3AString%2Csize%3AInt64%2Cchunks%3AInt32%2Cdigest%3AString%2Cmtime%3ATime%3DTime.new%280%2C0%29%2Cdeleted%3ABool%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(*, bucket : String, name : String, description : Nil | String, headers : HTTP::Headers | Nil, nuid : String, size : Int64, chunks : Int32, digest : String, mtime : Time = <span class="t">Time</span>.new(<span class="n">0</span>, <span class="n">0</span>), deleted : Bool | Nil = <span class="n">nil</span>)</a>
+        <a href="#new%28%2A%2C__pull_for_json_serializablepull%3AJSON%3A%3APullParser%29-class-method" class="signature"><strong>.new</strong>(*, __pull_for_json_serializable pull : JSON::PullParser)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#new%28%2A%2Cbucket%3AString%2Cname%3AString%2Cdescription%3ANil%7CString%2Cheaders%3AHTTP%3A%3AHeaders%7CNil%2Cnuid%3AString%2Csize%3AInt64%2Cchunks%3AInt32%2Cdigest%3ANil%7CString%2Cmtime%3ATime%3DTime.new%280%2C0%29%2Cdeleted%3ABool%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(*, bucket : String, name : String, description : Nil | String, headers : HTTP::Headers | Nil, nuid : String, size : Int64, chunks : Int32, digest : Nil | String, mtime : Time = <span class="t">Time</span>.new(<span class="n">0</span>, <span class="n">0</span>), deleted : Bool | Nil = <span class="n">nil</span>)</a>
         
       </li>
     
@@ -833,6 +858,11 @@
       </li>
     
       <li class="entry-summary">
+        <a href="#delete-instance-method" class="signature"><strong>#delete</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#deleted%3ABool%7CNil-instance-method" class="signature"><strong>#deleted</strong> : Bool | Nil</a>
         
       </li>
@@ -843,7 +873,12 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#digest%3AString-instance-method" class="signature"><strong>#digest</strong> : String</a>
+        <a href="#digest%3AString%7CNil-instance-method" class="signature"><strong>#digest</strong> : String | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#digest%21-instance-method" class="signature"><strong>#digest!</strong></a>
         
       </li>
     
@@ -855,10 +890,14 @@
       <li class="entry-summary">
         <a href="#mtime%3ATime-instance-method" class="signature"><strong>#mtime</strong> : Time</a>
         
+          <div class="summary"><p><span class="flag orange">TODO</span>  Don't store this, it should be set via the message timestamp</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#mtime%3D%28mtime%3ATime%29-instance-method" class="signature"><strong>#mtime=</strong>(mtime : Time)</a>
+        
+          <div class="summary"><p><span class="flag orange">TODO</span>  Don't store this, it should be set via the message timestamp</p></div>
         
       </li>
     
@@ -958,23 +997,39 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L295" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L320" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="new(*,bucket:String,name:String,description:Nil|String,headers:HTTP::Headers|Nil,nuid:String,size:Int64,chunks:Int32,digest:String,mtime:Time=Time.new(0,0),deleted:Bool|Nil=nil)-class-method">
+    <div class="entry-detail" id="new(*,__pull_for_json_serializablepull:JSON::PullParser)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(*, bucket : String, name : String, description : Nil | String, headers : HTTP::Headers | Nil, nuid : String, size : Int64, chunks : Int32, digest : String, mtime : Time = <span class="t">Time</span>.new(<span class="n">0</span>, <span class="n">0</span>), deleted : Bool | Nil = <span class="n">nil</span>)
+        def self.<strong>new</strong>(*, __pull_for_json_serializable pull : JSON::PullParser)
 
-        <a class="method-permalink" href="#new%28%2A%2Cbucket%3AString%2Cname%3AString%2Cdescription%3ANil%7CString%2Cheaders%3AHTTP%3A%3AHeaders%7CNil%2Cnuid%3AString%2Csize%3AInt64%2Cchunks%3AInt32%2Cdigest%3AString%2Cmtime%3ATime%3DTime.new%280%2C0%29%2Cdeleted%3ABool%7CNil%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28%2A%2C__pull_for_json_serializablepull%3AJSON%3A%3APullParser%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L309" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L320" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new(*,bucket:String,name:String,description:Nil|String,headers:HTTP::Headers|Nil,nuid:String,size:Int64,chunks:Int32,digest:Nil|String,mtime:Time=Time.new(0,0),deleted:Bool|Nil=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(*, bucket : String, name : String, description : Nil | String, headers : HTTP::Headers | Nil, nuid : String, size : Int64, chunks : Int32, digest : Nil | String, mtime : Time = <span class="t">Time</span>.new(<span class="n">0</span>, <span class="n">0</span>), deleted : Bool | Nil = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#new%28%2A%2Cbucket%3AString%2Cname%3AString%2Cdescription%3ANil%7CString%2Cheaders%3AHTTP%3A%3AHeaders%7CNil%2Cnuid%3AString%2Csize%3AInt64%2Cchunks%3AInt32%2Cdigest%3ANil%7CString%2Cmtime%3ATime%3DTime.new%280%2C0%29%2Cdeleted%3ABool%7CNil%3Dnil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L335" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1006,7 +1061,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L297" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L322" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1022,7 +1077,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L305" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L331" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="delete-instance-method">
+      <div class="signature">
+        
+        def <strong>delete</strong>
+
+        <a class="method-permalink" href="#delete-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L342" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1038,7 +1109,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L307" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L333" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1054,23 +1125,39 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L299" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L324" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="digest:String-instance-method">
+    <div class="entry-detail" id="digest:String|Nil-instance-method">
       <div class="signature">
         
-        def <strong>digest</strong> : String
+        def <strong>digest</strong> : String | Nil
 
-        <a class="method-permalink" href="#digest%3AString-instance-method">#</a>
+        <a class="method-permalink" href="#digest%3AString%7CNil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L306" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L332" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="digest!-instance-method">
+      <div class="signature">
+        
+        def <strong>digest!</strong>
+
+        <a class="method-permalink" href="#digest%21-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L338" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1086,7 +1173,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L301" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L326" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1099,10 +1186,15 @@
         <a class="method-permalink" href="#mtime%3ATime-instance-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p><span class="flag orange">TODO</span>  Don't store this, it should be set via the message timestamp</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L304" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L330" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1115,10 +1207,15 @@
         <a class="method-permalink" href="#mtime%3D%28mtime%3ATime%29-instance-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p><span class="flag orange">TODO</span>  Don't store this, it should be set via the message timestamp</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L304" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L330" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1134,7 +1231,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L298" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L323" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1150,7 +1247,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L302" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L327" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1166,7 +1263,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L303" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L328" target="_blank">View source</a>]
         
       </div>
     </div>

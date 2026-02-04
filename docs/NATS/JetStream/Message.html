@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.10.1">
-<meta name="crystal_docs.project_version" content="1.5.0">
+<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="crystal_docs.project_version" content="1.6.0">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::Message - nats 1.5.0</title>
+  <title>NATS::JetStream::Message - nats 1.6.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.5.0
+        1.6.0
       </span>
     </div>
   </div>
@@ -79,6 +79,26 @@
   
   <li class=" " data-id="nats/NATS/Client/State" data-name="nats::client::state">
       <a href="../../NATS/Client/State.html">State</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Counter" data-name="nats::counter">
+      <a href="../../NATS/Counter.html">Counter</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Counter/Error" data-name="nats::counter::error">
+      <a href="../../NATS/Counter/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Counter/MissingCounter" data-name="nats::counter::missingcounter">
+      <a href="../../NATS/Counter/MissingCounter.html">MissingCounter</a>
       
     </li>
   
@@ -773,7 +793,7 @@ it came from, how many times it's been delivered, etc.</p>
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/message.cr#L9" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/message.cr#L9" target="_blank">
         jetstream/message.cr
       </a>
     
@@ -796,7 +816,7 @@ it came from, how many times it's been delivered, etc.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28stream%3AString%2Cconsumer%3AString%2Cdelivered_count%3AInt64%2Cstream_seq%3AInt64%2Cconsumer_seq%3AInt64%2Ctimestamp%3ATime%2Cpending%3AInt64%2Cbody%3ASlice%28UInt8%29%2Csubject%3AString%2Creply_to%3AString%2Cheaders%3AHTTP%3A%3AHeaders%7CNil%29-class-method" class="signature"><strong>.new</strong>(stream : String, consumer : String, delivered_count : Int64, stream_seq : Int64, consumer_seq : Int64, timestamp : Time, pending : Int64, body : Slice(UInt8), subject : String, reply_to : String, headers : HTTP::Headers | Nil)</a>
+        <a href="#new%28stream%3AString%2Cconsumer%3AString%2Cdelivered_count%3AInt64%2Cstream_seq%3AInt64%2Cconsumer_seq%3AInt64%2Ctimestamp%3ATime%2Cpending%3AInt64%2Cdata_string%3AString%2Csubject%3AString%2Creply_to%3AString%2Cheaders%3AHTTP%3A%3AHeaders%7CNil%29-class-method" class="signature"><strong>.new</strong>(stream : String, consumer : String, delivered_count : Int64, stream_seq : Int64, consumer_seq : Int64, timestamp : Time, pending : Int64, data_string : String, subject : String, reply_to : String, headers : HTTP::Headers | Nil)</a>
         
       </li>
     
@@ -828,7 +848,7 @@ it came from, how many times it's been delivered, etc.</p>
       <li class="entry-summary">
         <a href="#body%3ABytes-instance-method" class="signature"><strong>#body</strong> : Bytes</a>
         
-          <div class="summary"><p>The original body of the message, encoded as binary.</p></div>
+          <div class="summary"><p>The message payload, encoded as binary.</p></div>
         
       </li>
     
@@ -843,6 +863,20 @@ it came from, how many times it's been delivered, etc.</p>
         <a href="#consumer_seq%3AInt64-instance-method" class="signature"><strong>#consumer_seq</strong> : Int64</a>
         
           <div class="summary"><p>The position of this message within its consumer, including redeliveries</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#data%3ABytes-instance-method" class="signature"><strong>#data</strong> : Bytes</a>
+        
+          <div class="summary"><p>The message payload, encoded as binary.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#data_string%3AString-instance-method" class="signature"><strong>#data_string</strong> : String</a>
+        
+          <div class="summary"><p>The message payload, encoded as a UTF-8 string.</p></div>
         
       </li>
     
@@ -959,18 +993,18 @@ it came from, how many times it's been delivered, etc.</p>
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(stream:String,consumer:String,delivered_count:Int64,stream_seq:Int64,consumer_seq:Int64,timestamp:Time,pending:Int64,body:Slice(UInt8),subject:String,reply_to:String,headers:HTTP::Headers|Nil)-class-method">
+    <div class="entry-detail" id="new(stream:String,consumer:String,delivered_count:Int64,stream_seq:Int64,consumer_seq:Int64,timestamp:Time,pending:Int64,data_string:String,subject:String,reply_to:String,headers:HTTP::Headers|Nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(stream : String, consumer : String, delivered_count : Int64, stream_seq : Int64, consumer_seq : Int64, timestamp : Time, pending : Int64, body : Slice(UInt8), subject : String, reply_to : String, headers : HTTP::Headers | Nil)
+        def self.<strong>new</strong>(stream : String, consumer : String, delivered_count : Int64, stream_seq : Int64, consumer_seq : Int64, timestamp : Time, pending : Int64, data_string : String, subject : String, reply_to : String, headers : HTTP::Headers | Nil)
 
-        <a class="method-permalink" href="#new%28stream%3AString%2Cconsumer%3AString%2Cdelivered_count%3AInt64%2Cstream_seq%3AInt64%2Cconsumer_seq%3AInt64%2Ctimestamp%3ATime%2Cpending%3AInt64%2Cbody%3ASlice%28UInt8%29%2Csubject%3AString%2Creply_to%3AString%2Cheaders%3AHTTP%3A%3AHeaders%7CNil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28stream%3AString%2Cconsumer%3AString%2Cdelivered_count%3AInt64%2Cstream_seq%3AInt64%2Cconsumer_seq%3AInt64%2Ctimestamp%3ATime%2Cpending%3AInt64%2Cdata_string%3AString%2Csubject%3AString%2Creply_to%3AString%2Cheaders%3AHTTP%3A%3AHeaders%7CNil%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/message.cr#L83" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/message.cr#L91" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -993,7 +1027,7 @@ instances, since JetStream is a layer on top of core NATS.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/message.cr#L59" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/message.cr#L67" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1024,19 +1058,17 @@ instances, since JetStream is a layer on top of core NATS.</p>
       
         <div class="doc">
           
-          <p>The original body of the message, encoded as binary. If you need text,
-wrap the body in a <code>String</code>.</p>
+          <p>The message payload, encoded as binary. If you need text,
+use <code><a href="../../NATS/JetStream/Message.html#data_string%3AString-instance-method">#data_string</a></code>.</p>
 <pre><code class="language-crystal">jetstream.subscribe consumer <span class="k">do</span> <span class="o">|</span>msg<span class="o">|</span>
-  body_string <span class="o">=</span> <span class="t">String</span>.new(msg.body)
-
-  <span class="c"># ...</span>
+  data <span class="o">=</span> <span class="t">MessagePack</span>.parse(msg.data)
 <span class="k">end</span></code></pre>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/message.cr#L42" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/message.cr#L45" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1057,7 +1089,7 @@ wrap the body in a <code>String</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/message.cr#L14" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/message.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1078,7 +1110,53 @@ wrap the body in a <code>String</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/message.cr#L24" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/message.cr#L24" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="data:Bytes-instance-method">
+      <div class="signature">
+        
+        def <strong>data</strong> : Bytes
+
+        <a class="method-permalink" href="#data%3ABytes-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The message payload, encoded as binary. If you need text,
+use <code><a href="../../NATS/JetStream/Message.html#data_string%3AString-instance-method">#data_string</a></code>.</p>
+<pre><code class="language-crystal">jetstream.subscribe consumer <span class="k">do</span> <span class="o">|</span>msg<span class="o">|</span>
+  data <span class="o">=</span> <span class="t">MessagePack</span>.parse(msg.data)
+<span class="k">end</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/message.cr#L40" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="data_string:String-instance-method">
+      <div class="signature">
+        
+        def <strong>data_string</strong> : String
+
+        <a class="method-permalink" href="#data_string%3AString-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The message payload, encoded as a UTF-8 string.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/message.cr#L50" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1100,7 +1178,7 @@ consumer, starting at 1</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/message.cr#L18" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/message.cr#L18" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1123,7 +1201,7 @@ deduplication.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/message.cr#L54" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/message.cr#L62" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1144,7 +1222,7 @@ deduplication.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/message.cr#L30" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/message.cr#L30" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1165,7 +1243,7 @@ deduplication.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/message.cr#L49" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/message.cr#L57" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1186,7 +1264,7 @@ deduplication.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/message.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/message.cr#L11" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1207,7 +1285,7 @@ deduplication.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/message.cr#L21" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/message.cr#L21" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1229,7 +1307,7 @@ most likely is) different from the subject it was delivered to</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/message.cr#L46" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/message.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1250,7 +1328,7 @@ most likely is) different from the subject it was delivered to</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/message.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/message.cr#L27" target="_blank">View source</a>]
         
       </div>
     </div>

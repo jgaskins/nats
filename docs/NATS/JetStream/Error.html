@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.10.1">
-<meta name="crystal_docs.project_version" content="1.5.0">
+<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="crystal_docs.project_version" content="1.6.0">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::Error - nats 1.5.0</title>
+  <title>NATS::JetStream::Error - nats 1.6.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.5.0
+        1.6.0
       </span>
     </div>
   </div>
@@ -79,6 +79,26 @@
   
   <li class=" " data-id="nats/NATS/Client/State" data-name="nats::client::state">
       <a href="../../NATS/Client/State.html">State</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Counter" data-name="nats::counter">
+      <a href="../../NATS/Counter.html">Counter</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Counter/Error" data-name="nats::counter::error">
+      <a href="../../NATS/Counter/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Counter/MissingCounter" data-name="nats::counter::missingcounter">
+      <a href="../../NATS/Counter/MissingCounter.html">MissingCounter</a>
       
     </li>
   
@@ -743,6 +763,20 @@
 
 
 
+  <h2>
+    <a id="direct-known-subclasses" class="anchor" href="#direct-known-subclasses">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Direct Known Subclasses
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type"><a href="../../NATS/JetStream/PullSubscription/InternalError.html">NATS::JetStream::PullSubscription::InternalError</a></li>
+    
+  </ul>
+
 
 
 
@@ -758,8 +792,15 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/error.cr#L4" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/error.cr#L4" target="_blank">
         jetstream/error.cr
+      </a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/errors.cr#L19" target="_blank">
+        jetstream/errors.cr
       </a>
     
     <br/>
@@ -770,12 +811,46 @@
 
 
   
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28message%3AString%7CNil%2Cjetstream_message%3ANATS%3A%3AJetStream%3A%3AMessage%7CNil%3Dnil%2Ccause%3AException%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(message : String | Nil, jetstream_message : NATS::JetStream::Message | Nil = <span class="n">nil</span>, cause : Exception | Nil = <span class="n">nil</span>)</a>
+        
+      </li>
+    
+  </ul>
+
 
   
 
   
 
   
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#jetstream_message%3AMessage%7CNil-instance-method" class="signature"><strong>#jetstream_message</strong> : Message | Nil</a>
+        
+      </li>
+    
+  </ul>
+
 
 
   <div class="methods-inherited">
@@ -835,12 +910,64 @@
   </div>
 
   
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(message:String|Nil,jetstream_message:NATS::JetStream::Message|Nil=nil,cause:Exception|Nil=nil)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(message : String | Nil, jetstream_message : <a href="../../NATS/JetStream/Message.html">NATS::JetStream::Message</a> | Nil = <span class="n">nil</span>, cause : Exception | Nil = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#new%28message%3AString%7CNil%2Cjetstream_message%3ANATS%3A%3AJetStream%3A%3AMessage%7CNil%3Dnil%2Ccause%3AException%7CNil%3Dnil%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/errors.cr#L22" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
   
 
   
 
   
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="jetstream_message:Message|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>jetstream_message</strong> : <a href="../../NATS/JetStream/Message.html">Message</a> | Nil
+
+        <a class="method-permalink" href="#jetstream_message%3AMessage%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/errors.cr#L20" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
 
 
 </div>

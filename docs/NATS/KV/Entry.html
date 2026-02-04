@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.10.1">
-<meta name="crystal_docs.project_version" content="1.5.0">
+<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="crystal_docs.project_version" content="1.6.0">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::KV::Entry - nats 1.5.0</title>
+  <title>NATS::KV::Entry - nats 1.6.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.5.0
+        1.6.0
       </span>
     </div>
   </div>
@@ -79,6 +79,26 @@
   
   <li class=" " data-id="nats/NATS/Client/State" data-name="nats::client::state">
       <a href="../../NATS/Client/State.html">State</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Counter" data-name="nats::counter">
+      <a href="../../NATS/Counter.html">Counter</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Counter/Error" data-name="nats::counter::error">
+      <a href="../../NATS/Counter/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Counter/MissingCounter" data-name="nats::counter::missingcounter">
+      <a href="../../NATS/Counter/MissingCounter.html">MissingCounter</a>
       
     </li>
   
@@ -758,7 +778,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/kv.cr#L626" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L652" target="_blank">
         kv.cr
       </a>
     
@@ -781,7 +801,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28bucket%3AString%2Ckey%3AString%2Cvalue%3ASlice%28UInt8%29%2Crevision%3AInt64%2Ccreated_at%3ATime%2Coperation%3ANATS%3A%3AKV%3A%3AEntry%3A%3AOperation%2Cdelta%3AInt64%3D0_i64%29-class-method" class="signature"><strong>.new</strong>(bucket : String, key : String, value : Slice(UInt8), revision : Int64, created_at : Time, operation : NATS::KV::Entry::Operation, delta : Int64 = <span class="n">0_i64</span>)</a>
+        <a href="#new%28bucket%3AString%2Ckey%3AString%2Cvalue_string%3AString%2Crevision%3AInt64%2Ccreated_at%3ATime%2Coperation%3ANATS%3A%3AKV%3A%3AEntry%3A%3AOperation%2Cdelta%3AInt64%3D0_i64%29-class-method" class="signature"><strong>.new</strong>(bucket : String, key : String, value_string : String, revision : Int64, created_at : Time, operation : NATS::KV::Entry::Operation, delta : Int64 = <span class="n">0_i64</span>)</a>
         
       </li>
     
@@ -844,7 +864,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#value_string-instance-method" class="signature"><strong>#value_string</strong></a>
+        <a href="#value_string%3AString-instance-method" class="signature"><strong>#value_string</strong> : String</a>
         
       </li>
     
@@ -905,18 +925,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(bucket:String,key:String,value:Slice(UInt8),revision:Int64,created_at:Time,operation:NATS::KV::Entry::Operation,delta:Int64=0_i64)-class-method">
+    <div class="entry-detail" id="new(bucket:String,key:String,value_string:String,revision:Int64,created_at:Time,operation:NATS::KV::Entry::Operation,delta:Int64=0_i64)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(bucket : String, key : String, value : Slice(UInt8), revision : Int64, created_at : Time, operation : <a href="../../NATS/KV/Entry/Operation.html">NATS::KV::Entry::Operation</a>, delta : Int64 = <span class="n">0_i64</span>)
+        def self.<strong>new</strong>(bucket : String, key : String, value_string : String, revision : Int64, created_at : Time, operation : <a href="../../NATS/KV/Entry/Operation.html">NATS::KV::Entry::Operation</a>, delta : Int64 = <span class="n">0_i64</span>)
 
-        <a class="method-permalink" href="#new%28bucket%3AString%2Ckey%3AString%2Cvalue%3ASlice%28UInt8%29%2Crevision%3AInt64%2Ccreated_at%3ATime%2Coperation%3ANATS%3A%3AKV%3A%3AEntry%3A%3AOperation%2Cdelta%3AInt64%3D0_i64%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28bucket%3AString%2Ckey%3AString%2Cvalue_string%3AString%2Crevision%3AInt64%2Ccreated_at%3ATime%2Coperation%3ANATS%3A%3AKV%3A%3AEntry%3A%3AOperation%2Cdelta%3AInt64%3D0_i64%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/kv.cr#L641" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L671" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -948,7 +968,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/kv.cr#L627" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L653" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -964,7 +984,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/kv.cr#L631" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L657" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -980,7 +1000,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/kv.cr#L632" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L658" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -996,7 +1016,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/kv.cr#L628" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L654" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1012,7 +1032,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/kv.cr#L648" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L674" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1028,7 +1048,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/kv.cr#L633" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L659" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1044,7 +1064,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/kv.cr#L630" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L656" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1060,23 +1080,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/kv.cr#L629" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L661" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="value_string-instance-method">
+    <div class="entry-detail" id="value_string:String-instance-method">
       <div class="signature">
         
-        def <strong>value_string</strong>
+        def <strong>value_string</strong> : String
 
-        <a class="method-permalink" href="#value_string-instance-method">#</a>
+        <a class="method-permalink" href="#value_string%3AString-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/kv.cr#L644" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L655" target="_blank">View source</a>]
         
       </div>
     </div>
