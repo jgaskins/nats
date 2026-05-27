@@ -80,6 +80,10 @@ module NATS
       Counter.new(@nats)
     end
 
+    def delete(name : String)
+      @nats.jetstream.stream.delete name
+    end
+
     private struct GetResponse
       include JSON::Serializable
 

@@ -19,7 +19,7 @@ private macro test(name, counter_options = {} of String => String, **options)
     begin
       {{yield}}
     ensure
-      nats.jetstream.stream.delete stream_name
+      nats.counter.delete stream_name
     end
   end
 end
