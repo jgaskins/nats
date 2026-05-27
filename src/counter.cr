@@ -44,7 +44,7 @@ module NATS
 
     def get(subject : String) : BigInt
       if stream = @nats.jetstream.stream.list(subject: subject).first?
-        unless response = @nats.jetstream.stream.get_msg(stream.config.name, last_by_subject: subject)
+        unless response = @nats.jetstream.stream.direct_get(stream.config.name, last_by_subject: subject)
           # There are is no message in the stream on that subject so, by
           # definition, the counter is 0.
           return 0.to_big_i
