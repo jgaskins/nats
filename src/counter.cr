@@ -68,13 +68,19 @@ module NATS
       @nats.jetstream.stream.purge stream.config.name, subject
     end
 
-    def create(name : String, subjects : Array(String), storage : NATS::JetStream::StreamConfig::Storage = :file)
+    def create(
+      name : String,
+      subjects : Array(String),
+      storage : NATS::JetStream::StreamConfig::Storage = :file,
+      max_msgs : Int64? = nil,
+    )
       stream = @nats.jetstream.stream.create(
         name: name,
         subjects: subjects,
         storage: storage,
         allow_msg_counter: true,
         allow_direct: true,
+        max_msgs: max_msgs,
       )
 
       Counter.new(@nats)
