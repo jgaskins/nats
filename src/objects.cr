@@ -194,6 +194,7 @@ module NATS
           idle_heartbeat: 5.seconds, # Required for flow control
         )
         read, write = IO.pipe
+        write.sync = false
         chunks = 0
         @nats.subscribe(subject) do |msg, subscription|
           if msg.body.empty? && (headers = msg.headers) && headers["Status"]? == "100 FlowControl Request"
