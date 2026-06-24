@@ -6,6 +6,7 @@ module NATS::JetStream
   class PullSubscription
     getter consumer : Consumer
     @nats : NATS::Client
+    getter? closed = false
 
     def initialize(@consumer, @nats)
     end
@@ -105,6 +106,10 @@ module NATS::JetStream
       # This is an async ack, and then we fetch synchronously
       nats.jetstream.ack msg
       fetch(count, timeout: timeout)
+    end
+
+    def close
+      @closed = true
     end
 
     class InternalError < Error
