@@ -356,7 +356,7 @@ module NATS
       end
 
       protected def request(message : Message, &)
-        start = Time.monotonic
+        start = Time.instant
         begin
           yield
         rescue ex
@@ -366,7 +366,7 @@ module NATS
           raise ex
         ensure
           @total_requests.add 1
-          @total_processing_nanoseconds.add (Time.monotonic - start).total_nanoseconds.to_i64
+          @total_processing_nanoseconds.add start.elapsed.total_nanoseconds.to_i64
         end
       end
     end

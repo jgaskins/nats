@@ -238,7 +238,7 @@ describe NATS::Services do
       nats.reply request, ""
     end
 
-    start = Time.monotonic
+    start = Time.instant
     WaitGroup.wait do |wg|
       100.times do
         wg.spawn do
@@ -248,6 +248,6 @@ describe NATS::Services do
         end
       end
     end
-    (Time.monotonic - start).should be_within 10.milliseconds, of: 10.milliseconds
+    start.elapsed.should be_within 10.milliseconds, of: 10.milliseconds
   end
 end

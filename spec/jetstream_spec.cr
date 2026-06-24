@@ -509,15 +509,15 @@ describe NATS::JetStream do
             "Nats-Schedule-Target" => "deliver.#{prefix}.foo",
           }
 
-        start = Time.monotonic
+        start = Time.instant
         until received
           sleep 1.millisecond
-          if Time.monotonic - start > 5.seconds
+          if start.elapsed > 5.seconds
             raise "Timed out waiting for message to be received"
           end
         end
         Time.utc.should be_within 50.milliseconds, of: deliver_at
-        (Time.monotonic - start).should be_within 1.second, of: 1.second
+        start.elapsed.should be_within 1.second, of: 1.second
         delivered_subject.should eq "deliver.#{prefix}.foo"
       ensure
         js.stream.delete stream
