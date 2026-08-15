@@ -3,13 +3,16 @@ require "json"
 require "socket"
 require "uuid"
 require "openssl"
-require "log"
 
+require "./error"
 require "./message"
+require "./event_parser"
+require "./server_info"
 require "./headers"
 require "./nuid"
 require "./nkeys"
 require "./version"
+require "./log"
 
 # NATS is a pub/sub message bus.
 #
@@ -36,10 +39,6 @@ require "./version"
 module NATS
   alias Data = String | Bytes
 
-  # Generic error
-  class Error < ::Exception
-  end
-
   # Raised when trying to reply to a NATS message that is not a reply.
   class NotAReply < Error
     getter nats_message : Message
@@ -51,37 +50,6 @@ module NATS
 
   class ServerNotRespondingToPings < Error
   end
-
-  class UnknownCommand < Error
-  end
-
-  struct ServerInfo
-    include JSON::Serializable
-
-    getter server_id : String
-    getter server_name : String
-    getter version : String
-    getter go : String
-    getter host : String
-    getter port : Int32
-    getter? headers : Bool
-    getter max_payload : Int64
-    getter proto : Int32
-    getter? auth_required : Bool = false
-    getter? tls_required : Bool = false
-    getter? tls_verify : Bool = false
-    getter? tls_available : Bool = false
-    getter client_id : UInt64?
-    getter client_ip : String?
-    getter nonce : String?
-    getter cluster : String?
-    getter domain : String?
-    getter connect_urls : Array(String) { [] of String }
-    @[JSON::Field(key: "ldm")]
-    getter? lame_duck_mode : Bool = false
-  end
-
-  LOG = ::Log.for(self)
 
   # Instantiating a `NATS::Client` makes a connection to one of the given NATS
   # servers.
@@ -678,95 +646,19 @@ module NATS
           next
         end
 
-        line = @socket.read_line
         break if state.closed?
-        LOG.trace { line || "" }
-        case line
-        when .starts_with?("MSG"), .starts_with?("HMSG")
-          starting_point = 4 # "MSG "
-          has_headers = line.starts_with?('H')
-          starting_point += 1 if has_headers
-
-          if (subject_end = line.index(' ', starting_point)) && (sid_end = line.index(' ', subject_end + 1))
-            subject = line[starting_point...subject_end]
-            sid = line[subject_end + 1...sid_end].to_i
-
-            # Figure out if we got a reply_to and set it and bytesize accordingly
-            reply_to_with_byte_size = line[sid_end + 1..-1]
-            if has_headers # HMSG
-              # An HMSG event from the server looks like this (brackets imply optional):
-              #   HMSG my-subject my-sid [my-reply-to] header_size total_size
-              #   NATS/1.0
-              #   My-Key: My-Value
-              #
-              #   My Payload Goes Here
-              #
-              # Total size includes header size, so payload_size = total_size - header_size
-              if reply_to_boundary = reply_to_with_byte_size.index(' ')
-                # 3 tokens: REPLY_TO HEADER_SIZE TOTAL_SIZE
-                if header_length_boundary = reply_to_with_byte_size.index(' ', reply_to_boundary + 1)
-                  reply_to = reply_to_with_byte_size[0...reply_to_boundary]
-                  header_size = reply_to_with_byte_size[reply_to_boundary + 1...header_length_boundary].to_i
-                  bytesize = reply_to_with_byte_size[header_length_boundary + 1..-1].to_i - header_size
-                else # Only 2 tokens: HEADER_SIZE TOTAL_SIZE
-                  header_size = reply_to_with_byte_size[0...reply_to_boundary].to_i
-                  bytesize = reply_to_with_byte_size[reply_to_boundary + 1..-1].to_i - header_size
-                end
-              else
-                raise Error.new("Invalid message declaration with headers: #{line}")
-              end
-              headers = Message::Headers.new
-              # Headers preamble, intended to look like HTTP/1.1
-              if (header_decl = @socket.read_line).starts_with? "NATS/1.0"
-                # If there is anything beyond the NATS/1.0  status line, that
-                # indicates the request stauts and becomes the status header of
-                # the reply message.
-                if header_decl.size > "NATS/1.0 ".size
-                  headers["Status"] = header_decl["NATS/1.0 ".size..]
-                end
-                until (header_line = @socket.read_line).empty?
-                  key, value = header_line.split(/:\s*/, 2)
-                  headers.add key, value
-                end
-                LOG.trace { "Headers: #{headers.inspect}" }
-              else
-                raise Error.new("Invalid header declaration: #{header_decl} (msg: #{line})")
-              end
-            else # MSG
-              if boundary = reply_to_with_byte_size.rindex(' ')
-                reply_to = reply_to_with_byte_size[0...boundary]
-                bytesize = reply_to_with_byte_size[boundary + 1..-1].to_i
-              else
-                bytesize = reply_to_with_byte_size.to_i
-              end
-            end
-          else
-            raise Error.new("Invalid message declaration: #{line.inspect}")
-          end
-
-          body = @socket.read_string(bytesize)
-          @socket.skip 2 # CRLF
-
-          if subscription = @subscriptions[sid]?
-            subscription.send Message.new(subject, body, reply_to: reply_to, headers: headers) do |ex|
-              LOG.trace { "Error occurred in handling subscription #{sid}: #{ex}" }
-              @on_error.call ex
-            end
-            if subscription.messages_remaining
-              LOG.trace { "Messages remaining in subscription #{sid} to #{subscription.subject}: #{subscription.messages_remaining}" }
-            end
-            if (messages_remaining = subscription.messages_remaining) && messages_remaining <= 0
-              @subscriptions.delete sid
-              subscription.close
-            end
-          else
-            LOG.debug { "No subscription #{sid}" }
-          end
-        when "+OK"
+        # The parser is a struct wrapping the socket, so building one per event
+        # costs nothing and — unlike hoisting it out of the loop — picks up the
+        # new socket after a reconnect.
+        event = EventParser.new(@socket).call
+        case event
+        in Protocol::MessageEvent
+          deliver event.message, to: event.sid
+        in Protocol::OKEvent
           # Cool, thanks
-        when "PING"
+        in Protocol::PingEvent
           pong
-        when "PONG"
+        in Protocol::PongEvent
           if @ping_count.sub(1) >= 0
             select
             when ping = @pings.receive
@@ -776,17 +668,22 @@ module NATS
           else
             raise Error.new("Received PONG without sending a PING")
           end
-        when .starts_with? "INFO"
-          @server_info = ServerInfo.from_json line[5..-1]
+        in Protocol::InfoEvent
+          @server_info = event.server_info
           if (urls = @server_info.connect_urls).any?
             @servers = urls.map do |host_with_port| # it's not a real URL :-(
               URI.parse("nats://#{host_with_port}")
             end
           end
-        when .starts_with? "-ERR"
-          @on_error.call Error.new(line)
-        else
-          @on_error.call UnknownCommand.new(line)
+        in Protocol::ErrorEvent, Protocol::UnknownEvent
+          @on_error.call event.error
+        in Protocol::Event
+          # Unreachable — `Event` is abstract. Crystal collapses the union of
+          # its subclasses back into the virtual type, though, so exhaustiveness
+          # demands a branch for the base itself. It also means a newly added
+          # event type lands here rather than failing to compile, so route it to
+          # the error handler instead of letting it disappear.
+          @on_error.call UnknownCommand.new("Unhandled protocol event: #{event.type}")
         end
         backoff = 1.millisecond
         Fiber.yield
@@ -797,6 +694,28 @@ module NATS
       end
     ensure
       LOG.warn { "Exited inbound message loop" }
+    end
+
+    # The wire protocol carries SIDs as opaque tokens, but we only ever hand the
+    # server the integer SIDs we generate ourselves, so anything else is a
+    # subscription we don't know about.
+    private def deliver(msg : Message, to sid : String) : Nil
+      unless (id = sid.to_i64?) && (subscription = @subscriptions[id]?)
+        LOG.debug { "No subscription #{sid}" }
+        return
+      end
+
+      subscription.send msg do |ex|
+        LOG.trace { "Error occurred in handling subscription #{sid}: #{ex}" }
+        @on_error.call ex
+      end
+      if subscription.messages_remaining
+        LOG.trace { "Messages remaining in subscription #{sid} to #{subscription.subject}: #{subscription.messages_remaining}" }
+      end
+      if (messages_remaining = subscription.messages_remaining) && messages_remaining <= 0
+        @subscriptions.delete id
+        subscription.close
+      end
     end
 
     private def handle_inbound_disconnect(exception, backoff : Time::Span)
