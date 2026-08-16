@@ -175,7 +175,7 @@ module NATS
         if response = @nats.jetstream.stream.get_msg(stream, last_by_subject: meta)
           info = ObjectInfo.from_json(response.message.data_string)
           info.mtime = response.message.time
-          info unless info.deleted
+          info unless info.deleted?
         end
       end
 
