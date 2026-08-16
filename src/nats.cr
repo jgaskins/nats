@@ -454,10 +454,8 @@ module NATS
       channel = Channel(Message).new(max_replies)
       inbox = @nuid.next
       key = "#{@inbox_prefix}.#{inbox}"
-      @handler_mutex.synchronize do
-        @inbox_handlers[key] = ->(msg : Message) do
-          channel.send msg unless channel.closed?
-        end
+      add_handler key do |msg|
+        channel.send msg unless channel.closed?
       end
       publish subject, message, reply_to: key, headers: headers
       original_timeout = timeout
@@ -499,8 +497,7 @@ module NATS
             reply_subject = "#{inbox_prefix}.#{index}"
             handler_keys << reply_subject
 
-            @inbox_handlers[reply_subject] = Proc(Message, Nil).new do |msg|
-              # mutex.synchronize { replies[index] = msg }
+            add_handler reply_subject do |msg|
               channel.send({msg, index})
             end
             message.reply_to = reply_subject
@@ -527,7 +524,7 @@ module NATS
       ensure
         @handler_mutex.synchronize do
           handler_keys.each do |key|
-            @inbox_handlers.delete key
+            remove_handler key
           end
         end
       end
@@ -551,10 +548,8 @@ module NATS
       channel = Channel(Message).new(1)
       inbox = @nuid.next
       key = "#{@inbox_prefix}.#{inbox}"
-      @handler_mutex.synchronize do
-        @inbox_handlers[key] = ->(msg : Message) do
-          channel.send msg unless channel.closed?
-        end
+      add_handler key do |msg|
+        channel.send msg unless channel.closed?
       end
       publish subject, message, reply_to: key, headers: headers
 
@@ -576,9 +571,7 @@ module NATS
           end
         end
       ensure
-        @handler_mutex.synchronize do
-          @inbox_handlers.delete key
-        end
+        remove_handler key
       end
     end
 
@@ -599,10 +592,8 @@ module NATS
       channel = Channel(Message).new(10)
       inbox = @nuid.next
       key = "#{@inbox_prefix}.#{inbox}"
-      @handler_mutex.synchronize do
-        @inbox_handlers[key] = ->(msg : Message) do
-          channel.send msg unless channel.closed?
-        end
+      add_handler key do |msg|
+        channel.send msg unless channel.closed?
       end
       publish subject, message, reply_to: key, headers: headers
       original_timeout = timeout
@@ -632,9 +623,7 @@ module NATS
           end
         end
       ensure
-        @handler_mutex.synchronize do
-          @inbox_handlers.delete key
-        end
+        remove_handler key
       end
     end
 
@@ -650,12 +639,9 @@ module NATS
       end
       publish subject, message, reply_to: key
 
-      spawn remove_key(key, after: timeout)
-    end
-
-    private def remove_key(key, after timeout = nil)
-      sleep timeout if timeout
-      @handler_mutex.synchronize { @inbox_handlers.delete key }
+      # TODO: Don't spin up a new fiber for each async request. We should figure
+      # out a way to only have one fiber handling all async requests.
+      spawn remove_handler(key, after: timeout)
     end
 
     private def add_handler(key : String, &block : Message ->) : Nil
@@ -670,7 +656,9 @@ module NATS
       end
     end
 
-    private def remove_handler(key : String) : Nil
+    private def remove_handler(key : String, after timeout : Time::Span? = nil) : Nil
+      sleep timeout if timeout
+
       @handler_mutex.synchronize do
         @inbox_handlers.delete key
       end
