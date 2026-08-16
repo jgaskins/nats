@@ -123,6 +123,45 @@ describe NATS::JetStream do
     end
   end
 
+  describe "#publish" do
+    test "publishes to streams" do
+      js.publish(write_subject, "").should be_a NATS::JetStream::PubAck
+    end
+
+    it "returns nil if there is no response" do
+      js.publish(UUID.v7.to_s, "").should be_nil
+    end
+
+    test "returns an error if an error was returned from the server" do
+      headers = NATS::Headers{"Nats-Expected-Stream" => "asdf"}
+
+      js.publish(write_subject, "", headers: headers)
+        .should be_a NATS::JetStream::ErrorResponse
+    end
+  end
+
+  describe "#publish!" do
+    test "publishes to streams" do
+      js.publish!(write_subject, "").should be_a NATS::JetStream::PubAck
+    end
+
+    test "raises an error if there is no response" do
+      expect_raises NATS::JetStream::Error do
+        js.publish! UUID.v7.to_s, ""
+      end
+    end
+
+    test "raises an error if an error was returned from the server" do
+      expect_raises NATS::JetStream::Error do
+        # Expecting a stream that doesn't match with the stream we got results
+        # in an error response.
+        headers = NATS::Headers{"Nats-Expected-Stream" => "asdf"}
+
+        js.publish! write_subject, "", headers: headers
+      end
+    end
+  end
+
   it "publishes to streams and reads with push consumers" do
     write_subject = UUID.random.to_s
     stream = create_stream([write_subject])

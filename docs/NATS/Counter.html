@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.6.0">
+<meta name="crystal_docs.project_version" content="1.7.0">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::Counter - nats 1.6.0</title>
+  <title>NATS::Counter - nats 1.7.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.6.0
+        1.7.0
       </span>
     </div>
   </div>
@@ -778,7 +778,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/counter.cr#L8" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/counter.cr#L8" target="_blank">
         counter.cr
       </a>
     
@@ -824,7 +824,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#create%28name%3AString%2Csubjects%3AArray%28String%29%2Cstorage%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3AStorage%3D%3Afile%29-instance-method" class="signature"><strong>#create</strong>(name : String, subjects : Array(String), storage : NATS::JetStream::StreamConfig::Storage = <span class="n">:file</span>)</a>
+        <a href="#create%28name%3AString%2Csubjects%3AArray%28String%29%2Cstorage%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3AStorage%3D%3Afile%2Cmax_msgs%3AInt64%7CNil%3Dnil%29-instance-method" class="signature"><strong>#create</strong>(name : String, subjects : Array(String), storage : NATS::JetStream::StreamConfig::Storage = <span class="n">:file</span>, max_msgs : Int64 | Nil = <span class="n">nil</span>)</a>
         
       </li>
     
@@ -835,6 +835,11 @@
     
       <li class="entry-summary">
         <a href="#decrement%21%28subject%3AString%2Cbydelta%3AInt%3D1%29%3ANil-instance-method" class="signature"><strong>#decrement!</strong>(subject : String, by delta : Int = <span class="n">1</span>) : Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#delete%28name%3AString%29-instance-method" class="signature"><strong>#delete</strong>(name : String)</a>
         
       </li>
     
@@ -931,7 +936,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/counter.cr#L9" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/counter.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -952,18 +957,18 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="create(name:String,subjects:Array(String),storage:NATS::JetStream::StreamConfig::Storage=:file)-instance-method">
+    <div class="entry-detail" id="create(name:String,subjects:Array(String),storage:NATS::JetStream::StreamConfig::Storage=:file,max_msgs:Int64|Nil=nil)-instance-method">
       <div class="signature">
         
-        def <strong>create</strong>(name : String, subjects : Array(String), storage : <a href="../NATS/JetStream/StreamConfig/Storage.html">NATS::JetStream::StreamConfig::Storage</a> = <span class="n">:file</span>)
+        def <strong>create</strong>(name : String, subjects : Array(String), storage : <a href="../NATS/JetStream/StreamConfig/Storage.html">NATS::JetStream::StreamConfig::Storage</a> = <span class="n">:file</span>, max_msgs : Int64 | Nil = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#create%28name%3AString%2Csubjects%3AArray%28String%29%2Cstorage%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3AStorage%3D%3Afile%29-instance-method">#</a>
+        <a class="method-permalink" href="#create%28name%3AString%2Csubjects%3AArray%28String%29%2Cstorage%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3AStorage%3D%3Afile%2Cmax_msgs%3AInt64%7CNil%3Dnil%29-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/counter.cr#L71" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/counter.cr#L71" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -979,7 +984,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/counter.cr#L33" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/counter.cr#L33" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -995,7 +1000,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/counter.cr#L41" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/counter.cr#L41" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="delete(name:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>delete</strong>(name : String)
+
+        <a class="method-permalink" href="#delete%28name%3AString%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/counter.cr#L89" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1011,7 +1032,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/counter.cr#L45" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/counter.cr#L45" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1027,7 +1048,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/counter.cr#L17" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/counter.cr#L17" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1043,7 +1064,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/counter.cr#L37" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/counter.cr#L37" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1059,7 +1080,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/counter.cr#L60" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/counter.cr#L60" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1075,7 +1096,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/counter.cr#L12" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/counter.cr#L12" target="_blank">View source</a>]
         
       </div>
     </div>

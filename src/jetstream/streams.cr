@@ -26,19 +26,21 @@ module NATS::JetStream
       compression : StreamConfig::Compression = :none,
       **kwargs,
     ) : Stream
-      create_stream = StreamConfig.new(
+      create StreamConfig.new(
         **kwargs,
         storage: storage,
         retention: retention,
         discard: discard,
         compression: compression,
       )
+    end
 
-      if create_stream.name.includes? '.'
+    def create(config : StreamConfig) : Stream
+      if config.name.includes? '.'
         raise Error.new("Cannot create stream with '.' in the name")
       end
 
-      if response = @nats.request "$JS.API.STREAM.CREATE.#{create_stream.name}", create_stream.to_json
+      if response = @nats.request "$JS.API.STREAM.CREATE.#{config.name}", config.to_json
         case parsed = (Stream | ErrorResponse).from_json String.new(response.body)
         in ErrorResponse
           raise Error.new("#{parsed.error.description} (#{parsed.error.code})")
@@ -48,8 +50,6 @@ module NATS::JetStream
       else
         raise Error.new("Did not receive a response from NATS JetStream")
       end
-    rescue ex
-      raise ex
     end
 
     # List all available streams

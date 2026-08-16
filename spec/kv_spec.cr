@@ -126,6 +126,13 @@ describe NATS::KV do
     bucket.create("key", "value").should eq nil
   end
 
+  test "creates a key with a TTL", bucket_options: {allow_msg_ttl: true} do |bucket, name|
+    bucket.create("key", "value", ttl: 1.second).should eq 1
+    bucket.create("key", "value", ttl: 1.second).should eq nil
+    sleep 1.second
+    bucket.create("key", "value", ttl: 1.second).should eq 2
+  end
+
   describe "updating a key" do
     test "updates a key if the revision matches" do |bucket, name|
       if revision = bucket.create "key", "value"
