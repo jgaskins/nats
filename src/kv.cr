@@ -194,8 +194,8 @@ module NATS
 
       # Creates the given `key` with the given `value` if and only if the key
       # does not yet exist.
-      def create(key : String, value : String)
-        @kv.create name, key, value
+      def create(key : String, value : String, *, ttl : Time::Span? = nil)
+        @kv.create name, key, value, ttl: ttl
       end
 
       # Updates the given `key` with the given `value` if and only if it exists
@@ -203,8 +203,8 @@ module NATS
       # revision, this method returns `nil` so you can perform domain-specific
       # conflict resolution. If you need to set the key regardless of revision,
       # use `Bucket#put` instead.
-      def update(key : String, value : String, revision : Int64)
-        @kv.update name, key, value, revision
+      def update(key : String, value : String, revision : Int64, *, ttl : Time::Span? = nil)
+        @kv.update name, key, value, revision, ttl: ttl
       end
 
       # Deletes the given `key` from the KV store. Inside the NATS server, this
@@ -436,11 +436,19 @@ module NATS
       #   # key already existed and value was not set
       # end
       # ```
-      def create(bucket : String, key : String, value : String | Bytes) : Int64?
+      def create(
+        bucket : String,
+        key : String,
+        value : String | Bytes,
+        *,
+        ttl : Time::Span? = nil,
+      ) : Int64?
         validate_bucket! bucket
         validate_key! key
 
-        revision = update bucket, key, value, revision: 0
+        revision = update bucket, key, value,
+          revision: 0,
+          ttl: ttl
 
         if revision
           revision
@@ -460,11 +468,25 @@ module NATS
       #   # outdated revision
       # end
       # ```
-      def update(bucket : String, key : String, value : String | Bytes, revision : Int) : Int64?
+      def update(
+        bucket : String,
+        key : String,
+        value : String | Bytes,
+        revision : Int,
+        *,
+        ttl : Time::Span? = nil,
+      ) : Int64?
         validate_bucket! bucket
         validate_key! key
 
-        case response = @nats.jetstream.publish "$KV.#{bucket}.#{key}", value, expected_last_subject_sequence: revision
+        headers = Headers.new
+        headers["Nats-TTL"] = ttl.total_seconds.to_i64.to_s if ttl
+
+        response = @nats.jetstream.publish "$KV.#{bucket}.#{key}", value,
+          expected_last_subject_sequence: revision.to_i64,
+          headers: headers
+
+        case response
         in JetStream::PubAck
           response.sequence
         in JetStream::ErrorResponse
