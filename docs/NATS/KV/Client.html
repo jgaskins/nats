@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.6.0">
+<meta name="crystal_docs.project_version" content="1.7.0">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::KV::Client - nats 1.6.0</title>
+  <title>NATS::KV::Client - nats 1.7.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.6.0
+        1.7.0
       </span>
     </div>
   </div>
@@ -778,7 +778,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L273" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L273" target="_blank">
         kv.cr
       </a>
     
@@ -824,7 +824,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#create%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%29%3AInt64%7CNil-instance-method" class="signature"><strong>#create</strong>(bucket : String, key : String, value : String | Bytes) : Int64 | Nil</a>
+        <a href="#create%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%2C%2A%2Cttl%3ATime%3A%3ASpan%7CNil%3Dnil%29%3AInt64%7CNil-instance-method" class="signature"><strong>#create</strong>(bucket : String, key : String, value : String | Bytes, *, ttl : Time::Span | Nil = <span class="n">nil</span>) : Int64 | Nil</a>
         
           <div class="summary"><p>Create a key in the given <code>bucket</code> with the specified <code>value</code>.</p></div>
         
@@ -915,7 +915,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#update%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%2Crevision%3AInt%29%3AInt64%7CNil-instance-method" class="signature"><strong>#update</strong>(bucket : String, key : String, value : String | Bytes, revision : Int) : Int64 | Nil</a>
+        <a href="#update%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%2Crevision%3AInt%2C%2A%2Cttl%3ATime%3A%3ASpan%7CNil%3Dnil%29%3AInt64%7CNil-instance-method" class="signature"><strong>#update</strong>(bucket : String, key : String, value : String | Bytes, revision : Int, *, ttl : Time::Span | Nil = <span class="n">nil</span>) : Int64 | Nil</a>
         
           <div class="summary"><p>Update a bucket's key with the specified value only if the current value is the specified revision.</p></div>
         
@@ -981,7 +981,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L274" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L274" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1002,18 +1002,18 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="create(bucket:String,key:String,value:String|Bytes):Int64|Nil-instance-method">
+    <div class="entry-detail" id="create(bucket:String,key:String,value:String|Bytes,*,ttl:Time::Span|Nil=nil):Int64|Nil-instance-method">
       <div class="signature">
         
-        def <strong>create</strong>(bucket : String, key : String, value : String | Bytes) : Int64 | Nil
+        def <strong>create</strong>(bucket : String, key : String, value : String | Bytes, *, ttl : Time::Span | Nil = <span class="n">nil</span>) : Int64 | Nil
 
-        <a class="method-permalink" href="#create%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%29%3AInt64%7CNil-instance-method">#</a>
+        <a class="method-permalink" href="#create%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%2C%2A%2Cttl%3ATime%3A%3ASpan%7CNil%3Dnil%29%3AInt64%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
           
           <p>Create a key in the given <code>bucket</code> with the specified <code>value</code>. On
-success, <code><a href="../../NATS/KV/Client.html#create%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%29%3AInt64%7CNil-instance-method">#create</a></code> returns the new revision number for the key. If the
+success, <code><a href="../../NATS/KV/Client.html#create%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%2C%2A%2Cttl%3ATime%3A%3ASpan%7CNil%3Dnil%29%3AInt64%7CNil-instance-method">#create</a></code> returns the new revision number for the key. If the
 key already exists, the value will not be set and <code>nil</code> is returned.</p>
 <pre><code class="language-crystal"><span class="k">if</span> revision <span class="o">=</span> kv.create(<span class="s">&quot;my-bucket&quot;</span>, <span class="s">&quot;my-key&quot;</span>, <span class="s">&quot;my-value&quot;</span>)
   <span class="c"># created</span>
@@ -1025,7 +1025,7 @@ key already exists, the value will not be set and <code>nil</code> is returned.<
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L439" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L439" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1055,7 +1055,7 @@ specified <code>name</code>. Options are:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L286" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L286" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1071,7 +1071,7 @@ specified <code>name</code>. Options are:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L579" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L601" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1087,7 +1087,7 @@ specified <code>name</code>. Options are:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L612" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L634" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1103,7 +1103,7 @@ specified <code>name</code>. Options are:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L616" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L638" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1119,7 +1119,7 @@ specified <code>name</code>. Options are:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L509" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L531" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1135,7 +1135,7 @@ specified <code>name</code>. Options are:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L374" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L374" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1157,7 +1157,7 @@ does not exist.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L394" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L394" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1178,7 +1178,7 @@ does not exist.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L333" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L333" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1201,7 +1201,7 @@ kv.history(<span class="s">&quot;config&quot;</span>, <span class="s">&quot;name
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L526" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L548" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1222,7 +1222,7 @@ kv.history(<span class="s">&quot;config&quot;</span>, <span class="s">&quot;name
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L483" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L505" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1238,7 +1238,7 @@ kv.history(<span class="s">&quot;config&quot;</span>, <span class="s">&quot;name
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L327" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L327" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1254,7 +1254,7 @@ kv.history(<span class="s">&quot;config&quot;</span>, <span class="s">&quot;name
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L594" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L616" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1277,7 +1277,7 @@ it is provided.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L344" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L344" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1299,17 +1299,17 @@ from the NATS server. The key will expire after <code>ttl</code> if it is provid
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L364" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L364" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="update(bucket:String,key:String,value:String|Bytes,revision:Int):Int64|Nil-instance-method">
+    <div class="entry-detail" id="update(bucket:String,key:String,value:String|Bytes,revision:Int,*,ttl:Time::Span|Nil=nil):Int64|Nil-instance-method">
       <div class="signature">
         
-        def <strong>update</strong>(bucket : String, key : String, value : String | Bytes, revision : Int) : Int64 | Nil
+        def <strong>update</strong>(bucket : String, key : String, value : String | Bytes, revision : Int, *, ttl : Time::Span | Nil = <span class="n">nil</span>) : Int64 | Nil
 
-        <a class="method-permalink" href="#update%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%2Crevision%3AInt%29%3AInt64%7CNil-instance-method">#</a>
+        <a class="method-permalink" href="#update%28bucket%3AString%2Ckey%3AString%2Cvalue%3AString%7CBytes%2Crevision%3AInt%2C%2A%2Cttl%3ATime%3A%3ASpan%7CNil%3Dnil%29%3AInt64%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1327,7 +1327,7 @@ not performed and this method returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L463" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L471" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1343,7 +1343,7 @@ not performed and this method returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L543" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L565" target="_blank">View source</a>]
         
       </div>
     </div>

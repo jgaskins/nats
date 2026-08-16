@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.6.0">
+<meta name="crystal_docs.project_version" content="1.7.0">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::Consumers - nats 1.6.0</title>
+  <title>NATS::JetStream::Consumers - nats 1.7.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.6.0
+        1.7.0
       </span>
     </div>
   </div>
@@ -791,7 +791,7 @@ acknowledged, etc, at the consumer layer.</p>
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumers.cr#L10" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/consumers.cr#L10" target="_blank">
         jetstream/consumers.cr
       </a>
     
@@ -835,6 +835,11 @@ acknowledged, etc, at the consumer layer.</p>
     Instance Method Summary
   </h2>
   <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#create%28stream_name%3AString%2Cconsumer_config%3AConsumerConfig%29%3AConsumer-instance-method" class="signature"><strong>#create</strong>(stream_name : String, consumer_config : ConsumerConfig) : Consumer</a>
+        
+      </li>
     
       <li class="entry-summary">
         <a href="#create%28stream_name%3AString%2Cdeliver_policy%3AConsumerConfig%3A%3ADeliverPolicy%3D%3Aall%2Cack_policy%3AConsumerConfig%3A%3AAckPolicy%3D%3Aexplicit%2C%2A%2Aproperties%29%3AConsumer-instance-method" class="signature"><strong>#create</strong>(stream_name : String, deliver_policy : ConsumerConfig::DeliverPolicy = <span class="n">:all</span>, ack_policy : ConsumerConfig::AckPolicy = <span class="n">:explicit</span>, **properties) : Consumer</a>
@@ -965,7 +970,7 @@ acknowledged, etc, at the consumer layer.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumers.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/consumers.cr#L11" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -986,6 +991,22 @@ acknowledged, etc, at the consumer layer.</p>
     Instance Method Detail
   </h2>
   
+    <div class="entry-detail" id="create(stream_name:String,consumer_config:ConsumerConfig):Consumer-instance-method">
+      <div class="signature">
+        
+        def <strong>create</strong>(stream_name : String, consumer_config : <a href="../../NATS/JetStream/ConsumerConfig.html">ConsumerConfig</a>) : <a href="../../NATS/JetStream/Consumer.html">Consumer</a>
+
+        <a class="method-permalink" href="#create%28stream_name%3AString%2Cconsumer_config%3AConsumerConfig%29%3AConsumer-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/consumers.cr#L29" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
     <div class="entry-detail" id="create(stream_name:String,deliver_policy:ConsumerConfig::DeliverPolicy=:all,ack_policy:ConsumerConfig::AckPolicy=:explicit,**properties):Consumer-instance-method">
       <div class="signature">
         
@@ -1003,7 +1024,7 @@ which are passed unmodified to <code><a href="../../NATS/JetStream/Consumer.html
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumers.cr#L16" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/consumers.cr#L16" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1024,7 +1045,7 @@ which are passed unmodified to <code><a href="../../NATS/JetStream/Consumer.html
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumers.cr#L99" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/consumers.cr#L102" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1046,7 +1067,7 @@ with the given name.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumers.cr#L105" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/consumers.cr#L108" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1067,7 +1088,7 @@ with the given name.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumers.cr#L94" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/consumers.cr#L97" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1083,7 +1104,7 @@ with the given name.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumers.cr#L70" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/consumers.cr#L73" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1105,7 +1126,7 @@ given stream, yielding to the block if the consumer does not exist</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumers.cr#L76" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/consumers.cr#L79" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1127,7 +1148,7 @@ given stream, yielding to the block if the consumer does not exist</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumers.cr#L64" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/consumers.cr#L67" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1148,7 +1169,7 @@ given stream, yielding to the block if the consumer does not exist</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumers.cr#L48" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/consumers.cr#L51" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1170,7 +1191,7 @@ specified name.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumers.cr#L54" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/consumers.cr#L57" target="_blank">View source</a>]
         
       </div>
     </div>
