@@ -173,7 +173,7 @@ module NATS
         meta = "$O.#{bucket}.M.#{pattern}"
         stream = "OBJ_#{bucket}"
         if response = @nats.jetstream.stream.get_msg(stream, last_by_subject: meta)
-          info = ObjectInfo.from_json(String.new(response.message.data))
+          info = ObjectInfo.from_json(response.message.data_string)
           info.mtime = response.message.time
           info unless info.deleted
         end
@@ -297,7 +297,7 @@ module NATS
           watch.pending = js_msg.pending
 
           _, bucket_name, _, key_name = msg.subject.split('.', 4)
-          info = ObjectInfo.from_json String.new msg.body
+          info = ObjectInfo.from_json msg.data_string
 
           block.call info, watch
         end
