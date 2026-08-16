@@ -452,7 +452,7 @@ module NATS
       end
 
       replies = Array(Message).new(max_replies)
-      channel = Channel(Message).new(max_replies)
+      channel = Channel(Message).new(3)
       inbox = @nuid.next
       key = "#{@inbox_prefix}.#{inbox}"
       add_handler key do |msg|
