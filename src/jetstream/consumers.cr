@@ -19,11 +19,14 @@ module NATS::JetStream
       ack_policy : ConsumerConfig::AckPolicy = :explicit,
       **properties,
     ) : Consumer
-      consumer_config = ConsumerConfig.new(
+      create stream_name, ConsumerConfig.new(
         **properties,
         deliver_policy: deliver_policy,
         ack_policy: ack_policy,
       )
+    end
+
+    def create(stream_name : String, consumer_config : ConsumerConfig) : Consumer
       create_consumer = {stream_name: stream_name, config: consumer_config}
       if durable_name = consumer_config.durable_name
         create_consumer_subject = "$JS.API.CONSUMER.DURABLE.CREATE.#{stream_name}.#{durable_name}"
