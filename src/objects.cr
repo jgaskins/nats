@@ -338,7 +338,7 @@ module NATS
         property mtime : Time = Time.unix(0)
         getter chunks : Int32
         getter digest : String?
-        getter deleted : Bool?
+        getter? deleted : Bool?
 
         def initialize(*, @bucket, @name, @description, @headers, @nuid, @size, @chunks, @digest, @mtime = Time.new(0, 0), @deleted = nil)
         end
@@ -347,7 +347,12 @@ module NATS
           digest.not_nil!
         end
 
-        def delete
+        @[Deprecated("Use `deleted?`")]
+        def deleted
+          deleted?
+        end
+
+        protected def delete
           self.class.new(
             bucket: bucket,
             description: description,
