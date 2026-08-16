@@ -44,7 +44,7 @@ module NATS
 
     def get(subject : String) : BigInt
       if stream = @nats.jetstream.stream.list(subject: subject).first?
-        unless response = @nats.jetstream.stream.get_msg(stream.config.name, last_by_subject: subject)
+        unless response = @nats.jetstream.stream.direct_get(stream.config.name, last_by_subject: subject)
           # There are is no message in the stream on that subject so, by
           # definition, the counter is 0.
           return 0.to_big_i
@@ -68,16 +68,26 @@ module NATS
       @nats.jetstream.stream.purge stream.config.name, subject
     end
 
-    def create(name : String, subjects : Array(String), storage : NATS::JetStream::StreamConfig::Storage = :file)
+    def create(
+      name : String,
+      subjects : Array(String),
+      storage : NATS::JetStream::StreamConfig::Storage = :file,
+      max_msgs : Int64? = nil,
+    )
       stream = @nats.jetstream.stream.create(
         name: name,
         subjects: subjects,
         storage: storage,
         allow_msg_counter: true,
         allow_direct: true,
+        max_msgs: max_msgs,
       )
 
       Counter.new(@nats)
+    end
+
+    def delete(name : String)
+      @nats.jetstream.stream.delete name
     end
 
     private struct GetResponse

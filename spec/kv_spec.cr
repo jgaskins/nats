@@ -109,6 +109,13 @@ describe NATS::KV do
     bucket.get!("key", revision: revision).value.should eq "value3".to_slice
   end
 
+  test "gets many keys in a single request" do |bucket, name|
+    bucket.put "key1", "value1"
+    bucket.put "key2", "value2"
+
+    bucket.get(%w[key1 key2]).map(&.try(&.value_string)).should eq %w[value1 value2]
+  end
+
   test "creates a key or returns nil if the key already exists" do |bucket, name|
     # Passes the first time because the key does not exist. Also, since this is
     # the first key being added to this store (see `test` macro above), the
@@ -117,6 +124,13 @@ describe NATS::KV do
 
     # Fails the second time because the key already exists
     bucket.create("key", "value").should eq nil
+  end
+
+  test "creates a key with a TTL", bucket_options: {allow_msg_ttl: true} do |bucket, name|
+    bucket.create("key", "value", ttl: 1.second).should eq 1
+    bucket.create("key", "value", ttl: 1.second).should eq nil
+    sleep 1.second
+    bucket.create("key", "value", ttl: 1.second).should eq 2
   end
 
   describe "updating a key" do

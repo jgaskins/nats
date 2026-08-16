@@ -122,7 +122,7 @@ module NATS
     @subscriptions = {} of Int64 => Subscription
     @out = Mutex.new(protection: :reentrant)
     @reconnect_mutex = Mutex.new(protection: :reentrant)
-    @handler_mutex = Mutex.new
+    @handler_mutex = Mutex.new(protection: :reentrant)
     @ping_count : Atomic(Int32)
     @pings : Channel(Channel(Nil)) # For flushing the connection
     @disconnect_buffer = IO::Memory.new
@@ -292,7 +292,7 @@ module NATS
         inbox_subject = "#{@inbox_prefix}.>"
         LOG.trace { "Subscribing to inbox: #{inbox_subject}" }
         subscribe inbox_subject do |msg|
-          if handler = @inbox_handlers[msg.subject]?
+          if handler = get_handler(msg.subject)
             handler.call msg
           end
         end
@@ -404,10 +404,8 @@ module NATS
       channel = Channel(Message).new(1)
       inbox = @nuid.next
       key = "#{@inbox_prefix}.#{inbox}"
-      @handler_mutex.synchronize do
-        @inbox_handlers[key] = ->(msg : Message) do
-          channel.send msg unless channel.closed?
-        end
+      add_handler key do |msg|
+        channel.send msg unless channel.closed?
       end
       publish subject, message, reply_to: key, headers: headers
 
@@ -433,7 +431,7 @@ module NATS
           nil
         end
       ensure
-        @inbox_handlers.delete key
+        remove_handler key
       end
     end
 
@@ -646,11 +644,10 @@ module NATS
     def request(subject : String, message : Data = "", timeout = 2.seconds, &block : Message ->) : Nil
       inbox = @nuid.next
       key = "#{@inbox_prefix}.#{inbox}"
-      handler = ->(msg : Message) do
+      add_handler key do |msg|
         block.call msg
-        remove_key key
+        remove_handler key
       end
-      @handler_mutex.synchronize { @inbox_handlers[key] = handler }
       publish subject, message, reply_to: key
 
       spawn remove_key(key, after: timeout)
@@ -659,6 +656,24 @@ module NATS
     private def remove_key(key, after timeout = nil)
       sleep timeout if timeout
       @handler_mutex.synchronize { @inbox_handlers.delete key }
+    end
+
+    private def add_handler(key : String, &block : Message ->) : Nil
+      @handler_mutex.synchronize do
+        @inbox_handlers[key] = block
+      end
+    end
+
+    private def get_handler(key : String) : (Message ->)?
+      @handler_mutex.synchronize do
+        @inbox_handlers[key]?
+      end
+    end
+
+    private def remove_handler(key : String) : Nil
+      @handler_mutex.synchronize do
+        @inbox_handlers.delete key
+      end
     end
 
     # Send the given `body` to the `msg`'s `reply_to` subject, often used in a

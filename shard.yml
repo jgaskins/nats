@@ -1,5 +1,5 @@
 name: nats
-version: 1.5.0
+version: 1.6.0
 
 authors:
   - Jamie Gaskins <jgaskins@hey.com>
@@ -10,6 +10,6 @@ dependencies:
     github: spider-gazelle/openssl_ext
     version: ~> 2.6
 
-crystal: ">= 0.35.1, < 2.0.0"
+crystal: ">= 1.19.0, < 2.0.0"
 
 license: MIT

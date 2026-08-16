@@ -173,7 +173,7 @@ module NATS
         meta = "$O.#{bucket}.M.#{pattern}"
         stream = "OBJ_#{bucket}"
         if response = @nats.jetstream.stream.get_msg(stream, last_by_subject: meta)
-          info = ObjectInfo.from_json(String.new(response.message.data))
+          info = ObjectInfo.from_json(response.message.data_string)
           info.mtime = response.message.time
           info unless info.deleted
         end
@@ -194,6 +194,7 @@ module NATS
           idle_heartbeat: 5.seconds, # Required for flow control
         )
         read, write = IO.pipe
+        write.sync = false
         chunks = 0
         @nats.subscribe(subject) do |msg, subscription|
           if msg.body.empty? && (headers = msg.headers) && headers["Status"]? == "100 FlowControl Request"
@@ -242,19 +243,25 @@ module NATS
       def keys(bucket : String, pattern : String = ">") : Set(String)
         keys = Set(String).new
 
-        # If there are no messages in the stream with this pattern, just return
-        # the empty set of keys. Otherwise, we will end up sitting here waiting
-        # for keys to come streaming in.
-        return keys if get_info(bucket, pattern: pattern).nil?
-
-        # Look at all the keys in the current bucket
-        watch bucket, pattern: pattern do |msg, watch|
-          keys << msg.name
-
-          watch.stop if watch.pending == 0
+        each_entry do |msg|
+          keys << msg.name unless msg.deleted?
         end
 
         keys
+      end
+
+      def each_entry(bucket : String, pattern : String = ">", &block : ObjectInfo ->) : Nil
+        # If there are no messages in the stream with this pattern, just return
+        # the empty set of keys. Otherwise, we will end up sitting here waiting
+        # for keys to come streaming in.
+        return if get_info(bucket, pattern: pattern).nil?
+
+        # Look at all the keys in the current bucket
+        watch bucket, pattern: pattern do |msg, watch|
+          block.call msg
+
+          watch.stop if watch.pending == 0
+        end
       end
 
       def watch(
@@ -290,7 +297,8 @@ module NATS
           watch.pending = js_msg.pending
 
           _, bucket_name, _, key_name = msg.subject.split('.', 4)
-          info = ObjectInfo.from_json String.new msg.body
+          info = ObjectInfo.from_json msg.data_string
+          info.mtime = js_msg.timestamp
 
           block.call info, watch
         end
@@ -327,10 +335,10 @@ module NATS
         getter nuid : String
         getter size : Int64
         # TODO: Don't store this, it should be set via the message timestamp
-        property mtime : Time
+        property mtime : Time = Time.unix(0)
         getter chunks : Int32
         getter digest : String?
-        getter deleted : Bool?
+        getter? deleted : Bool?
 
         def initialize(*, @bucket, @name, @description, @headers, @nuid, @size, @chunks, @digest, @mtime = Time.new(0, 0), @deleted = nil)
         end
@@ -339,7 +347,12 @@ module NATS
           digest.not_nil!
         end
 
-        def delete
+        @[Deprecated("Use `deleted?`")]
+        def deleted
+          deleted?
+        end
+
+        protected def delete
           self.class.new(
             bucket: bucket,
             description: description,

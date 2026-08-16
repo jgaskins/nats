@@ -158,7 +158,7 @@ describe NATS do
       nats.reply request, ""
     end
 
-    start = Time.monotonic
+    start = Time.instant
     WaitGroup.wait do |wg|
       100.times do
         wg.spawn do
@@ -168,7 +168,7 @@ describe NATS do
         end
       end
     end
-    (Time.monotonic - start).should be_within 20.milliseconds, of: 20.milliseconds
+    start.elapsed.should be_within 20.milliseconds, of: 20.milliseconds
   end
 
   describe "#request_many" do
@@ -376,13 +376,12 @@ describe NATS do
     subject = "temp.#{UUID.random}"
     called = false
 
-    start = Time.monotonic
+    start = Time.instant
     response = nats.request(subject, "", timeout: 1.second)
-    finish = Time.monotonic
 
     called.should eq false
     response.should eq nil
-    ((finish - start) < 1.second).should eq true
+    start.elapsed.should be < 1.second
   end
 
   it "handles disconnects" do

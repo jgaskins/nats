@@ -4,6 +4,7 @@ require "./consumers"
 require "./nak_backoff"
 require "./pub_ack"
 require "./pull_subscription"
+require "./errors"
 
 module NATS::JetStream
   # This class provides a client for NATS JetStream for at-least-once delivery.
@@ -25,6 +26,38 @@ module NATS::JetStream
       Consumers.new(@nats)
     end
 
+    def publish!(
+      subject : String,
+      body : Data,
+      timeout : Time::Span = 2.seconds,
+      headers : Headers = Headers.new,
+      message_id : String? = nil,
+      expected_last_message_id : String? = nil,
+      expected_last_sequence : Int64? = nil,
+      expected_stream : String? = nil,
+      expected_last_subject_sequence : Int64? = nil,
+    )
+      result = publish(
+        subject: subject,
+        body: body,
+        timeout: timeout,
+        headers: headers,
+        message_id: message_id,
+        expected_last_message_id: expected_last_message_id,
+        expected_last_sequence: expected_last_sequence,
+        expected_stream: expected_stream,
+        expected_last_subject_sequence: expected_last_subject_sequence,
+      ) do |response|
+        raise Error.new(response.error.description)
+      end
+
+      if result
+        result
+      else
+        raise Error.new("No response from NATS server. There may be no stream listening on subject #{subject.inspect}.")
+      end
+    end
+
     def publish(
       subject : String,
       body : Data,
@@ -36,6 +69,33 @@ module NATS::JetStream
       expected_stream : String? = nil,
       expected_last_subject_sequence : Int64? = nil,
     )
+      publish(
+        subject: subject,
+        body: body,
+        timeout: timeout,
+        headers: headers,
+        message_id: message_id,
+        expected_last_message_id: expected_last_message_id,
+        expected_last_sequence: expected_last_sequence,
+        expected_stream: expected_stream,
+        expected_last_subject_sequence: expected_last_subject_sequence,
+      ) do |response|
+        response
+      end
+    end
+
+    def publish(
+      subject : String,
+      body : Data,
+      timeout : Time::Span = 2.seconds,
+      headers : Headers = Headers.new,
+      message_id : String? = nil,
+      expected_last_message_id : String? = nil,
+      expected_last_sequence : Int64? = nil,
+      expected_stream : String? = nil,
+      expected_last_subject_sequence : Int64? = nil,
+      &
+    )
       headers["Nats-Msg-Id"] = message_id if message_id
       headers["Nats-Expected-Last-Msg-Id"] = expected_last_message_id if expected_last_message_id
       headers["Nats-Expected-Stream"] = expected_stream if expected_stream
@@ -43,12 +103,16 @@ module NATS::JetStream
       headers["Nats-Expected-Last-Subject-Sequence"] = expected_last_subject_sequence.to_s if expected_last_subject_sequence
 
       if response = @nats.request(subject, body, timeout: timeout, headers: headers)
-        case parsed = (PubAck | ErrorResponse).from_json(String.new(response.body))
-        in PubAck
-          parsed
-        in ErrorResponse
-          raise Error.new(parsed.error.description)
+        # The response is technically `PubAck | ErrorResponse`, but
+        # `Union.from_json` where multiple types in the union are not primitive
+        # types (like in this case where both are objects) goes through a slow
+        # path that works basically like this, but this uses 1-2 orders of
+        # magnitude less CPU time in the typical case.
+        if response.data_string.includes? %{"error":}
+          return yield ErrorResponse.from_json(response.data_string)
         end
+
+        PubAck.from_json(response.data_string)
       end
     end
 

@@ -97,8 +97,9 @@ module NATS
               pkey: key
             handle_error if result == 0
 
+            siglen = LibC::SizeT.new(SIGNATURE_SIZE)
             result = LibCrypto.evp_digest_sign md_context,
-              signature.to_unsafe, out siglen,
+              signature.to_unsafe, pointerof(siglen),
               string.to_unsafe, string.bytesize
             handle_error if result == 0
 

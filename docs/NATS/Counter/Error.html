@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::KV::BucketListResponse - nats 1.6.0</title>
+  <title>NATS::Counter::Error - nats 1.6.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -87,12 +87,12 @@
       
     </li>
   
-  <li class="parent " data-id="nats/NATS/Counter" data-name="nats::counter">
+  <li class="parent open current" data-id="nats/NATS/Counter" data-name="nats::counter">
       <a href="../../NATS/Counter.html">Counter</a>
       
         <ul>
   
-  <li class=" " data-id="nats/NATS/Counter/Error" data-name="nats::counter::error">
+  <li class=" current" data-id="nats/NATS/Counter/Error" data-name="nats::counter::error">
       <a href="../../NATS/Counter/Error.html">Error</a>
       
     </li>
@@ -512,7 +512,7 @@
       
     </li>
   
-  <li class="parent open current" data-id="nats/NATS/KV" data-name="nats::kv">
+  <li class="parent " data-id="nats/NATS/KV" data-name="nats::kv">
       <a href="../../NATS/KV.html">KV</a>
       
         <ul>
@@ -532,7 +532,7 @@
       
     </li>
   
-  <li class=" current" data-id="nats/NATS/KV/BucketListResponse" data-name="nats::kv::bucketlistresponse">
+  <li class=" " data-id="nats/NATS/KV/BucketListResponse" data-name="nats::kv::bucketlistresponse">
       <a href="../../NATS/KV/BucketListResponse.html">BucketListResponse</a>
       
     </li>
@@ -742,13 +742,17 @@
 <h1 class="type-name">
 
   <span class="kind">
-    struct
-  </span> NATS::<wbr>KV::<wbr>BucketListResponse
+    class
+  </span> NATS::<wbr>Counter::<wbr>Error
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../NATS/KV/BucketListResponse.html">NATS::KV::BucketListResponse</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../NATS/Counter/Error.html">NATS::Counter::Error</a></li><li class="superclass"><a href="../../NATS/Error.html">NATS::Error</a></li><li class="superclass">Exception</li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
 
 
 
@@ -760,22 +764,18 @@
 
 
   <h2>
-    <a id="included-modules" class="anchor" href="#included-modules">
+    <a id="direct-known-subclasses" class="anchor" href="#direct-known-subclasses">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>
-    Included Modules
+    Direct Known Subclasses
   </h2>
   <ul class="other-types-list">
     
-      <li class="other-type">Enumerable(<a href="../../NATS/KV/Bucket.html">NATS::KV::Bucket</a>)</li>
+      <li class="other-type"><a href="../../NATS/Counter/MissingCounter.html">NATS::Counter::MissingCounter</a></li>
     
   </ul>
-
-
-
-
 
 
 
@@ -792,8 +792,8 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L749" target="_blank">
-        kv.cr
+      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/counter.cr#L90" target="_blank">
+        counter.cr
       </a>
     
     <br/>
@@ -804,78 +804,12 @@
 
 
   
-  <h2>
-    <a id="constructors" class="anchor" href="#constructors">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Constructors
-  </h2>
-  <ul class="list-summary">
-    
-      <li class="entry-summary">
-        <a href="#new%28stream_list_response%3ANATS%3A%3AJetStream%3A%3AStreamListResponse%2Ckv%3ANATS%3A%3AKV%3A%3AClient%29-class-method" class="signature"><strong>.new</strong>(stream_list_response : NATS::JetStream::StreamListResponse, kv : NATS::KV::Client)</a>
-        
-      </li>
-    
-  </ul>
-
 
   
 
   
 
   
-  <h2>
-    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Instance Method Summary
-  </h2>
-  <ul class="list-summary">
-    
-      <li class="entry-summary">
-        <a href="#each%28%26%29-instance-method" class="signature"><strong>#each</strong>(&)</a>
-        
-          <div class="summary"><p>Must yield this collection's elements to the block.</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#limit%28%2Aargs%2C%2A%2Aoptions%29-instance-method" class="signature"><strong>#limit</strong>(*args, **options)</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#limit%28%2Aargs%2C%2A%2Aoptions%2C%26%29-instance-method" class="signature"><strong>#limit</strong>(*args, **options, &)</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#offset%28%2Aargs%2C%2A%2Aoptions%29-instance-method" class="signature"><strong>#offset</strong>(*args, **options)</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#offset%28%2Aargs%2C%2A%2Aoptions%2C%26%29-instance-method" class="signature"><strong>#offset</strong>(*args, **options, &)</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#total%28%2Aargs%2C%2A%2Aoptions%29-instance-method" class="signature"><strong>#total</strong>(*args, **options)</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#total%28%2Aargs%2C%2A%2Aoptions%2C%26%29-instance-method" class="signature"><strong>#total</strong>(*args, **options, &)</a>
-        
-      </li>
-    
-  </ul>
-
 
 
   <div class="methods-inherited">
@@ -935,169 +869,12 @@
   </div>
 
   
-  <h2>
-    <a id="constructor-detail" class="anchor" href="#constructor-detail">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Constructor Detail
-  </h2>
-  
-    <div class="entry-detail" id="new(stream_list_response:NATS::JetStream::StreamListResponse,kv:NATS::KV::Client)-class-method">
-      <div class="signature">
-        
-        def self.<strong>new</strong>(stream_list_response : <a href="../../NATS/JetStream/StreamListResponse.html">NATS::JetStream::StreamListResponse</a>, kv : <a href="../../NATS/KV/Client.html">NATS::KV::Client</a>)
-
-        <a class="method-permalink" href="#new%28stream_list_response%3ANATS%3A%3AJetStream%3A%3AStreamListResponse%2Ckv%3ANATS%3A%3AKV%3A%3AClient%29-class-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L755" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-
 
   
 
   
 
   
-  <h2>
-    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Instance Method Detail
-  </h2>
-  
-    <div class="entry-detail" id="each(&amp;)-instance-method">
-      <div class="signature">
-        
-        def <strong>each</strong>(&)
-
-        <a class="method-permalink" href="#each%28%26%29-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-            <div class="doc-inherited">
-              Description copied from module Enumerable(<a href="../../NATS/KV/Bucket.html">NATS::KV::Bucket</a>)
-            </div>
-          
-          <p>Must yield this collection's elements to the block.</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L760" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="limit(*args,**options)-instance-method">
-      <div class="signature">
-        
-        def <strong>limit</strong>(*args, **options)
-
-        <a class="method-permalink" href="#limit%28%2Aargs%2C%2A%2Aoptions%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L758" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="limit(*args,**options,&amp;)-instance-method">
-      <div class="signature">
-        
-        def <strong>limit</strong>(*args, **options, &)
-
-        <a class="method-permalink" href="#limit%28%2Aargs%2C%2A%2Aoptions%2C%26%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L758" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="offset(*args,**options)-instance-method">
-      <div class="signature">
-        
-        def <strong>offset</strong>(*args, **options)
-
-        <a class="method-permalink" href="#offset%28%2Aargs%2C%2A%2Aoptions%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L758" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="offset(*args,**options,&amp;)-instance-method">
-      <div class="signature">
-        
-        def <strong>offset</strong>(*args, **options, &)
-
-        <a class="method-permalink" href="#offset%28%2Aargs%2C%2A%2Aoptions%2C%26%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L758" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="total(*args,**options)-instance-method">
-      <div class="signature">
-        
-        def <strong>total</strong>(*args, **options)
-
-        <a class="method-permalink" href="#total%28%2Aargs%2C%2A%2Aoptions%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L758" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="total(*args,**options,&amp;)-instance-method">
-      <div class="signature">
-        
-        def <strong>total</strong>(*args, **options, &)
-
-        <a class="method-permalink" href="#total%28%2Aargs%2C%2A%2Aoptions%2C%26%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L758" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-
 
 
 </div>

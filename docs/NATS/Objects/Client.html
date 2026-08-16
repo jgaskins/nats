@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.10.1">
-<meta name="crystal_docs.project_version" content="1.5.0">
+<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="crystal_docs.project_version" content="1.6.0">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::Objects::Client - nats 1.5.0</title>
+  <title>NATS::Objects::Client - nats 1.6.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.5.0
+        1.6.0
       </span>
     </div>
   </div>
@@ -79,6 +79,26 @@
   
   <li class=" " data-id="nats/NATS/Client/State" data-name="nats::client::state">
       <a href="../../NATS/Client/State.html">State</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Counter" data-name="nats::counter">
+      <a href="../../NATS/Counter.html">Counter</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Counter/Error" data-name="nats::counter::error">
+      <a href="../../NATS/Counter/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Counter/MissingCounter" data-name="nats::counter::missingcounter">
+      <a href="../../NATS/Counter/MissingCounter.html">MissingCounter</a>
       
     </li>
   
@@ -758,7 +778,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L50" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L50" target="_blank">
         objects.cr
       </a>
     
@@ -807,6 +827,11 @@
         <a href="#create_bucket%28name%3AString%2Cdescription%3AString%3D%22%22%2C%2A%2Cttl%3ATime%3A%3ASpan%7CNil%3Dnil%2Cstorage%3AJetStream%3A%3AStreamConfig%3A%3AStorage%3D%3Afile%2Creplicas%3AInt%7CNil%3Dnil%2Cmax_bytes%3AInt%7CNil%3Dnil%2Cplacement%3AJetStream%3A%3AStreamConfig%3A%3APlacement%7CNil%3Dnil%29-instance-method" class="signature"><strong>#create_bucket</strong>(name : String, description : String = <span class="s">&quot;&quot;</span>, *, ttl : Time::Span | Nil = <span class="n">nil</span>, storage : JetStream::StreamConfig::Storage = <span class="n">:file</span>, replicas : Int | Nil = <span class="n">nil</span>, max_bytes : Int | Nil = <span class="n">nil</span>, placement : JetStream::StreamConfig::Placement | Nil = <span class="n">nil</span>)</a>
         
           <div class="summary"><p>Create a bucket in the object store</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#delete%28bucket%3AString%2Ckey%3AString%29-instance-method" class="signature"><strong>#delete</strong>(bucket : String, key : String)</a>
         
       </li>
     
@@ -910,7 +935,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L51" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L51" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -954,7 +979,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L74" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L74" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="delete(bucket:String,key:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>delete</strong>(bucket : String, key : String)
+
+        <a class="method-permalink" href="#delete%28bucket%3AString%2Ckey%3AString%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L225" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -970,7 +1011,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L108" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L108" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -986,7 +1027,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L174" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L182" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1002,7 +1043,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L102" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L102" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1018,7 +1059,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L160" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L168" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1034,7 +1075,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L164" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L172" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1050,7 +1091,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L217" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L242" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1066,7 +1107,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L112" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L112" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1082,7 +1123,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L235" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L260" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1098,7 +1139,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L243" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L268" target="_blank">View source</a>]
         
       </div>
     </div>

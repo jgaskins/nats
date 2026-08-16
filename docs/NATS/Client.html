@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.10.1">
-<meta name="crystal_docs.project_version" content="1.5.0">
+<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="crystal_docs.project_version" content="1.6.0">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::Client - nats 1.5.0</title>
+  <title>NATS::Client - nats 1.6.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.5.0
+        1.6.0
       </span>
     </div>
   </div>
@@ -79,6 +79,26 @@
   
   <li class=" " data-id="nats/NATS/Client/State" data-name="nats::client::state">
       <a href="../NATS/Client/State.html">State</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Counter" data-name="nats::counter">
+      <a href="../NATS/Counter.html">Counter</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Counter/Error" data-name="nats::counter::error">
+      <a href="../NATS/Counter/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Counter/MissingCounter" data-name="nats::counter::missingcounter">
+      <a href="../NATS/Counter/MissingCounter.html">MissingCounter</a>
       
     </li>
   
@@ -770,35 +790,42 @@ servers.</p>
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream.cr#L13" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/counter.cr#L97" target="_blank">
+        counter.cr
+      </a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream.cr#L13" target="_blank">
         jetstream.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/kv.cr#L742" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L768" target="_blank">
         kv.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L88" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L88" target="_blank">
         nats.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L372" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L424" target="_blank">
         objects.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/services.cr#L375" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/services.cr#L375" target="_blank">
         services.cr
       </a>
     
@@ -885,6 +912,11 @@ servers.</p>
         <a href="#close%3ANil-instance-method" class="signature"><strong>#close</strong> : Nil</a>
         
           <div class="summary"><p>Close this NATS connection.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#counter-instance-method" class="signature"><strong>#counter</strong></a>
         
       </li>
     
@@ -1036,6 +1068,16 @@ servers.</p>
         
       </li>
     
+      <li class="entry-summary">
+        <a href="#valid_publish_subject%3F%28subject%3AString%29%3ABool-instance-method" class="signature"><strong>#valid_publish_subject?</strong>(subject : String) : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#valid_subscribe_subject%3F%28subject%3AString%29%3ABool-instance-method" class="signature"><strong>#valid_subscribe_subject?</strong>(subject : String) : Bool</a>
+        
+      </li>
+    
   </ul>
 
 
@@ -1097,7 +1139,7 @@ servers.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L161" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L161" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1123,7 +1165,7 @@ servers.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L180" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L180" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1139,7 +1181,7 @@ servers.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L137" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L137" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1178,7 +1220,23 @@ associated with this client.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L786" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L789" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="counter-instance-method">
+      <div class="signature">
+        
+        def <strong>counter</strong>
+
+        <a class="method-permalink" href="#counter-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/counter.cr#L98" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1194,7 +1252,7 @@ associated with this client.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L560" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L561" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1215,7 +1273,7 @@ associated with this client.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L577" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L578" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1231,7 +1289,7 @@ associated with this client.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L592" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L593" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1253,7 +1311,7 @@ the NATS server.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream.cr#L16" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream.cr#L16" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1276,7 +1334,7 @@ the NATS server.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/kv.cr#L746" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/kv.cr#L772" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1292,7 +1350,7 @@ the NATS server.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L130" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L130" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1308,7 +1366,7 @@ the NATS server.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/objects.cr#L373" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/objects.cr#L425" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1332,7 +1390,7 @@ nats.on_disconnect { <span class="t">Datadog</span>.metrics.increment <span clas
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L821" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L824" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1356,7 +1414,7 @@ nats.on_error { <span class="o">|</span>error<span class="o">|</span> <span clas
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L808" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L811" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1379,7 +1437,7 @@ nats.on_ping { <span class="t">Datadog</span>.metrics.increment <span class="s">
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L846" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L849" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1403,7 +1461,7 @@ nats.on_pong { <span class="t">Datadog</span>.metrics.increment <span class="s">
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L859" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L862" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1427,7 +1485,7 @@ nats.on_reconnect { <span class="t">Datadog</span>.metrics.increment <span class
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L834" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L837" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1443,7 +1501,7 @@ nats.on_reconnect { <span class="t">Datadog</span>.metrics.increment <span class
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L599" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L600" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1493,7 +1551,7 @@ nats.publish orders_subject, order.to_json, headers: <span class="t">NATS</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L512" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L511" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1524,7 +1582,7 @@ request/reply messaging model.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L470" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L469" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1553,7 +1611,7 @@ the <code>timeout</code> elapses, <code>nil</code> is returned.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L403" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L402" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1576,7 +1634,7 @@ the block.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L439" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L438" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1592,7 +1650,7 @@ the block.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L134" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L134" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1608,7 +1666,7 @@ the block.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/services.cr#L376" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/services.cr#L376" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1629,7 +1687,7 @@ the block.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L133" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L133" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1661,7 +1719,7 @@ nats.subscribe <span class="s">&quot;orders.created&quot;</span> <span class="k"
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L324" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L321" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1682,7 +1740,7 @@ nats.subscribe <span class="s">&quot;orders.created&quot;</span> <span class="k"
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L371" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L370" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1714,7 +1772,39 @@ spawn <span class="k">do</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/nats.cr#L366" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L365" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="valid_publish_subject?(subject:String):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>valid_publish_subject?</strong>(subject : String) : Bool
+
+        <a class="method-permalink" href="#valid_publish_subject%3F%28subject%3AString%29%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L888" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="valid_subscribe_subject?(subject:String):Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>valid_subscribe_subject?</strong>(subject : String) : Bool
+
+        <a class="method-permalink" href="#valid_subscribe_subject%3F%28subject%3AString%29%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/nats.cr#L896" target="_blank">View source</a>]
         
       </div>
     </div>

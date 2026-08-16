@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.10.1">
-<meta name="crystal_docs.project_version" content="1.5.0">
+<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="crystal_docs.project_version" content="1.6.0">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::ConsumerConfig - nats 1.5.0</title>
+  <title>NATS::JetStream::ConsumerConfig - nats 1.6.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.5.0
+        1.6.0
       </span>
     </div>
   </div>
@@ -79,6 +79,26 @@
   
   <li class=" " data-id="nats/NATS/Client/State" data-name="nats::client::state">
       <a href="../../NATS/Client/State.html">State</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Counter" data-name="nats::counter">
+      <a href="../../NATS/Counter.html">Counter</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Counter/Error" data-name="nats::counter::error">
+      <a href="../../NATS/Counter/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Counter/MissingCounter" data-name="nats::counter::missingcounter">
+      <a href="../../NATS/Counter/MissingCounter.html">MissingCounter</a>
       
     </li>
   
@@ -758,7 +778,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L4" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L4" target="_blank">
         jetstream/consumer_config.cr
       </a>
     
@@ -786,7 +806,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#new%28deliver_subject%3ANil%7CString%3Dnil%2Cdurable_name%3ANil%7CString%3Dnil%2Cack_policy%3AAckPolicy%3D%3Aexplicit%2Cdeliver_policy%3ADeliverPolicy%3D%3Aall%2Creplay_policy%3AReplayPolicy%3D%3Ainstant%2Cack_wait%3ATime%3A%3ASpan%7CNil%3Dnil%2Cfilter_subject%3ANil%7CString%3Dnil%2Cmax_deliver%3Dnil%2Copt_start_seq%3AInt64%7CNil%3Dnil%2Csample_frequency%3ANil%7CString%3Dnil%2Copt_start_time%3ATime%7CNil%3Dnil%2Crate_limit_bps%3AUInt64%7CNil%3Dnil%2Cmax_ack_pending%3AInt%7CNil%3Dnil%2Cmax_waiting%3AInt%7CNil%3Dnil%2Cidle_heartbeat%3ATime%3A%3ASpan%7CNil%3Dnil%2Cflow_control%3ABool%7CNil%3Dnil%2Cdeliver_group%3ANil%7CString%3Ddurable_name%2Cmax_request_batch%3AInt32%7CNil%3Dnil%2Cmax_request_expires%3ATime%3A%3ASpan%7CNil%3Dnil%2Cmax_request_max_bytes%3AInt32%7CNil%3Dnil%2Creplicas%3AInt32%3D0%2Cmemory_storage%3ABool%7CNil%3Dnil%2Cinactive_threshold%3ATime%3A%3ASpan%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(deliver_subject : Nil | String = <span class="n">nil</span>, durable_name : Nil | String = <span class="n">nil</span>, ack_policy : AckPolicy = <span class="n">:explicit</span>, deliver_policy : DeliverPolicy = <span class="n">:all</span>, replay_policy : ReplayPolicy = <span class="n">:instant</span>, ack_wait : Time::Span | Nil = <span class="n">nil</span>, filter_subject : Nil | String = <span class="n">nil</span>, max_deliver = <span class="n">nil</span>, opt_start_seq : Int64 | Nil = <span class="n">nil</span>, sample_frequency : Nil | String = <span class="n">nil</span>, opt_start_time : Time | Nil = <span class="n">nil</span>, rate_limit_bps : UInt64 | Nil = <span class="n">nil</span>, max_ack_pending : Int | Nil = <span class="n">nil</span>, max_waiting : Int | Nil = <span class="n">nil</span>, idle_heartbeat : Time::Span | Nil = <span class="n">nil</span>, flow_control : Bool | Nil = <span class="n">nil</span>, deliver_group : Nil | String = durable_name, max_request_batch : Int32 | Nil = <span class="n">nil</span>, max_request_expires : Time::Span | Nil = <span class="n">nil</span>, max_request_max_bytes : Int32 | Nil = <span class="n">nil</span>, replicas : Int32 = <span class="n">0</span>, memory_storage : Bool | Nil = <span class="n">nil</span>, inactive_threshold : Time::Span | Nil = <span class="n">nil</span>)</a>
+        <a href="#new%28deliver_subject%3ANil%7CString%3Dnil%2Cdurable_name%3ANil%7CString%3Dnil%2Cack_policy%3AAckPolicy%3D%3Aexplicit%2Cdeliver_policy%3ADeliverPolicy%3D%3Aall%2Creplay_policy%3AReplayPolicy%3D%3Ainstant%2Cack_wait%3ATime%3A%3ASpan%7CNil%3Dnil%2Cfilter_subject%3ANil%7CString%3Dnil%2Cfilter_subjects%3ANil%7CArray%28String%29%3Dnil%2Cmax_deliver%3Dnil%2Copt_start_seq%3AInt64%7CNil%3Dnil%2Csample_frequency%3ANil%7CString%3Dnil%2Copt_start_time%3ATime%7CNil%3Dnil%2Crate_limit_bps%3AUInt64%7CNil%3Dnil%2Cmax_ack_pending%3AInt%7CNil%3Dnil%2Cmax_waiting%3AInt%7CNil%3Dnil%2Cidle_heartbeat%3ATime%3A%3ASpan%7CNil%3Dnil%2Cflow_control%3ABool%7CNil%3Dnil%2Cheaders_only%3ABool%7CNil%3Dnil%2Cdeliver_group%3ANil%7CString%3Ddurable_name%2Cmax_request_batch%3AInt32%7CNil%3Dnil%2Cmax_request_expires%3ATime%3A%3ASpan%7CNil%3Dnil%2Cmax_request_max_bytes%3AInt32%7CNil%3Dnil%2Creplicas%3AInt32%3D0%2Cmemory_storage%3ABool%7CNil%3Dnil%2Cinactive_threshold%3ATime%3A%3ASpan%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(deliver_subject : Nil | String = <span class="n">nil</span>, durable_name : Nil | String = <span class="n">nil</span>, ack_policy : AckPolicy = <span class="n">:explicit</span>, deliver_policy : DeliverPolicy = <span class="n">:all</span>, replay_policy : ReplayPolicy = <span class="n">:instant</span>, ack_wait : Time::Span | Nil = <span class="n">nil</span>, filter_subject : Nil | String = <span class="n">nil</span>, filter_subjects : Nil | Array(String) = <span class="n">nil</span>, max_deliver = <span class="n">nil</span>, opt_start_seq : Int64 | Nil = <span class="n">nil</span>, sample_frequency : Nil | String = <span class="n">nil</span>, opt_start_time : Time | Nil = <span class="n">nil</span>, rate_limit_bps : UInt64 | Nil = <span class="n">nil</span>, max_ack_pending : Int | Nil = <span class="n">nil</span>, max_waiting : Int | Nil = <span class="n">nil</span>, idle_heartbeat : Time::Span | Nil = <span class="n">nil</span>, flow_control : Bool | Nil = <span class="n">nil</span>, headers_only : Bool | Nil = <span class="n">nil</span>, deliver_group : Nil | String = durable_name, max_request_batch : Int32 | Nil = <span class="n">nil</span>, max_request_expires : Time::Span | Nil = <span class="n">nil</span>, max_request_max_bytes : Int32 | Nil = <span class="n">nil</span>, replicas : Int32 = <span class="n">0</span>, memory_storage : Bool | Nil = <span class="n">nil</span>, inactive_threshold : Time::Span | Nil = <span class="n">nil</span>)</a>
         
       </li>
     
@@ -855,6 +875,13 @@
     
       <li class="entry-summary">
         <a href="#filter_subject%3AString%7CNil-instance-method" class="signature"><strong>#filter_subject</strong> : String | Nil</a>
+        
+          <div class="summary"><p>When consuming from a Stream with many subjects, or wildcards, select only a specific incoming subjects, supports wildcards</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#filter_subjects%3AArray%28String%29%7CNil-instance-method" class="signature"><strong>#filter_subjects</strong> : Array(String) | Nil</a>
         
           <div class="summary"><p>When consuming from a Stream with many subjects, or wildcards, select only a specific incoming subjects, supports wildcards</p></div>
         
@@ -978,7 +1005,7 @@
   
   
     <a href="../../NATS/JetStream/Entity.html#new%28pull%3AJSON%3A%3APullParser%29-class-method" class="tooltip">
-      <span>new(pull : JSON::PullParser)</span>
+      <span>new(pull : JSON::PullParser)<br/>new(*, __pull_for_json_serializable pull : JSON::PullParser)</span>
     new</a>
     
   
@@ -1066,23 +1093,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L4" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L4" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="new(deliver_subject:Nil|String=nil,durable_name:Nil|String=nil,ack_policy:AckPolicy=:explicit,deliver_policy:DeliverPolicy=:all,replay_policy:ReplayPolicy=:instant,ack_wait:Time::Span|Nil=nil,filter_subject:Nil|String=nil,max_deliver=nil,opt_start_seq:Int64|Nil=nil,sample_frequency:Nil|String=nil,opt_start_time:Time|Nil=nil,rate_limit_bps:UInt64|Nil=nil,max_ack_pending:Int|Nil=nil,max_waiting:Int|Nil=nil,idle_heartbeat:Time::Span|Nil=nil,flow_control:Bool|Nil=nil,deliver_group:Nil|String=durable_name,max_request_batch:Int32|Nil=nil,max_request_expires:Time::Span|Nil=nil,max_request_max_bytes:Int32|Nil=nil,replicas:Int32=0,memory_storage:Bool|Nil=nil,inactive_threshold:Time::Span|Nil=nil)-class-method">
+    <div class="entry-detail" id="new(deliver_subject:Nil|String=nil,durable_name:Nil|String=nil,ack_policy:AckPolicy=:explicit,deliver_policy:DeliverPolicy=:all,replay_policy:ReplayPolicy=:instant,ack_wait:Time::Span|Nil=nil,filter_subject:Nil|String=nil,filter_subjects:Nil|Array(String)=nil,max_deliver=nil,opt_start_seq:Int64|Nil=nil,sample_frequency:Nil|String=nil,opt_start_time:Time|Nil=nil,rate_limit_bps:UInt64|Nil=nil,max_ack_pending:Int|Nil=nil,max_waiting:Int|Nil=nil,idle_heartbeat:Time::Span|Nil=nil,flow_control:Bool|Nil=nil,headers_only:Bool|Nil=nil,deliver_group:Nil|String=durable_name,max_request_batch:Int32|Nil=nil,max_request_expires:Time::Span|Nil=nil,max_request_max_bytes:Int32|Nil=nil,replicas:Int32=0,memory_storage:Bool|Nil=nil,inactive_threshold:Time::Span|Nil=nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(deliver_subject : Nil | String = <span class="n">nil</span>, durable_name : Nil | String = <span class="n">nil</span>, ack_policy : <a href="../../NATS/JetStream/ConsumerConfig/AckPolicy.html">AckPolicy</a> = <span class="n">:explicit</span>, deliver_policy : <a href="../../NATS/JetStream/ConsumerConfig/DeliverPolicy.html">DeliverPolicy</a> = <span class="n">:all</span>, replay_policy : <a href="../../NATS/JetStream/ConsumerConfig/ReplayPolicy.html">ReplayPolicy</a> = <span class="n">:instant</span>, ack_wait : Time::Span | Nil = <span class="n">nil</span>, filter_subject : Nil | String = <span class="n">nil</span>, max_deliver = <span class="n">nil</span>, opt_start_seq : Int64 | Nil = <span class="n">nil</span>, sample_frequency : Nil | String = <span class="n">nil</span>, opt_start_time : Time | Nil = <span class="n">nil</span>, rate_limit_bps : UInt64 | Nil = <span class="n">nil</span>, max_ack_pending : Int | Nil = <span class="n">nil</span>, max_waiting : Int | Nil = <span class="n">nil</span>, idle_heartbeat : Time::Span | Nil = <span class="n">nil</span>, flow_control : Bool | Nil = <span class="n">nil</span>, deliver_group : Nil | String = durable_name, max_request_batch : Int32 | Nil = <span class="n">nil</span>, max_request_expires : Time::Span | Nil = <span class="n">nil</span>, max_request_max_bytes : Int32 | Nil = <span class="n">nil</span>, replicas : Int32 = <span class="n">0</span>, memory_storage : Bool | Nil = <span class="n">nil</span>, inactive_threshold : Time::Span | Nil = <span class="n">nil</span>)
+        def self.<strong>new</strong>(deliver_subject : Nil | String = <span class="n">nil</span>, durable_name : Nil | String = <span class="n">nil</span>, ack_policy : <a href="../../NATS/JetStream/ConsumerConfig/AckPolicy.html">AckPolicy</a> = <span class="n">:explicit</span>, deliver_policy : <a href="../../NATS/JetStream/ConsumerConfig/DeliverPolicy.html">DeliverPolicy</a> = <span class="n">:all</span>, replay_policy : <a href="../../NATS/JetStream/ConsumerConfig/ReplayPolicy.html">ReplayPolicy</a> = <span class="n">:instant</span>, ack_wait : Time::Span | Nil = <span class="n">nil</span>, filter_subject : Nil | String = <span class="n">nil</span>, filter_subjects : Nil | Array(String) = <span class="n">nil</span>, max_deliver = <span class="n">nil</span>, opt_start_seq : Int64 | Nil = <span class="n">nil</span>, sample_frequency : Nil | String = <span class="n">nil</span>, opt_start_time : Time | Nil = <span class="n">nil</span>, rate_limit_bps : UInt64 | Nil = <span class="n">nil</span>, max_ack_pending : Int | Nil = <span class="n">nil</span>, max_waiting : Int | Nil = <span class="n">nil</span>, idle_heartbeat : Time::Span | Nil = <span class="n">nil</span>, flow_control : Bool | Nil = <span class="n">nil</span>, headers_only : Bool | Nil = <span class="n">nil</span>, deliver_group : Nil | String = durable_name, max_request_batch : Int32 | Nil = <span class="n">nil</span>, max_request_expires : Time::Span | Nil = <span class="n">nil</span>, max_request_max_bytes : Int32 | Nil = <span class="n">nil</span>, replicas : Int32 = <span class="n">0</span>, memory_storage : Bool | Nil = <span class="n">nil</span>, inactive_threshold : Time::Span | Nil = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#new%28deliver_subject%3ANil%7CString%3Dnil%2Cdurable_name%3ANil%7CString%3Dnil%2Cack_policy%3AAckPolicy%3D%3Aexplicit%2Cdeliver_policy%3ADeliverPolicy%3D%3Aall%2Creplay_policy%3AReplayPolicy%3D%3Ainstant%2Cack_wait%3ATime%3A%3ASpan%7CNil%3Dnil%2Cfilter_subject%3ANil%7CString%3Dnil%2Cmax_deliver%3Dnil%2Copt_start_seq%3AInt64%7CNil%3Dnil%2Csample_frequency%3ANil%7CString%3Dnil%2Copt_start_time%3ATime%7CNil%3Dnil%2Crate_limit_bps%3AUInt64%7CNil%3Dnil%2Cmax_ack_pending%3AInt%7CNil%3Dnil%2Cmax_waiting%3AInt%7CNil%3Dnil%2Cidle_heartbeat%3ATime%3A%3ASpan%7CNil%3Dnil%2Cflow_control%3ABool%7CNil%3Dnil%2Cdeliver_group%3ANil%7CString%3Ddurable_name%2Cmax_request_batch%3AInt32%7CNil%3Dnil%2Cmax_request_expires%3ATime%3A%3ASpan%7CNil%3Dnil%2Cmax_request_max_bytes%3AInt32%7CNil%3Dnil%2Creplicas%3AInt32%3D0%2Cmemory_storage%3ABool%7CNil%3Dnil%2Cinactive_threshold%3ATime%3A%3ASpan%7CNil%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28deliver_subject%3ANil%7CString%3Dnil%2Cdurable_name%3ANil%7CString%3Dnil%2Cack_policy%3AAckPolicy%3D%3Aexplicit%2Cdeliver_policy%3ADeliverPolicy%3D%3Aall%2Creplay_policy%3AReplayPolicy%3D%3Ainstant%2Cack_wait%3ATime%3A%3ASpan%7CNil%3Dnil%2Cfilter_subject%3ANil%7CString%3Dnil%2Cfilter_subjects%3ANil%7CArray%28String%29%3Dnil%2Cmax_deliver%3Dnil%2Copt_start_seq%3AInt64%7CNil%3Dnil%2Csample_frequency%3ANil%7CString%3Dnil%2Copt_start_time%3ATime%7CNil%3Dnil%2Crate_limit_bps%3AUInt64%7CNil%3Dnil%2Cmax_ack_pending%3AInt%7CNil%3Dnil%2Cmax_waiting%3AInt%7CNil%3Dnil%2Cidle_heartbeat%3ATime%3A%3ASpan%7CNil%3Dnil%2Cflow_control%3ABool%7CNil%3Dnil%2Cheaders_only%3ABool%7CNil%3Dnil%2Cdeliver_group%3ANil%7CString%3Ddurable_name%2Cmax_request_batch%3AInt32%7CNil%3Dnil%2Cmax_request_expires%3ATime%3A%3ASpan%7CNil%3Dnil%2Cmax_request_max_bytes%3AInt32%7CNil%3Dnil%2Creplicas%3AInt32%3D0%2Cmemory_storage%3ABool%7CNil%3Dnil%2Cinactive_threshold%3ATime%3A%3ASpan%7CNil%3Dnil%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L67" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L71" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1119,7 +1146,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1140,7 +1167,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L9" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1156,7 +1183,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L17" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L17" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1177,7 +1204,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L11" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1198,7 +1225,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L13" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1214,7 +1241,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L18" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L18" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1235,7 +1262,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L15" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1256,7 +1283,28 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L30" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L30" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="filter_subjects:Array(String)|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>filter_subjects</strong> : Array(String) | Nil
+
+        <a class="method-permalink" href="#filter_subjects%3AArray%28String%29%7CNil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>When consuming from a Stream with many subjects, or wildcards, select only a specific incoming subjects, supports wildcards</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L33" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1272,7 +1320,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L22" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L22" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1288,7 +1336,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L23" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L23" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1304,7 +1352,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L21" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L21" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1320,7 +1368,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L47" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L51" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1341,7 +1389,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L44" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L48" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1362,7 +1410,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L32" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L36" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1387,7 +1435,7 @@ The maximum number of messages that can be requested from a pull consumer</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L60" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L64" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1408,7 +1456,7 @@ The maximum number of messages that can be requested from a pull consumer</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L63" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L67" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1424,7 +1472,7 @@ The maximum number of messages that can be requested from a pull consumer</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L65" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L69" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1440,7 +1488,7 @@ The maximum number of messages that can be requested from a pull consumer</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L19" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L19" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1456,7 +1504,7 @@ The maximum number of messages that can be requested from a pull consumer</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L52" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L56" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1477,7 +1525,7 @@ The maximum number of messages that can be requested from a pull consumer</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L34" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L38" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1498,7 +1546,7 @@ The maximum number of messages that can be requested from a pull consumer</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L36" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L40" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1519,7 +1567,7 @@ The maximum number of messages that can be requested from a pull consumer</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L42" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L46" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1540,7 +1588,7 @@ The maximum number of messages that can be requested from a pull consumer</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L42" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1556,7 +1604,7 @@ The maximum number of messages that can be requested from a pull consumer</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L50" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1577,7 +1625,7 @@ The maximum number of messages that can be requested from a pull consumer</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/consumer_config.cr#L40" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/consumer_config.cr#L44" target="_blank">View source</a>]
         
       </div>
     </div>

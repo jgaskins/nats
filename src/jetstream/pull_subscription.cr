@@ -6,6 +6,7 @@ module NATS::JetStream
   class PullSubscription
     getter consumer : Consumer
     @nats : NATS::Client
+    getter? closed = false
 
     def initialize(@consumer, @nats)
     end
@@ -47,7 +48,7 @@ module NATS::JetStream
 
       msgs = Array(Message).new(initial_capacity: message_count)
       total_timeout = timeout
-      finish_by = Time.monotonic + timeout
+      start = Time.instant
 
       message_count.times do |i|
         LOG.trace { "Waiting for message #{i}" }
@@ -55,7 +56,7 @@ module NATS::JetStream
         when msg = channel.receive
           LOG.trace { "received" }
           msgs << msg
-        when timeout(finish_by - Time.monotonic)
+        when timeout(total_timeout - start.elapsed)
           LOG.trace { "timed out" }
           break
         end
@@ -105,6 +106,10 @@ module NATS::JetStream
       # This is an async ack, and then we fetch synchronously
       nats.jetstream.ack msg
       fetch(count, timeout: timeout)
+    end
+
+    def close
+      @closed = true
     end
 
     class InternalError < Error

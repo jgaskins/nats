@@ -123,6 +123,45 @@ describe NATS::JetStream do
     end
   end
 
+  describe "#publish" do
+    test "publishes to streams" do
+      js.publish(write_subject, "").should be_a NATS::JetStream::PubAck
+    end
+
+    it "returns nil if there is no response" do
+      js.publish(UUID.v7.to_s, "").should be_nil
+    end
+
+    test "returns an error if an error was returned from the server" do
+      headers = NATS::Headers{"Nats-Expected-Stream" => "asdf"}
+
+      js.publish(write_subject, "", headers: headers)
+        .should be_a NATS::JetStream::ErrorResponse
+    end
+  end
+
+  describe "#publish!" do
+    test "publishes to streams" do
+      js.publish!(write_subject, "").should be_a NATS::JetStream::PubAck
+    end
+
+    test "raises an error if there is no response" do
+      expect_raises NATS::JetStream::Error do
+        js.publish! UUID.v7.to_s, ""
+      end
+    end
+
+    test "raises an error if an error was returned from the server" do
+      expect_raises NATS::JetStream::Error do
+        # Expecting a stream that doesn't match with the stream we got results
+        # in an error response.
+        headers = NATS::Headers{"Nats-Expected-Stream" => "asdf"}
+
+        js.publish! write_subject, "", headers: headers
+      end
+    end
+  end
+
   it "publishes to streams and reads with push consumers" do
     write_subject = UUID.random.to_s
     stream = create_stream([write_subject])
@@ -301,24 +340,29 @@ describe NATS::JetStream do
   it "can unsubscribe from a consumer within the message block" do
     write_subject = UUID.random.to_s
     stream = create_stream([write_subject])
-    consumer_name = UUID.random.to_s
-    consumer = create_consumer(stream, deliver_subject: consumer_name)
-    3.times do |i|
-      nats.jetstream.publish write_subject, i.to_s
-    end
-    received = 0
 
-    sub = nats.jetstream.subscribe consumer do |msg, subscription|
-      received += 1
-      subscription.close if msg.pending == 0
-    end
-
-    start = Time.monotonic
-    until sub.closed?
-      sleep 10.milliseconds
-      if Time.monotonic - start >= 1.second
-        raise "Timed out waiting for subscription to close. Received #{received} messages"
+    begin
+      consumer_name = UUID.random.to_s
+      consumer = create_consumer(stream, deliver_subject: consumer_name)
+      3.times do |i|
+        nats.jetstream.publish write_subject, i.to_s
       end
+      received = 0
+
+      sub = nats.jetstream.subscribe consumer do |msg, subscription|
+        received += 1
+        subscription.close if msg.pending == 0
+      end
+
+      start = Time.instant
+      until sub.closed?
+        sleep 10.milliseconds
+        if start.elapsed >= 1.second
+          raise "Timed out waiting for subscription to close. Received #{received} messages"
+        end
+      end
+    ensure
+      nats.jetstream.stream.delete stream
     end
   end
 
@@ -509,15 +553,15 @@ describe NATS::JetStream do
             "Nats-Schedule-Target" => "deliver.#{prefix}.foo",
           }
 
-        start = Time.monotonic
+        start = Time.instant
         until received
           sleep 1.millisecond
-          if Time.monotonic - start > 5.seconds
+          if start.elapsed > 5.seconds
             raise "Timed out waiting for message to be received"
           end
         end
         Time.utc.should be_within 50.milliseconds, of: deliver_at
-        (Time.monotonic - start).should be_within 1.second, of: 1.second
+        start.elapsed.should be_within 1.second, of: 1.second
         delivered_subject.should eq "deliver.#{prefix}.foo"
       ensure
         js.stream.delete stream

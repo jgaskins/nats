@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.10.1">
-<meta name="crystal_docs.project_version" content="1.5.0">
+<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="crystal_docs.project_version" content="1.6.0">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::Client - nats 1.5.0</title>
+  <title>NATS::JetStream::Client - nats 1.6.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.5.0
+        1.6.0
       </span>
     </div>
   </div>
@@ -79,6 +79,26 @@
   
   <li class=" " data-id="nats/NATS/Client/State" data-name="nats::client::state">
       <a href="../../NATS/Client/State.html">State</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="nats/NATS/Counter" data-name="nats::counter">
+      <a href="../../NATS/Counter.html">Counter</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/Counter/Error" data-name="nats::counter::error">
+      <a href="../../NATS/Counter/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Counter/MissingCounter" data-name="nats::counter::missingcounter">
+      <a href="../../NATS/Counter/MissingCounter.html">MissingCounter</a>
       
     </li>
   
@@ -771,7 +791,7 @@ You can either instantiate it with a NATS client or with the
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/client.cr#L12" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L13" target="_blank">
         jetstream/client.cr
       </a>
     
@@ -876,6 +896,16 @@ You can either instantiate it with a NATS client or with the
       </li>
     
       <li class="entry-summary">
+        <a href="#publish%28subject%3AString%2Cbody%3AData%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%2Cheaders%3AHeaders%3DHeaders.new%2Cmessage_id%3AString%7CNil%3Dnil%2Cexpected_last_message_id%3AString%7CNil%3Dnil%2Cexpected_last_sequence%3AInt64%7CNil%3Dnil%2Cexpected_stream%3AString%7CNil%3Dnil%2Cexpected_last_subject_sequence%3AInt64%7CNil%3Dnil%2C%26%29-instance-method" class="signature"><strong>#publish</strong>(subject : String, body : Data, timeout : Time::Span = <span class="n">2</span>.seconds, headers : Headers = <span class="t">Headers</span>.new, message_id : String | Nil = <span class="n">nil</span>, expected_last_message_id : String | Nil = <span class="n">nil</span>, expected_last_sequence : Int64 | Nil = <span class="n">nil</span>, expected_stream : String | Nil = <span class="n">nil</span>, expected_last_subject_sequence : Int64 | Nil = <span class="n">nil</span>, &)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#publish%21%28subject%3AString%2Cbody%3AData%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%2Cheaders%3AHeaders%3DHeaders.new%2Cmessage_id%3AString%7CNil%3Dnil%2Cexpected_last_message_id%3AString%7CNil%3Dnil%2Cexpected_last_sequence%3AInt64%7CNil%3Dnil%2Cexpected_stream%3AString%7CNil%3Dnil%2Cexpected_last_subject_sequence%3AInt64%7CNil%3Dnil%29-instance-method" class="signature"><strong>#publish!</strong>(subject : String, body : Data, timeout : Time::Span = <span class="n">2</span>.seconds, headers : Headers = <span class="t">Headers</span>.new, message_id : String | Nil = <span class="n">nil</span>, expected_last_message_id : String | Nil = <span class="n">nil</span>, expected_last_sequence : Int64 | Nil = <span class="n">nil</span>, expected_stream : String | Nil = <span class="n">nil</span>, expected_last_subject_sequence : Int64 | Nil = <span class="n">nil</span>)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#pull_each%28consumer%3AConsumer%2C%2A%2Cbatch_size%3AInt%2C%26%29%3ANil-instance-method" class="signature"><strong>#pull_each</strong>(consumer : Consumer, *, batch_size : Int, &) : Nil</a>
         
           <div class="summary"><p><span class="flag lime">EXPERIMENTAL</span>  NATS JetStream pull subscriptions may be unstable</p></div>
@@ -904,14 +934,14 @@ You can either instantiate it with a NATS client or with the
       </li>
     
       <li class="entry-summary">
-        <a href="#subscribe%28consumer%3AJetStream%3A%3AConsumer%2C%26block%3AMessage-%3E%29-instance-method" class="signature"><strong>#subscribe</strong>(consumer : JetStream::Consumer, &block : Message -> )</a>
+        <a href="#subscribe%28consumer%3AJetStream%3A%3AConsumer%2Cconcurrency%3AInt%3D1%2C%26block%3AMessage%2CSubscription-%3E%29-instance-method" class="signature"><strong>#subscribe</strong>(consumer : JetStream::Consumer, concurrency : Int = <span class="n">1</span>, &block : Message, Subscription -> )</a>
         
           <div class="summary"><p>Subscribe to messages delivered to the given consumer.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#subscribe%28subject%3AString%2Cqueue_group%3AString%7CNil%3Dnil%2C%26block%3AMessage-%3E%29-instance-method" class="signature"><strong>#subscribe</strong>(subject : String, queue_group : String | Nil = <span class="n">nil</span>, &block : Message -> )</a>
+        <a href="#subscribe%28subject%3AString%2Cqueue_group%3AString%7CNil%3Dnil%2Cconcurrency%3AInt%3D1%2C%26block%3AMessage%2CSubscription-%3E%29-instance-method" class="signature"><strong>#subscribe</strong>(subject : String, queue_group : String | Nil = <span class="n">nil</span>, concurrency : Int = <span class="n">1</span>, &block : Message, Subscription -> )</a>
         
           <div class="summary"><p>Subscribe to the given subject with an optional queue group.</p></div>
         
@@ -972,7 +1002,7 @@ You can either instantiate it with a NATS client or with the
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/client.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1017,7 +1047,7 @@ received your acknowledgement, use <code><a href="../../NATS/JetStream/Client.ht
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/client.cr#L132" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L194" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1046,7 +1076,7 @@ server and not simply caught up in the output buffer.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/client.cr#L148" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L210" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1062,7 +1092,7 @@ server and not simply caught up in the output buffer.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/client.cr#L152" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L214" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1084,7 +1114,7 @@ API for consumers.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/client.cr#L24" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L25" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1119,7 +1149,7 @@ than expected.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/client.cr#L189" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L251" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1148,7 +1178,7 @@ when an exception is raised while processing.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/client.cr#L205" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L267" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1178,7 +1208,7 @@ specified.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/client.cr#L222" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L284" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1207,7 +1237,7 @@ NATS server to delay sending it for the given time span.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/client.cr#L245" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L307" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1223,7 +1253,39 @@ NATS server to delay sending it for the given time span.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/client.cr#L28" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L55" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="publish(subject:String,body:Data,timeout:Time::Span=2.seconds,headers:Headers=Headers.new,message_id:String|Nil=nil,expected_last_message_id:String|Nil=nil,expected_last_sequence:Int64|Nil=nil,expected_stream:String|Nil=nil,expected_last_subject_sequence:Int64|Nil=nil,&amp;)-instance-method">
+      <div class="signature">
+        
+        def <strong>publish</strong>(subject : String, body : <a href="../../NATS/Data.html">Data</a>, timeout : Time::Span = <span class="n">2</span>.seconds, headers : <a href="../../NATS/Headers.html">Headers</a> = <span class="t">Headers</span>.new, message_id : String | Nil = <span class="n">nil</span>, expected_last_message_id : String | Nil = <span class="n">nil</span>, expected_last_sequence : Int64 | Nil = <span class="n">nil</span>, expected_stream : String | Nil = <span class="n">nil</span>, expected_last_subject_sequence : Int64 | Nil = <span class="n">nil</span>, &)
+
+        <a class="method-permalink" href="#publish%28subject%3AString%2Cbody%3AData%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%2Cheaders%3AHeaders%3DHeaders.new%2Cmessage_id%3AString%7CNil%3Dnil%2Cexpected_last_message_id%3AString%7CNil%3Dnil%2Cexpected_last_sequence%3AInt64%7CNil%3Dnil%2Cexpected_stream%3AString%7CNil%3Dnil%2Cexpected_last_subject_sequence%3AInt64%7CNil%3Dnil%2C%26%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L81" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="publish!(subject:String,body:Data,timeout:Time::Span=2.seconds,headers:Headers=Headers.new,message_id:String|Nil=nil,expected_last_message_id:String|Nil=nil,expected_last_sequence:Int64|Nil=nil,expected_stream:String|Nil=nil,expected_last_subject_sequence:Int64|Nil=nil)-instance-method">
+      <div class="signature">
+        
+        def <strong>publish!</strong>(subject : String, body : <a href="../../NATS/Data.html">Data</a>, timeout : Time::Span = <span class="n">2</span>.seconds, headers : <a href="../../NATS/Headers.html">Headers</a> = <span class="t">Headers</span>.new, message_id : String | Nil = <span class="n">nil</span>, expected_last_message_id : String | Nil = <span class="n">nil</span>, expected_last_sequence : Int64 | Nil = <span class="n">nil</span>, expected_stream : String | Nil = <span class="n">nil</span>, expected_last_subject_sequence : Int64 | Nil = <span class="n">nil</span>)
+
+        <a class="method-permalink" href="#publish%21%28subject%3AString%2Cbody%3AData%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%2Cheaders%3AHeaders%3DHeaders.new%2Cmessage_id%3AString%7CNil%3Dnil%2Cexpected_last_message_id%3AString%7CNil%3Dnil%2Cexpected_last_sequence%3AInt64%7CNil%3Dnil%2Cexpected_stream%3AString%7CNil%3Dnil%2Cexpected_last_subject_sequence%3AInt64%7CNil%3Dnil%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L29" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1244,7 +1306,7 @@ NATS server to delay sending it for the given time span.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/client.cr#L96" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L158" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1265,7 +1327,7 @@ NATS server to delay sending it for the given time span.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/client.cr#L103" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L165" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1286,7 +1348,7 @@ NATS server to delay sending it for the given time span.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/client.cr#L111" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L173" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1308,17 +1370,17 @@ API for streams.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/client.cr#L18" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L19" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="subscribe(consumer:JetStream::Consumer,&amp;block:Message-&gt;)-instance-method">
+    <div class="entry-detail" id="subscribe(consumer:JetStream::Consumer,concurrency:Int=1,&amp;block:Message,Subscription-&gt;)-instance-method">
       <div class="signature">
         
-        def <strong>subscribe</strong>(consumer : <a href="../../NATS/JetStream/Consumer.html">JetStream::Consumer</a>, &block : <a href="../../NATS/JetStream/Message.html">Message</a> -> )
+        def <strong>subscribe</strong>(consumer : <a href="../../NATS/JetStream/Consumer.html">JetStream::Consumer</a>, concurrency : Int = <span class="n">1</span>, &block : <a href="../../NATS/JetStream/Message.html">Message</a>, <a href="../../NATS/Subscription.html">Subscription</a> -> )
 
-        <a class="method-permalink" href="#subscribe%28consumer%3AJetStream%3A%3AConsumer%2C%26block%3AMessage-%3E%29-instance-method">#</a>
+        <a class="method-permalink" href="#subscribe%28consumer%3AJetStream%3A%3AConsumer%2Cconcurrency%3AInt%3D1%2C%26block%3AMessage%2CSubscription-%3E%29-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1339,17 +1401,17 @@ js.subscribe consumer <span class="k">do</span> <span class="o">|</span>msg<span
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/client.cr#L64" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L123" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="subscribe(subject:String,queue_group:String|Nil=nil,&amp;block:Message-&gt;)-instance-method">
+    <div class="entry-detail" id="subscribe(subject:String,queue_group:String|Nil=nil,concurrency:Int=1,&amp;block:Message,Subscription-&gt;)-instance-method">
       <div class="signature">
         
-        def <strong>subscribe</strong>(subject : String, queue_group : String | Nil = <span class="n">nil</span>, &block : <a href="../../NATS/JetStream/Message.html">Message</a> -> )
+        def <strong>subscribe</strong>(subject : String, queue_group : String | Nil = <span class="n">nil</span>, concurrency : Int = <span class="n">1</span>, &block : <a href="../../NATS/JetStream/Message.html">Message</a>, <a href="../../NATS/Subscription.html">Subscription</a> -> )
 
-        <a class="method-permalink" href="#subscribe%28subject%3AString%2Cqueue_group%3AString%7CNil%3Dnil%2C%26block%3AMessage-%3E%29-instance-method">#</a>
+        <a class="method-permalink" href="#subscribe%28subject%3AString%2Cqueue_group%3AString%7CNil%3Dnil%2Cconcurrency%3AInt%3D1%2C%26block%3AMessage%2CSubscription-%3E%29-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1370,7 +1432,7 @@ js.subscribe <span class="s">&quot;orders.*&quot;</span>, queue_group: <span cla
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.5.0/src/jetstream/client.cr#L87" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.6.0/src/jetstream/client.cr#L149" target="_blank">View source</a>]
         
       </div>
     </div>
