@@ -587,8 +587,12 @@ module NATS
     #   response.data.empty?
     # end
     # ```
-    def request_many(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil, *, flush = true, &) : Array(Message)
-      replies = Array(Message).new
+    #
+    # NOTE: The sentinel message is not included in the array of messages
+    # returned by the method. It doesn't count as a reply. You should always
+    # send all of your replies and then send an *additional* sentinel message.
+    @[Experimental]
+    def request_many(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil, *, flush = true, &) : Nil
       channel = Channel(Message).new(10)
       inbox = @nuid.next
       key = "#{@inbox_prefix}.#{inbox}"
@@ -607,19 +611,16 @@ module NATS
           when msg = channel.receive?
             if msg
               unless msg.body.empty? && msg.headers.try(&.["Status"]?) == "503"
-                if yield msg
-                  return replies
-                end
-                replies << msg
+                yield msg
               end
             end
             if Time.monotonic - start >= original_timeout
-              return replies
+              return
             end
             timeout = original_timeout - (Time.monotonic - start)
           when timeout(timeout)
             channel.close
-            return replies
+            return
           end
         end
       ensure

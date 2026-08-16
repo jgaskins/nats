@@ -301,13 +301,17 @@ describe NATS do
         10.times do |i|
           nats.reply msg, i.to_s
         end
+        # Our sentinel message has a "stop" header
         nats.reply msg, headers: NATS::Headers{"stop" => "true"}
       end
 
-      responses = nats.request_many subject do |response|
-        response.headers["stop"]?
+      responses = [] of NATS::Message
+      nats.request_many subject do |response|
+        break if response.headers["stop"]?
+        responses << response
       end
 
+      # Sentinel message is not included in the response array
       responses.size.should eq 10
     end
   end
