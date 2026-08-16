@@ -289,7 +289,7 @@ module NATS
         spawn name: "NATS::Client#begin_outbound (#{object_id})" { begin_outbound }
         spawn name: "NATS::Client#begin_inbound (#{object_id})" { begin_inbound }
 
-        inbox_subject = "#{@inbox_prefix}.*"
+        inbox_subject = "#{@inbox_prefix}.>"
         LOG.trace { "Subscribing to inbox: #{inbox_subject}" }
         subscribe inbox_subject do |msg|
           if handler = get_handler(msg.subject)
@@ -435,6 +435,203 @@ module NATS
       end
     end
 
+    # Make a synchronous request to subscribers of the given `subject`, waiting
+    # up to `timeout` for responses from any of the subscribers. The first
+    # `max_replies` messages to come back will be returned. If fewer replies are
+    # received before the `timeout` elapses, only those will be returned.
+    #
+    # ```
+    # orders = nats.request_many("orders.info.#{order_id}", max_replies: 10).map do |response|
+    #   Order.from_json(response.data_string)
+    # end
+    # ```
+    @[Experimental]
+    def request_many(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil, *, max_replies : Int32, flush = true) : Array(Message)
+      if max_replies.negative?
+        raise ArgumentError.new("max_replies must not be negative")
+      end
+
+      replies = Array(Message).new(max_replies)
+      channel = Channel(Message).new(3)
+      inbox = @nuid.next
+      key = "#{@inbox_prefix}.#{inbox}"
+      add_handler key do |msg|
+        channel.send msg unless channel.closed?
+      end
+      publish subject, message, reply_to: key, headers: headers
+      original_timeout = timeout
+
+      flush! if flush
+
+      start = Time.instant
+      begin
+        loop do
+          select
+          when msg = channel.receive?
+            if msg
+              unless msg.body.empty? && msg.headers.try(&.["Status"]?) == "503"
+                replies << msg
+              end
+            end
+            if replies.size >= max_replies || start.elapsed >= original_timeout
+              return replies
+            end
+            timeout = original_timeout - start.elapsed
+          when timeout(timeout)
+            channel.close
+            return replies
+          end
+        end
+      ensure
+        remove_handler key
+      end
+    end
+
+    # Send all `messages` and wait up to `timeout` for all of them to return.
+    # The method returns the responses for each request message in the original
+    # order. Requests that received no reply before `timeout` elapsed will have
+    # a `nil` response.
+    @[Experimental]
+    def request_many(messages : Enumerable(Message), timeout : Time::Span = 2.seconds, flush = true)
+      channel = Channel({Message, Int32}).new(messages.size)
+      replies = Array(Message?).new(messages.size) { nil }
+      inbox_prefix = "#{@inbox_prefix}.#{UUID.v7}"
+      handler_keys = [] of String
+      begin
+        @handler_mutex.synchronize do
+          messages.each_with_index do |message, index|
+            reply_subject = "#{inbox_prefix}.#{index}"
+            handler_keys << reply_subject
+
+            add_handler reply_subject do |msg|
+              channel.send({msg, index})
+            end
+            message.reply_to = reply_subject
+            publish message
+          end
+        end
+        flush! if flush
+
+        start = Time.instant
+        messages.size.times do
+          remaining = timeout - start.elapsed
+
+          select
+          when reply = channel.receive
+            msg, index = reply
+            replies[index] = msg
+          when timeout(timeout)
+            break
+          end
+        end
+
+        replies
+      ensure
+        @handler_mutex.synchronize do
+          handler_keys.each do |key|
+            remove_handler key
+          end
+        end
+      end
+    end
+
+    # Make a synchronous request to subscribers of the given `subject`,
+    # receiving as many messages as are sent until `stall_timeout` has passed
+    # without receiving any messages. If no replies are received before the
+    # `stall_timeout` elapses, the return value will be empty.
+    #
+    # ```
+    # orders = nats.request("orders.info.#{order_id}", stall_timeout: 2.seconds).map do |response|
+    #   Order.from_json(response.data_string)
+    # end
+    # ```
+    @[Experimental]
+    def request_many(subject : String, message : Data = "", headers : Headers? = nil, *, stall_timeout : Time::Span = 2.seconds, flush = true) : Array(Message)
+      if stall_timeout.negative?
+        raise ArgumentError.new("stall_timeout must not be negative")
+      end
+      replies = Array(Message).new
+      channel = Channel(Message).new(1)
+      inbox = @nuid.next
+      key = "#{@inbox_prefix}.#{inbox}"
+      add_handler key do |msg|
+        channel.send msg unless channel.closed?
+      end
+      publish subject, message, reply_to: key, headers: headers
+      flush! if flush
+
+      begin
+        loop do
+          select
+          when msg = channel.receive?
+            if msg
+              unless msg.body.empty? && msg.headers.try(&.["Status"]?) == "503"
+                replies << msg
+              end
+            end
+          when timeout(stall_timeout)
+            channel.close
+            return replies
+          end
+        end
+      ensure
+        remove_handler key
+      end
+    end
+
+    # Make a synchronous request to subscribers of the given `subject`, waiting
+    # up to `timeout` for responses from any of the subscribers and yielding
+    # each message to the given block to check for a sentinel message. The first
+    # message that returns `true` for the block will terminate the request and
+    # return all messages received up to that point.
+    #
+    # ```
+    # orders = nats.request_many("orders.info.#{order_id}") do |response|
+    #   # Our sentinel message will be empty
+    #   response.data.empty?
+    # end
+    # ```
+    #
+    # NOTE: The sentinel message is not included in the array of messages
+    # returned by the method. It doesn't count as a reply. You should always
+    # send all of your replies and then send an *additional* sentinel message.
+    @[Experimental]
+    def request_many(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil, *, flush = true, &) : Nil
+      channel = Channel(Message).new(10)
+      inbox = @nuid.next
+      key = "#{@inbox_prefix}.#{inbox}"
+      add_handler key do |msg|
+        channel.send msg unless channel.closed?
+      end
+      publish subject, message, reply_to: key, headers: headers
+      original_timeout = timeout
+
+      flush! if flush
+
+      start = Time.instant
+      begin
+        loop do
+          select
+          when msg = channel.receive?
+            if msg
+              unless msg.body.empty? && msg.headers.try(&.["Status"]?) == "503"
+                yield msg
+              end
+            end
+            if start.elapsed >= original_timeout
+              return
+            end
+            timeout = original_timeout - start.elapsed
+          when timeout(timeout)
+            channel.close
+            return
+          end
+        end
+      ensure
+        remove_handler key
+      end
+    end
+
     # Make an asynchronous request to subscribers of the given `subject`, not
     # waiting for a response. The first message to come back will be passed to
     # the block.
@@ -447,12 +644,9 @@ module NATS
       end
       publish subject, message, reply_to: key
 
-      spawn remove_key(key, after: timeout)
-    end
-
-    private def remove_key(key, after timeout)
-      sleep timeout
-      @inbox_handlers.delete key
+      # TODO: Don't spin up a new fiber for each async request. We should figure
+      # out a way to only have one fiber handling all async requests.
+      spawn remove_handler(key, after: timeout)
     end
 
     private def add_handler(key : String, &block : Message ->) : Nil
@@ -467,7 +661,9 @@ module NATS
       end
     end
 
-    private def remove_handler(key : String) : Nil
+    private def remove_handler(key : String, after timeout : Time::Span? = nil) : Nil
+      sleep timeout if timeout
+
       @handler_mutex.synchronize do
         @inbox_handlers.delete key
       end
@@ -494,6 +690,10 @@ module NATS
       else
         raise NotAReply.new("Cannot reply to a message that has no return address", msg)
       end
+    end
+
+    protected def publish(msg : Message)
+      publish msg.subject, msg.data, reply_to: msg.reply_to, headers: msg.headers
     end
 
     # Publish the given message body (either `Bytes` for binary data or `String` for text) on the given NATS subject, optionally supplying a `reply_to` subject (if expecting a reply or to notify the receiver where to send updates) and any `headers`.

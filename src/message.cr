@@ -4,6 +4,7 @@ module NATS
   struct Message
     getter subject : String
     getter reply_to : String?
+    protected setter reply_to
     getter headers : Headers { Headers.new }
     getter data_string : String
 
