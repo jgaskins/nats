@@ -210,7 +210,6 @@ describe NATS do
     end
 
     it "can make many requests and receive a reply for some of them" do
-
       subjects = Array.new(10) { "temp.#{UUID.v4}" }
       subjects.each_with_index do |subject, index|
         nats.subscribe subject do |msg|
