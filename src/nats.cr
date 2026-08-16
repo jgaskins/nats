@@ -462,7 +462,7 @@ module NATS
 
       flush! if flush
 
-      start = Time.monotonic
+      start = Time.instant
       begin
         loop do
           select
@@ -472,10 +472,10 @@ module NATS
                 replies << msg
               end
             end
-            if replies.size >= max_replies || Time.monotonic - start >= original_timeout
+            if replies.size >= max_replies || start.elapsed >= original_timeout
               return replies
             end
-            timeout = original_timeout - (Time.monotonic - start)
+            timeout = original_timeout - start.elapsed
           when timeout(timeout)
             channel.close
             return replies
@@ -506,10 +506,9 @@ module NATS
         end
         flush! if flush
 
-        start = Time.monotonic
+        start = Time.instant
         messages.size.times do
-          elapsed = Time.monotonic - start
-          remaining = timeout - elapsed
+          remaining = timeout - start.elapsed
 
           select
           when reply = channel.receive
@@ -552,10 +551,8 @@ module NATS
         channel.send msg unless channel.closed?
       end
       publish subject, message, reply_to: key, headers: headers
-
       flush! if flush
 
-      start = Time.monotonic
       begin
         loop do
           select
@@ -604,7 +601,7 @@ module NATS
 
       flush! if flush
 
-      start = Time.monotonic
+      start = Time.instant
       begin
         loop do
           select
@@ -614,10 +611,10 @@ module NATS
                 yield msg
               end
             end
-            if Time.monotonic - start >= original_timeout
+            if start.elapsed >= original_timeout
               return
             end
-            timeout = original_timeout - (Time.monotonic - start)
+            timeout = original_timeout - start.elapsed
           when timeout(timeout)
             channel.close
             return
