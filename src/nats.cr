@@ -445,6 +445,7 @@ module NATS
     #   Order.from_json(response.data_string)
     # end
     # ```
+    @[Experimental]
     def request_many(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil, *, max_replies : Int32, flush = true) : Array(Message)
       if max_replies.negative?
         raise ArgumentError.new("max_replies must not be negative")
@@ -482,10 +483,15 @@ module NATS
           end
         end
       ensure
-        @inbox_handlers.delete key
+        remove_handler key
       end
     end
 
+    # Send all `messages` and wait up to `timeout` for all of them to return.
+    # The method returns the responses for each request message in the original
+    # order. Requests that received no reply before `timeout` elapsed will have
+    # a `nil` response.
+    @[Experimental]
     def request_many(messages : Enumerable(Message), timeout : Time::Span = 2.seconds, flush = true)
       channel = Channel({Message, Int32}).new(messages.size)
       replies = Array(Message?).new(messages.size) { nil }
@@ -539,6 +545,7 @@ module NATS
     #   Order.from_json(response.data_string)
     # end
     # ```
+    @[Experimental]
     def request_many(subject : String, message : Data = "", headers : Headers? = nil, *, stall_timeout : Time::Span = 2.seconds, flush = true) : Array(Message)
       if stall_timeout.negative?
         raise ArgumentError.new("stall_timeout must not be negative")
