@@ -244,7 +244,9 @@ describe NATS do
         end
       end
 
-      responses = nats.request_many subject, "", max_replies: 10, timeout: 50.milliseconds
+      responses = nats.request_many subject,
+        max_replies: 10,
+        timeout: 50.milliseconds
 
       responses.size.should eq 9
     end
