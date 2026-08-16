@@ -289,7 +289,7 @@ module NATS
       end
     end
 
-    class Client
+    struct Client
       def initialize(@nats : ::NATS::Client)
       end
 
