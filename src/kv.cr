@@ -227,8 +227,27 @@ module NATS
         @kv.keys(name, pattern)
       end
 
-      def each_key(pattern : String = ">", &)
-        @kv.each_key(name, pattern) { |key| yield key }
+      def each_key(pattern : String = ">", &) : Nil
+        each(pattern: pattern) { |entry| yield entry.key }
+      end
+
+      def each_value(pattern : String = ">", &) : Nil
+        each(pattern: pattern) { |entry| yield entry.value }
+      end
+
+      def each_value_string(pattern : String = ">", &) : Nil
+        each(pattern: pattern) { |entry| yield entry.value_string }
+      end
+
+      def each(pattern : String = ">", *, ignore_deletes = true, include_history = false, &)
+        @kv.each(
+          bucket: name,
+          pattern: pattern,
+          ignore_deletes: ignore_deletes,
+          include_history: include_history,
+        ) do |entry|
+          yield entry
+        end
       end
 
       # Get the history
@@ -528,13 +547,18 @@ module NATS
         keys
       end
 
-      def each_key(bucket : String, pattern : String = ">", &) : Nil
+      def each(bucket : String, pattern : String = ">", ignore_deletes = true, include_history = false, &) : Nil
         validate_bucket! bucket
         validate_pattern! pattern
 
-        watch = watch(bucket, pattern, include_history: false)
+        return unless get(bucket, pattern, ignore_deletes: ignore_deletes)
+
+        watch = watch bucket, pattern,
+          ignore_deletes: ignore_deletes,
+          include_history: include_history
+
         watch.each do |entry|
-          yield entry.key if entry.operation.put?
+          yield entry if entry.operation.put? || !ignore_deletes
           watch.stop if entry.latest?
         end
       end
