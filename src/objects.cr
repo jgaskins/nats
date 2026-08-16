@@ -243,7 +243,7 @@ module NATS
       def keys(bucket : String, pattern : String = ">") : Set(String)
         keys = Set(String).new
 
-        each_entry do |msg|
+        each_entry bucket, pattern do |msg|
           keys << msg.name unless msg.deleted?
         end
 
