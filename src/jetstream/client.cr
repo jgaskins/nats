@@ -37,7 +37,7 @@ module NATS::JetStream
       expected_stream : String? = nil,
       expected_last_subject_sequence : Int64? = nil,
     )
-      publish(
+      result = publish(
         subject: subject,
         body: body,
         timeout: timeout,
@@ -48,7 +48,13 @@ module NATS::JetStream
         expected_stream: expected_stream,
         expected_last_subject_sequence: expected_last_subject_sequence,
       ) do |response|
-        raise Error.new(parsed.error.description)
+        raise Error.new(response.error.description)
+      end
+
+      if result
+        result
+      else
+        raise Error.new("No response from NATS server. There may be no stream listening on subject #{subject.inspect}.")
       end
     end
 
@@ -97,12 +103,16 @@ module NATS::JetStream
       headers["Nats-Expected-Last-Subject-Sequence"] = expected_last_subject_sequence.to_s if expected_last_subject_sequence
 
       if response = @nats.request(subject, body, timeout: timeout, headers: headers)
-        case parsed = (PubAck | ErrorResponse).from_json(String.new(response.body))
-        in PubAck
-          parsed
-        in ErrorResponse
-          yield parsed
+        # The response is technically `PubAck | ErrorResponse`, but
+        # `Union.from_json` where multiple types in the union are not primitive
+        # types (like in this case where both are objects) goes through a slow
+        # path that works basically like this, but this uses 1-2 orders of
+        # magnitude less CPU time in the typical case.
+        if response.data_string.includes? %{"error":}
+          return yield ErrorResponse.from_json(response.data_string)
         end
+
+        PubAck.from_json(response.data_string)
       end
     end
 
