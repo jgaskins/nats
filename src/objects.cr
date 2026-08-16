@@ -243,19 +243,25 @@ module NATS
       def keys(bucket : String, pattern : String = ">") : Set(String)
         keys = Set(String).new
 
-        # If there are no messages in the stream with this pattern, just return
-        # the empty set of keys. Otherwise, we will end up sitting here waiting
-        # for keys to come streaming in.
-        return keys if get_info(bucket, pattern: pattern).nil?
-
-        # Look at all the keys in the current bucket
-        watch bucket, pattern: pattern do |msg, watch|
-          keys << msg.name
-
-          watch.stop if watch.pending == 0
+        each_entry do |msg|
+          keys << msg.name unless msg.deleted?
         end
 
         keys
+      end
+
+      def each_entry(bucket : String, pattern : String = ">", &block : ObjectInfo ->) : Nil
+        # If there are no messages in the stream with this pattern, just return
+        # the empty set of keys. Otherwise, we will end up sitting here waiting
+        # for keys to come streaming in.
+        return if get_info(bucket, pattern: pattern).nil?
+
+        # Look at all the keys in the current bucket
+        watch bucket, pattern: pattern do |msg, watch|
+          block.call msg
+
+          watch.stop if watch.pending == 0
+        end
       end
 
       def watch(
