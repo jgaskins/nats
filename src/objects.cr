@@ -298,6 +298,7 @@ module NATS
 
           _, bucket_name, _, key_name = msg.subject.split('.', 4)
           info = ObjectInfo.from_json msg.data_string
+          info.mtime = js_msg.timestamp
 
           block.call info, watch
         end
@@ -334,7 +335,7 @@ module NATS
         getter nuid : String
         getter size : Int64
         # TODO: Don't store this, it should be set via the message timestamp
-        property mtime : Time
+        property mtime : Time = Time.unix(0)
         getter chunks : Int32
         getter digest : String?
         getter deleted : Bool?
