@@ -735,8 +735,22 @@ module NATS
       if subject.includes? ' '
         raise ArgumentError.new("Cannot publish to a subject that contains a space")
       end
-      if message.bytesize > @server_info.max_payload
-        raise Error.new("Attempted to publish message of size #{message.bytesize}. Cannot publish messages larger than #{@server_info.max_payload}.")
+
+      if headers
+        nats_header_preamble = "NATS/1.0\r\n"
+        initial_header_length = nats_header_preamble.bytesize + 2 # 2 extra bytes for final CR+LF
+        header_length = headers.reduce(initial_header_length) do |bytes, (key, values)|
+          values.each do |value|
+            bytes += key.bytesize + value.bytesize + 4 # 2 extra bytes for ": " and 2 for CR+LF
+          end
+          bytes
+        end
+      else
+        header_length = 0
+      end
+
+      if message.bytesize + header_length > @server_info.max_payload
+        raise Error.new("Payload exceeds maximum size allowed by the NATS server")
       end
 
       LOG.debug { "Publishing #{message.bytesize} bytes to #{subject.inspect}, reply_to: #{reply_to.inspect}, headers: #{headers.inspect}" }
@@ -753,14 +767,6 @@ module NATS
         end
 
         if headers
-          nats_header_preamble = "NATS/1.0\r\n"
-          initial_header_length = nats_header_preamble.bytesize + 2 # 2 extra bytes for final CR+LF
-          header_length = headers.reduce(initial_header_length) do |bytes, (key, values)|
-            values.each do |value|
-              bytes += key.bytesize + value.bytesize + 4 # 2 extra bytes for ": " and 2 for CR+LF
-            end
-            bytes
-          end
           @io << ' ' << header_length
           @io << ' ' << header_length + message.bytesize << "\r\n"
           @io << nats_header_preamble

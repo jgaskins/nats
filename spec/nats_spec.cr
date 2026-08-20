@@ -33,6 +33,19 @@ describe NATS do
     end
   end
 
+  it "raises NATS::Error if the message payload is too large for the server" do
+    expect_raises NATS::Error do
+      nats.publish "foo", "a" * (nats.server_info.max_payload + 1)
+    end
+  end
+
+  it "raises NATS::Error if the message payload and headers combined are too large for the server" do
+    expect_raises NATS::Error do
+      nats.publish "foo", "a" * (nats.server_info.max_payload - 10),
+        headers: NATS::Headers{"extra" => "trying to exceed the limit"}
+    end
+  end
+
   it "can set message headers without a reply-to" do
     subject = "temp.#{UUID.random}"
     headers = nil
