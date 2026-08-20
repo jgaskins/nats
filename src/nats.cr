@@ -692,6 +692,39 @@ module NATS
       end
     end
 
+    # Publish the given message body (either `Bytes` for binary data or `String` for text) on the given NATS subject, optionally supplying a `reply_to` subject (if expecting a reply or to notify the receiver where to send updates) and any `headers`.
+    #
+    # ```
+    # # Send an empty message to a subject
+    # nats.publish "hello"
+    #
+    # # Serialize an object to a subject
+    # nats.publish "orders.#{order.id}", order.to_json
+    #
+    # # Tell a recipient where to send results. For example, to stream results
+    # # to a given subject:
+    # reply_subject = "replies.orders.list.customer.123"
+    # orders = [] of Order
+    # nats.subscribe reply_subject do |msg|
+    #   case result = (Order | Complete).from_json(String.new(msg.body))
+    #   in Order
+    #     orders << result
+    #   in Complete
+    #     nats.unsubscribe reply_subject
+    #   end
+    # end
+    # nats.publish "orders.list.customer.123", reply_to: reply_subject
+    #
+    # # Publish a message to NATS JetStream with a message-deduplication header
+    # # for idempotency:
+    # nats.jetstream.subscribe consumer_subject, queue_group: "my-service" do |msg|
+    #   # ...
+    # end
+    # nats.publish orders_subject, order.to_json, headers: NATS::Message::Headers{
+    #   # Deduplicate using the equivalent of a cache key
+    #   "Nats-Msg-Id" => "order-submitted-#{order.id}-#{order.updated_at.to_json}",
+    # }
+    # ```
     protected def publish(msg : Message)
       publish msg.subject, msg.data, reply_to: msg.reply_to, headers: msg.headers
     end
@@ -729,7 +762,45 @@ module NATS
     #   "Nats-Msg-Id" => "order-submitted-#{order.id}-#{order.updated_at.to_json}",
     # }
     # ```
-    def publish(subject : String, message : Data = Bytes.empty, reply_to : String? = nil, headers : Message::Headers? = nil) : Nil
+    @[Deprecated("Use the `publish` method where the payload is called `data`. This matches NATS clients in other languages.")]
+    def publish(subject : String, *, message : Data = Bytes.empty, reply_to : String? = nil, headers : Message::Headers? = nil) : Nil
+      publish subject, message, reply_to, headers
+    end
+
+    # Publish the given message body (either `Bytes` for binary data or `String` for text) on the given NATS subject, optionally supplying a `reply_to` subject (if expecting a reply or to notify the receiver where to send updates) and any `headers`.
+    #
+    # ```
+    # # Send an empty message to a subject
+    # nats.publish "hello"
+    #
+    # # Serialize an object to a subject
+    # nats.publish "orders.#{order.id}", order.to_json
+    #
+    # # Tell a recipient where to send results. For example, to stream results
+    # # to a given subject:
+    # reply_subject = "replies.orders.list.customer.123"
+    # orders = [] of Order
+    # nats.subscribe reply_subject do |msg|
+    #   case result = (Order | Complete).from_json(String.new(msg.body))
+    #   in Order
+    #     orders << result
+    #   in Complete
+    #     nats.unsubscribe reply_subject
+    #   end
+    # end
+    # nats.publish "orders.list.customer.123", reply_to: reply_subject
+    #
+    # # Publish a message to NATS JetStream with a message-deduplication header
+    # # for idempotency:
+    # nats.jetstream.subscribe consumer_subject, queue_group: "my-service" do |msg|
+    #   # ...
+    # end
+    # nats.publish orders_subject, order.to_json, headers: NATS::Message::Headers{
+    #   # Deduplicate using the equivalent of a cache key
+    #   "Nats-Msg-Id" => "order-submitted-#{order.id}-#{order.updated_at.to_json}",
+    # }
+    # ```
+    def publish(subject : String, data : Data = Bytes.empty, reply_to : String? = nil, headers : Message::Headers? = nil) : Nil
       validate_publish_subject! subject
 
       if subject.includes? ' '
@@ -749,11 +820,11 @@ module NATS
         header_length = 0
       end
 
-      if message.bytesize + header_length > @server_info.max_payload
+      if data.bytesize + header_length > @server_info.max_payload
         raise Error.new("Payload exceeds maximum size allowed by the NATS server")
       end
 
-      LOG.debug { "Publishing #{message.bytesize} bytes to #{subject.inspect}, reply_to: #{reply_to.inspect}, headers: #{headers.inspect}" }
+      LOG.debug { "Publishing #{data.bytesize} bytes to #{subject.inspect}, reply_to: #{reply_to.inspect}, headers: #{headers.inspect}" }
       write do
         if headers
           @io << "HPUB "
@@ -768,7 +839,7 @@ module NATS
 
         if headers
           @io << ' ' << header_length
-          @io << ' ' << header_length + message.bytesize << "\r\n"
+          @io << ' ' << header_length + data.bytesize << "\r\n"
           @io << nats_header_preamble
           headers.each do |key, values|
             values.each do |value|
@@ -777,10 +848,10 @@ module NATS
           end
           @io << "\r\n"
         else
-          @io << ' ' << message.bytesize << "\r\n"
+          @io << ' ' << data.bytesize << "\r\n"
         end
 
-        @io.write message.to_slice
+        @io.write data.to_slice
         @io << "\r\n"
       end
     end
