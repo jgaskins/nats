@@ -234,7 +234,7 @@ module NATS
           # request doesn't return object metadata for an object that has
           # already been deleted.
           @nats.publish "$O.#{bucket}.M.#{sanitize_key(key)}",
-            message: info.to_json,
+            data: info.to_json,
             headers: info.headers
           @nats.jetstream.stream.purge stream_name, subject: chunk_subject
         end

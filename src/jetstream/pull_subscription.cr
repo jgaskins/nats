@@ -37,7 +37,7 @@ module NATS::JetStream
       end
 
       @nats.publish "$JS.API.CONSUMER.MSG.NEXT.#{consumer.stream_name}.#{consumer.name}",
-        message: {
+        data: {
           expires: {(timeout - 100.milliseconds).total_nanoseconds, 0}
             .max
             .to_i64,
