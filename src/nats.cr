@@ -649,19 +649,19 @@ module NATS
       spawn remove_handler(key, after: timeout)
     end
 
-    private def add_handler(key : String, &block : Message ->) : Nil
+    protected def add_handler(key : String, &block : Message ->) : Nil
       @handler_mutex.synchronize do
         @inbox_handlers[key] = block
       end
     end
 
-    private def get_handler(key : String) : (Message ->)?
+    protected def get_handler(key : String) : (Message ->)?
       @handler_mutex.synchronize do
         @inbox_handlers[key]?
       end
     end
 
-    private def remove_handler(key : String, after timeout : Time::Span? = nil) : Nil
+    protected def remove_handler(key : String, after timeout : Time::Span? = nil) : Nil
       sleep timeout if timeout
 
       @handler_mutex.synchronize do

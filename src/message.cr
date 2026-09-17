@@ -25,5 +25,14 @@ module NATS
     def body
       data
     end
+
+    protected def with_reply_to(reply_to : String?)
+      self.class.new(
+        subject: subject,
+        data: data_string,
+        reply_to: reply_to,
+        headers: headers,
+      )
+    end
   end
 end

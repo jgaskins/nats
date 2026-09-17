@@ -116,6 +116,60 @@ module NATS::JetStream
       end
     end
 
+    def publish(
+      messages : Enumerable(NATS::Message),
+      timeout : Time::Span = 2.seconds,
+      flush = true,
+    ) : Array({NATS::Message, PubAck | ErrorResponse | Nil})
+      responses = messages.map do |msg|
+        # TODO: Make `Client#add_handler` automatically apply the prefix. It
+        # doesn't work without this exact prefix anyway, so that method should
+        # prepend it for us.
+        reply_to = "#{@nats.@inbox_prefix}.#{NUID.next}"
+        msg = msg.with_reply_to(reply_to)
+
+        {msg, nil}.as({NATS::Message, PubAck | ErrorResponse | Nil})
+      end
+      channel = Channel({NATS::Message, PubAck | ErrorResponse | Nil, Int32}).new
+
+      responses.each_with_index do |(msg), index|
+        reply_to = msg.reply_to.not_nil!
+
+        @nats.add_handler reply_to do |reply|
+          if reply.data_string.includes? %{"error":}
+            response = ErrorResponse.from_json(reply.data_string)
+          else
+            response = PubAck.from_json(reply.data_string)
+          end
+          channel.send({
+            msg,
+            response,
+            index,
+          })
+        end
+
+        @nats.publish msg
+      end
+      @nats.flush! if flush
+
+      start = Time.instant
+      responses.size.times do
+        remaining = timeout - start.elapsed
+        select
+        when element = channel.receive
+          request, response, index = element
+          responses[index] = {request, response}
+        when timeout(remaining)
+          break
+        end
+      end
+      responses.each do |(msg)|
+        @nats.remove_handler msg.reply_to.not_nil!
+      end
+
+      responses
+    end
+
     # Subscribe to messages delivered to the given consumer. Note that this
     # consumer _must_ be a push-based consumer. Pull-based consumers do not
     # allow subscriptions because you must explicitly request the next
