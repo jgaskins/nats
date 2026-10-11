@@ -138,6 +138,36 @@ describe NATS::JetStream do
       js.publish(write_subject, "", headers: headers)
         .should be_a NATS::JetStream::ErrorResponse
     end
+
+    test "publishes many messages and returns an array of responses" do
+      requests = [
+        NATS::Message.new(
+          subject: write_subject,
+          data: "1",
+        ),
+        NATS::Message.new(
+          # Returns nothing because we're publishing to a nonsense subject
+          subject: UUID.v7.to_s,
+          data: "2",
+        ),
+        NATS::Message.new(
+          subject: write_subject,
+          data: "3",
+          # Returns an error because we're not publishing to this stream
+          headers: NATS::Headers{"Nats-Expected-Stream" => "asdf"},
+        ),
+      ]
+
+      responses = js.publish requests, timeout: 10.milliseconds
+
+      responses.size.should eq 3
+      responses[0][0].data_string.should eq "1"
+      responses[0][1].should be_a NATS::JetStream::PubAck
+      responses[1][0].data_string.should eq "2"
+      responses[1][1].should be_nil
+      responses[2][0].data_string.should eq "3"
+      responses[2][1].should be_a NATS::JetStream::ErrorResponse
+    end
   end
 
   describe "#publish!" do
