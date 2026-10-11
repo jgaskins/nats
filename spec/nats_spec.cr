@@ -1,4 +1,5 @@
 require "./spec_helper"
+require "./support/fake_nats_server"
 require "../src/nats"
 require "uuid"
 require "wait_group"
@@ -491,66 +492,344 @@ describe NATS do
     end
   end
 
-  it "reconnects if we hit too many pings" do
-    fake_nats_server = TCPServer.new("127.0.0.1", port: 0)
-    spawn do
-      until fake_nats_server.closed?
-        if client = fake_nats_server.accept?
-          client << "INFO "
-          {
-            server_id:   "lol",
-            server_name: "fake",
-            version:     "1.2.3.4",
-            go:          "fish",
-            host:        "0.0.0.0",
-            port:        0,
-            headers:     true,
-            max_payload: 2**20,
-            proto:       1,
-            client_id:   Random::Secure.rand(UInt64),
-          }.to_json client
-          client << "\r\n"
+  describe "connection handling" do
+    it "reconnects after too many unanswered pings and then stays connected" do
+      server = FakeNATSServer.new
+      # Only the handshake PING gets a PONG until we say otherwise
+      server.respond_to_pings = false
+      n = NATS::Client.new(
+        uri: server.uri,
+        ping_interval: 20.milliseconds,
+        max_pings_out: 2,
+      )
+      disconnects = 0
+      pings = 0
+      n.on_ping { pings += 1 }
+      n.on_disconnect do
+        disconnects += 1
+        # Behave properly on the new connection
+        server.respond_to_pings = true
+      end
 
-          # Read the CONNECT line
-          client.read_line.should start_with "CONNECT "
-          # Read the initial ping
-          client.read_line.should eq "PING"
-          # Respond to the initial ping to complete the handshake
-          client << "PONG\r\n"
-        end
+      begin
+        server.wait_for_connections 2
+        # We only disconnect once we have more than max_pings_out unanswered
+        pings.should be >= 3
+        disconnects.should eq 1
+        wait_for(description: "reconnect") { n.state.connected? }
+
+        # Now that pings are answered, we should stay connected for many ping
+        # intervals without reconnecting again.
+        sleep 200.milliseconds
+        n.state.connected?.should eq true
+        disconnects.should eq 1
+        server.connection_count.should eq 2
+        n.flush timeout: 1.second
+      ensure
+        n.close
+        server.close
       end
     end
 
-    n = NATS::Client.new(
-      uri: URI.parse("nats://#{fake_nats_server.local_address.address}:#{fake_nats_server.local_address.port}"),
-      # The fake NATS server does not respond to pings beyond the initial one
-      # that completes the NATS connection, so we should be disconnected after
-      # the third ping is sent out at (50ms + latency) * 3 due to having too
-      # many outstanding pings
-      ping_interval: 20.milliseconds,
-      max_pings_out: 2,
-    )
-    disconnected = false
-    n.on_disconnect { disconnected = true }
-    pings = 0
-    n.on_ping do
-      pings += 1
+    it "does not block publishing while disconnected and delivers buffered data after reconnecting" do
+      server = FakeNATSServer.new
+      n = NATS::Client.new(uri: server.uri)
+      received = Channel(String).new(10)
+      disconnects = 0
+      reconnects = 0
+      states_on_disconnect = [] of NATS::Client::State
+      n.on_disconnect { disconnects += 1; states_on_disconnect << n.state }
+      n.on_reconnect { reconnects += 1 }
+      subscription = n.subscribe("test.#{UUID.random}") { |msg| received.send msg.data_string }
+      n.flush
+
+      begin
+        # Take the server down
+        server.accepting = false
+        server.drop_connections
+        wait_for(description: "disconnect") { !n.state.connected? }
+
+        start = Time.instant
+        n.publish subscription.subject, "buffered while down"
+        start.elapsed.should be < 100.milliseconds
+
+        # Requests still honor their timeout instead of hanging until the
+        # server comes back
+        start = Time.instant
+        n.request("nobody.home", "hi", timeout: 50.milliseconds).should eq nil
+        start.elapsed.should be < 500.milliseconds
+
+        # Bring the server back
+        server.accepting = true
+        wait_for(description: "reconnect") { n.state.connected? }
+
+        select
+        when data = received.receive
+          data.should eq "buffered while down"
+        when timeout(2.seconds)
+          fail "Buffered message was not delivered after reconnecting"
+        end
+
+        # The subscription object the caller holds is still the live one
+        n.@subscriptions[subscription.sid].should be subscription
+        n.publish subscription.subject, "after reconnect"
+        n.flush
+        select
+        when data = received.receive
+          data.should eq "after reconnect"
+        when timeout(2.seconds)
+          fail "Message was not delivered on the new connection"
+        end
+
+        disconnects.should eq 1
+        reconnects.should eq 1
+        states_on_disconnect.should eq [NATS::Client::State::Disconnected]
+      ensure
+        n.close
+        server.close
+      end
     end
 
-    begin
-      sleep 50.milliseconds
-      # We have only send out 2 unanswered pings at this point, so we should
-      # not have tried to reconnect
-      disconnected.should eq false
-      pings.should eq 2
+    it "re-establishes subscriptions with their remaining message limits after reconnecting" do
+      server = FakeNATSServer.new
+      n = NATS::Client.new(uri: server.uri)
+      received = [] of String
+      subject = "limited.#{UUID.random}"
+      subscription = n.subscribe(subject) { |msg| received << msg.data_string }
+      n.unsubscribe subscription, 2
+      n.publish subject, "one"
+      n.flush
+      wait_for { received.size == 1 }
 
-      sleep 40.milliseconds
-      # At this point, we should have sent too many unanswered pings and
-      # been disconnected.
-      disconnected.should eq true
-      pings.should eq 4
-    ensure
-      fake_nats_server.close
+      begin
+        server.drop_connections
+        wait_for(description: "reconnect") { server.connection_count == 2 && n.state.connected? }
+
+        n.publish subject, "two"
+        n.publish subject, "three"
+        n.flush
+        sleep 20.milliseconds
+
+        received.should eq %w[one two]
+      ensure
+        n.close
+        server.close
+      end
+    end
+
+    it "raises when the reconnect buffer is exceeded and keeps what was buffered" do
+      server = FakeNATSServer.new
+      n = NATS::Client.new(uri: server.uri, reconnect_buffer_size: 64)
+      received = Channel(String).new(10)
+      subscription = n.subscribe("test.#{UUID.random}") { |msg| received.send msg.data_string }
+      n.flush
+
+      begin
+        server.accepting = false
+        server.drop_connections
+        wait_for(description: "disconnect") { !n.state.connected? }
+
+        n.publish subscription.subject, "x" * 100
+        expect_raises NATS::Client::ReconnectBufferExceeded do
+          n.publish subscription.subject, "y" * 100
+        end
+
+        server.accepting = true
+        wait_for(description: "reconnect") { n.state.connected? }
+        select
+        when data = received.receive
+          data.should eq "x" * 100
+        when timeout(2.seconds)
+          fail "Buffered message was not delivered after reconnecting"
+        end
+      ensure
+        n.close
+        server.close
+      end
+    end
+
+    it "fails a pending flush when the connection drops instead of waiting for the timeout" do
+      server = FakeNATSServer.new
+      server.respond_to_pings = false
+      n = NATS::Client.new(uri: server.uri)
+      result = Channel(Exception?).new(1)
+
+      begin
+        spawn do
+          n.flush timeout: 10.seconds
+          result.send nil
+        rescue ex
+          result.send ex
+        end
+        sleep 10.milliseconds
+        start = Time.instant
+        server.drop_connections
+
+        select
+        when ex = result.receive
+          ex.should be_a NATS::Error
+          ex.not_nil!.message.to_s.should contain "lost"
+          start.elapsed.should be < 1.second
+        when timeout(2.seconds)
+          fail "flush did not fail when the connection dropped"
+        end
+      ensure
+        n.close
+        server.close
+      end
+    end
+
+    it "closes promptly while disconnected and stops trying to reconnect" do
+      server = FakeNATSServer.new
+      n = NATS::Client.new(uri: server.uri)
+      disconnects = 0
+      n.on_disconnect { disconnects += 1 }
+
+      begin
+        server.accepting = false
+        server.drop_connections
+        wait_for(description: "disconnect") { !n.state.connected? }
+
+        start = Time.instant
+        n.close
+        start.elapsed.should be < 100.milliseconds
+        n.state.closed?.should eq true
+
+        # Even once the server is back, a closed client stays closed and
+        # doesn't fire on_disconnect for writes that fail because it's closed.
+        server.accepting = true
+        sleep 100.milliseconds
+        n.state.closed?.should eq true
+        server.connections.should be_empty
+        expect_raises(NATS::Client::ClientClosed) { n.publish "foo", "bar" }
+        disconnects.should eq 1
+      ensure
+        n.close
+        server.close
+      end
+    end
+
+    it "recovers from a protocol error by reconnecting" do
+      server = FakeNATSServer.new
+      n = NATS::Client.new(uri: server.uri)
+      errors = [] of Exception
+      n.on_error { |ex| errors << ex }
+      n.flush
+
+      begin
+        # A MSG line we can't parse leaves us in an unknown place in the
+        # stream, so the client should drop the connection and start over
+        # instead of dying.
+        server.connections.first.send "MSG this-is-not-valid"
+        wait_for(description: "reconnect") { server.connection_count == 2 && n.state.connected? }
+
+        errors.map(&.class).should contain NATS::Error
+        n.flush timeout: 1.second
+      ensure
+        n.close
+        server.close
+      end
+    end
+
+    it "does not let an on_error handler that raises kill the client" do
+      server = FakeNATSServer.new
+      n = NATS::Client.new(uri: server.uri)
+      n.on_error { |ex| raise "on_error handler blew up" }
+      n.flush
+
+      begin
+        server.connections.first.send "BOGUS"
+        sleep 10.milliseconds
+        # The client is still alive and connected
+        n.flush timeout: 1.second
+        n.state.connected?.should eq true
+      ensure
+        n.close
+        server.close
+      end
+    end
+
+    describe "lame-duck mode" do
+      it "notifies the application once when the server enters lame-duck mode" do
+        server = FakeNATSServer.new
+        n = NATS::Client.new(uri: server.uri)
+        notifications = 0
+        n.on_lame_duck_mode { notifications += 1 }
+        n.flush
+
+        begin
+          server.connections.first.send_info ldm: true
+          wait_for(description: "lame-duck notification") { notifications == 1 }
+          n.server_info.lame_duck_mode?.should eq true
+
+          # Further INFO updates while still in lame-duck mode don't notify again
+          server.connections.first.send_info ldm: true
+          n.flush timeout: 1.second
+          sleep 10.milliseconds
+          notifications.should eq 1
+          n.state.connected?.should eq true
+        ensure
+          n.close
+          server.close
+        end
+      end
+
+      it "moves to a server from connect_urls when the lame-duck server closes the connection" do
+        lame_duck = FakeNATSServer.new
+        other = FakeNATSServer.new
+        n = NATS::Client.new(uri: lame_duck.uri)
+        received = Channel(String).new(10)
+        subject = "ldm.#{UUID.random}"
+        n.subscribe(subject) { |msg| received.send msg.data_string }
+        n.flush
+
+        begin
+          lame_duck.connections.first.send_info ldm: true, connect_urls: ["127.0.0.1:#{other.port}"]
+          wait_for(description: "lame-duck INFO") { n.server_info.lame_duck_mode? }
+          # A lame-duck server stops accepting connections before it closes
+          # the ones it has
+          lame_duck.accepting = false
+          lame_duck.drop_connections
+
+          wait_for(description: "reconnect to the other server") { other.connections.any? && n.state.connected? }
+          n.server_info.lame_duck_mode?.should eq false
+          n.publish subject, "hello"
+          select
+          when data = received.receive
+            data.should eq "hello"
+          when timeout(2.seconds)
+            fail "Subscription was not re-established on the other server"
+          end
+        ensure
+          n.close
+          lame_duck.close
+          other.close
+        end
+      end
+
+      it "keeps credentials and the connection name when connecting to a discovered server" do
+        lame_duck = FakeNATSServer.new
+        other = FakeNATSServer.new
+        n = NATS::Client.new(uri: URI.parse("nats://user:pass@127.0.0.1:#{lame_duck.port}/my-app"))
+        n.flush
+
+        begin
+          lame_duck.connections.first.send_info ldm: true, connect_urls: ["127.0.0.1:#{other.port}"]
+          wait_for(description: "lame-duck INFO") { n.server_info.lame_duck_mode? }
+          lame_duck.accepting = false
+          lame_duck.drop_connections
+
+          wait_for(description: "reconnect to the other server") { other.connections.any?(&.connect_options) }
+          options = other.connections.first.connect_options.not_nil!
+          options["user"].should eq "user"
+          options["pass"].should eq "pass"
+          options["name"].should eq "my-app"
+        ensure
+          n.close
+          lame_duck.close
+          other.close
+        end
+      end
     end
   end
 end
