@@ -66,19 +66,20 @@ describe NATS::JetStream do
 
     begin
       included.config.name.should eq "included-#{uuid}"
-      all = nats.jetstream.stream.list.streams
-      filtered = nats.jetstream.stream.list(subject: "test.jetstream.included.#{uuid}.*").streams
-      all.should contain included
-      all.should contain excluded
+      all = nats.jetstream.stream.list.streams.map(&.config.name)
+      filtered = nats.jetstream.stream.list(subject: "test.jetstream.included.#{uuid}.*").streams.map(&.config.name)
+      all.should contain included.config.name
+      all.should contain excluded.config.name
 
-      filtered.should contain included
-      filtered.should_not contain excluded
+      filtered.should contain included.config.name
+      filtered.should_not contain excluded.config.name
     ensure
       nats.jetstream.stream.delete included
       nats.jetstream.stream.delete excluded
 
-      nats.jetstream.stream.list.streams.should_not contain included
-      nats.jetstream.stream.list.streams.should_not contain excluded
+      remaining = nats.jetstream.stream.list.streams.map(&.config.name)
+      remaining.should_not contain included.config.name
+      remaining.should_not contain excluded.config.name
     end
   end
 
