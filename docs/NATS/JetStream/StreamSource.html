@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.7.0">
+<meta name="crystal_docs.project_version" content="1.7.1">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::StreamSource - nats 1.7.0</title>
+  <title>NATS::JetStream::StreamSource - nats 1.7.1</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.7.0
+        1.7.1
       </span>
     </div>
   </div>
@@ -74,6 +74,11 @@
   
   <li class=" " data-id="nats/NATS/Client/Data" data-name="nats::client::data">
       <a href="../../NATS/Client/Data.html">Data</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Client/ReconnectBufferExceeded" data-name="nats::client::reconnectbufferexceeded">
+      <a href="../../NATS/Client/ReconnectBufferExceeded.html">ReconnectBufferExceeded</a>
       
     </li>
   
@@ -412,8 +417,18 @@
       
     </li>
   
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/ConsumerLimits" data-name="nats::jetstream::streamconfig::consumerlimits">
+      <a href="../../NATS/JetStream/StreamConfig/ConsumerLimits.html">ConsumerLimits</a>
+      
+    </li>
+  
   <li class=" " data-id="nats/NATS/JetStream/StreamConfig/DiscardPolicy" data-name="nats::jetstream::streamconfig::discardpolicy">
       <a href="../../NATS/JetStream/StreamConfig/DiscardPolicy.html">DiscardPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/PersistMode" data-name="nats::jetstream::streamconfig::persistmode">
+      <a href="../../NATS/JetStream/StreamConfig/PersistMode.html">PersistMode</a>
       
     </li>
   
@@ -492,8 +507,18 @@
       
     </li>
   
-  <li class=" current" data-id="nats/NATS/JetStream/StreamSource" data-name="nats::jetstream::streamsource">
+  <li class="parent open current" data-id="nats/NATS/JetStream/StreamSource" data-name="nats::jetstream::streamsource">
       <a href="../../NATS/JetStream/StreamSource.html">StreamSource</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamSource/Consumer" data-name="nats::jetstream::streamsource::consumer">
+      <a href="../../NATS/JetStream/StreamSource/Consumer.html">Consumer</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -504,6 +529,11 @@
   
   <li class=" " data-id="nats/NATS/JetStream/StreamState" data-name="nats::jetstream::streamstate">
       <a href="../../NATS/JetStream/StreamState.html">StreamState</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/SubjectTransform" data-name="nats::jetstream::subjecttransform">
+      <a href="../../NATS/JetStream/SubjectTransform.html">SubjectTransform</a>
       
     </li>
   
@@ -778,7 +808,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_source.cr#L5" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_source.cr#L6" target="_blank">
         jetstream/stream_source.cr
       </a>
     
@@ -806,7 +836,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#new%28name%3AString%2Copt_start_seq%3AUInt64%7CNil%3Dnil%2Copt_start_time%3ATime%7CNil%3Dnil%2Cfilter_subject%3ANil%7CString%3Dnil%2Cexternal%3ANATS%3A%3AJetStream%3A%3AExternalStream%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(name : String, opt_start_seq : UInt64 | Nil = <span class="n">nil</span>, opt_start_time : Time | Nil = <span class="n">nil</span>, filter_subject : Nil | String = <span class="n">nil</span>, external : NATS::JetStream::ExternalStream | Nil = <span class="n">nil</span>)</a>
+        <a href="#new%28name%3AString%2Copt_start_seq%3AUInt64%7CNil%3Dnil%2Copt_start_time%3ATime%7CNil%3Dnil%2Cfilter_subject%3ANil%7CString%3Dnil%2Csubject_transforms%3ANil%7CArray%28NATS%3A%3AJetStream%3A%3ASubjectTransform%29%3Dnil%2Cexternal%3ANATS%3A%3AJetStream%3A%3AExternalStream%7CNil%3Dnil%2Cconsumer%3ANATS%3A%3AJetStream%3A%3AStreamSource%3A%3AConsumer%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(name : String, opt_start_seq : UInt64 | Nil = <span class="n">nil</span>, opt_start_time : Time | Nil = <span class="n">nil</span>, filter_subject : Nil | String = <span class="n">nil</span>, subject_transforms : Nil | Array(NATS::JetStream::SubjectTransform) = <span class="n">nil</span>, external : NATS::JetStream::ExternalStream | Nil = <span class="n">nil</span>, consumer : NATS::JetStream::StreamSource::Consumer | Nil = <span class="n">nil</span>)</a>
         
       </li>
     
@@ -827,6 +857,11 @@
     Instance Method Summary
   </h2>
   <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#consumer%3AConsumer%7CNil-instance-method" class="signature"><strong>#consumer</strong> : Consumer | Nil</a>
+        
+      </li>
     
       <li class="entry-summary">
         <a href="#external%3AExternalStream%7CNil-instance-method" class="signature"><strong>#external</strong> : ExternalStream | Nil</a>
@@ -850,6 +885,11 @@
     
       <li class="entry-summary">
         <a href="#opt_start_time%3ATime%7CNil-instance-method" class="signature"><strong>#opt_start_time</strong> : Time | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#subject_transforms%3AArray%28SubjectTransform%29%7CNil-instance-method" class="signature"><strong>#subject_transforms</strong> : Array(SubjectTransform) | Nil</a>
         
       </li>
     
@@ -956,23 +996,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_source.cr#L5" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_source.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="new(name:String,opt_start_seq:UInt64|Nil=nil,opt_start_time:Time|Nil=nil,filter_subject:Nil|String=nil,external:NATS::JetStream::ExternalStream|Nil=nil)-class-method">
+    <div class="entry-detail" id="new(name:String,opt_start_seq:UInt64|Nil=nil,opt_start_time:Time|Nil=nil,filter_subject:Nil|String=nil,subject_transforms:Nil|Array(NATS::JetStream::SubjectTransform)=nil,external:NATS::JetStream::ExternalStream|Nil=nil,consumer:NATS::JetStream::StreamSource::Consumer|Nil=nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(name : String, opt_start_seq : UInt64 | Nil = <span class="n">nil</span>, opt_start_time : Time | Nil = <span class="n">nil</span>, filter_subject : Nil | String = <span class="n">nil</span>, external : <a href="../../NATS/JetStream/ExternalStream.html">NATS::JetStream::ExternalStream</a> | Nil = <span class="n">nil</span>)
+        def self.<strong>new</strong>(name : String, opt_start_seq : UInt64 | Nil = <span class="n">nil</span>, opt_start_time : Time | Nil = <span class="n">nil</span>, filter_subject : Nil | String = <span class="n">nil</span>, subject_transforms : Nil | Array(<a href="../../NATS/JetStream/SubjectTransform.html">NATS::JetStream::SubjectTransform</a>) = <span class="n">nil</span>, external : <a href="../../NATS/JetStream/ExternalStream.html">NATS::JetStream::ExternalStream</a> | Nil = <span class="n">nil</span>, consumer : <a href="../../NATS/JetStream/StreamSource/Consumer.html">NATS::JetStream::StreamSource::Consumer</a> | Nil = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#new%28name%3AString%2Copt_start_seq%3AUInt64%7CNil%3Dnil%2Copt_start_time%3ATime%7CNil%3Dnil%2Cfilter_subject%3ANil%7CString%3Dnil%2Cexternal%3ANATS%3A%3AJetStream%3A%3AExternalStream%7CNil%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28name%3AString%2Copt_start_seq%3AUInt64%7CNil%3Dnil%2Copt_start_time%3ATime%7CNil%3Dnil%2Cfilter_subject%3ANil%7CString%3Dnil%2Csubject_transforms%3ANil%7CArray%28NATS%3A%3AJetStream%3A%3ASubjectTransform%29%3Dnil%2Cexternal%3ANATS%3A%3AJetStream%3A%3AExternalStream%7CNil%3Dnil%2Cconsumer%3ANATS%3A%3AJetStream%3A%3AStreamSource%3A%3AConsumer%7CNil%3Dnil%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_source.cr#L12" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_source.cr#L15" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -993,6 +1033,22 @@
     Instance Method Detail
   </h2>
   
+    <div class="entry-detail" id="consumer:Consumer|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>consumer</strong> : <a href="../../NATS/JetStream/StreamSource/Consumer.html">Consumer</a> | Nil
+
+        <a class="method-permalink" href="#consumer%3AConsumer%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_source.cr#L13" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
     <div class="entry-detail" id="external:ExternalStream|Nil-instance-method">
       <div class="signature">
         
@@ -1004,7 +1060,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_source.cr#L10" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_source.cr#L12" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1020,7 +1076,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_source.cr#L9" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_source.cr#L10" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1036,7 +1092,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_source.cr#L6" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_source.cr#L7" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1052,7 +1108,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_source.cr#L7" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_source.cr#L8" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1068,7 +1124,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_source.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_source.cr#L9" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="subject_transforms:Array(SubjectTransform)|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>subject_transforms</strong> : Array(<a href="../../NATS/JetStream/SubjectTransform.html">SubjectTransform</a>) | Nil
+
+        <a class="method-permalink" href="#subject_transforms%3AArray%28SubjectTransform%29%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_source.cr#L11" target="_blank">View source</a>]
         
       </div>
     </div>

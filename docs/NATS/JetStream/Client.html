@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.7.0">
+<meta name="crystal_docs.project_version" content="1.7.1">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::Client - nats 1.7.0</title>
+  <title>NATS::JetStream::Client - nats 1.7.1</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.7.0
+        1.7.1
       </span>
     </div>
   </div>
@@ -74,6 +74,11 @@
   
   <li class=" " data-id="nats/NATS/Client/Data" data-name="nats::client::data">
       <a href="../../NATS/Client/Data.html">Data</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Client/ReconnectBufferExceeded" data-name="nats::client::reconnectbufferexceeded">
+      <a href="../../NATS/Client/ReconnectBufferExceeded.html">ReconnectBufferExceeded</a>
       
     </li>
   
@@ -412,8 +417,18 @@
       
     </li>
   
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/ConsumerLimits" data-name="nats::jetstream::streamconfig::consumerlimits">
+      <a href="../../NATS/JetStream/StreamConfig/ConsumerLimits.html">ConsumerLimits</a>
+      
+    </li>
+  
   <li class=" " data-id="nats/NATS/JetStream/StreamConfig/DiscardPolicy" data-name="nats::jetstream::streamconfig::discardpolicy">
       <a href="../../NATS/JetStream/StreamConfig/DiscardPolicy.html">DiscardPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/PersistMode" data-name="nats::jetstream::streamconfig::persistmode">
+      <a href="../../NATS/JetStream/StreamConfig/PersistMode.html">PersistMode</a>
       
     </li>
   
@@ -492,8 +507,18 @@
       
     </li>
   
-  <li class=" " data-id="nats/NATS/JetStream/StreamSource" data-name="nats::jetstream::streamsource">
+  <li class="parent " data-id="nats/NATS/JetStream/StreamSource" data-name="nats::jetstream::streamsource">
       <a href="../../NATS/JetStream/StreamSource.html">StreamSource</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamSource/Consumer" data-name="nats::jetstream::streamsource::consumer">
+      <a href="../../NATS/JetStream/StreamSource/Consumer.html">Consumer</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -504,6 +529,11 @@
   
   <li class=" " data-id="nats/NATS/JetStream/StreamState" data-name="nats::jetstream::streamstate">
       <a href="../../NATS/JetStream/StreamState.html">StreamState</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/SubjectTransform" data-name="nats::jetstream::subjecttransform">
+      <a href="../../NATS/JetStream/SubjectTransform.html">SubjectTransform</a>
       
     </li>
   
@@ -791,7 +821,7 @@ You can either instantiate it with a NATS client or with the
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L13" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L13" target="_blank">
         jetstream/client.cr
       </a>
     
@@ -901,6 +931,11 @@ You can either instantiate it with a NATS client or with the
       </li>
     
       <li class="entry-summary">
+        <a href="#publish%28messages%3AEnumerable%28NATS%3A%3AMessage%29%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%2Cflush%3Dtrue%29%3AArray%28Tuple%28NATS%3A%3AMessage%2CPubAck%7CErrorResponse%7CNil%29%29-instance-method" class="signature"><strong>#publish</strong>(messages : Enumerable(NATS::Message), timeout : Time::Span = <span class="n">2</span>.seconds, flush = <span class="n">true</span>) : Array(Tuple(NATS::Message, PubAck | ErrorResponse | Nil))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#publish%21%28subject%3AString%2Cbody%3AData%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%2Cheaders%3AHeaders%3DHeaders.new%2Cmessage_id%3AString%7CNil%3Dnil%2Cexpected_last_message_id%3AString%7CNil%3Dnil%2Cexpected_last_sequence%3AInt64%7CNil%3Dnil%2Cexpected_stream%3AString%7CNil%3Dnil%2Cexpected_last_subject_sequence%3AInt64%7CNil%3Dnil%29-instance-method" class="signature"><strong>#publish!</strong>(subject : String, body : Data, timeout : Time::Span = <span class="n">2</span>.seconds, headers : Headers = <span class="t">Headers</span>.new, message_id : String | Nil = <span class="n">nil</span>, expected_last_message_id : String | Nil = <span class="n">nil</span>, expected_last_sequence : Int64 | Nil = <span class="n">nil</span>, expected_stream : String | Nil = <span class="n">nil</span>, expected_last_subject_sequence : Int64 | Nil = <span class="n">nil</span>)</a>
         
       </li>
@@ -1002,7 +1037,7 @@ You can either instantiate it with a NATS client or with the
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L14" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1047,7 +1082,7 @@ received your acknowledgement, use <code><a href="../../NATS/JetStream/Client.ht
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L204" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L258" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1076,7 +1111,7 @@ server and not simply caught up in the output buffer.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L220" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L274" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1092,7 +1127,7 @@ server and not simply caught up in the output buffer.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L224" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L278" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1114,7 +1149,7 @@ API for consumers.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L25" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L25" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1149,7 +1184,7 @@ than expected.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L261" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L315" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1178,7 +1213,7 @@ when an exception is raised while processing.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L277" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L331" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1208,7 +1243,7 @@ specified.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L294" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L348" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1237,7 +1272,7 @@ NATS server to delay sending it for the given time span.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L317" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L371" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1253,7 +1288,7 @@ NATS server to delay sending it for the given time span.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L61" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L61" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1269,7 +1304,23 @@ NATS server to delay sending it for the given time span.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L87" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L87" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="publish(messages:Enumerable(NATS::Message),timeout:Time::Span=2.seconds,flush=true):Array(Tuple(NATS::Message,PubAck|ErrorResponse|Nil))-instance-method">
+      <div class="signature">
+        
+        def <strong>publish</strong>(messages : Enumerable(<a href="../../NATS/Message.html">NATS::Message</a>), timeout : Time::Span = <span class="n">2</span>.seconds, flush = <span class="n">true</span>) : Array(Tuple(<a href="../../NATS/Message.html">NATS::Message</a>, <a href="../../NATS/JetStream/PubAck.html">PubAck</a> | <a href="../../NATS/JetStream/ErrorResponse.html">ErrorResponse</a> | Nil))
+
+        <a class="method-permalink" href="#publish%28messages%3AEnumerable%28NATS%3A%3AMessage%29%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%2Cflush%3Dtrue%29%3AArray%28Tuple%28NATS%3A%3AMessage%2CPubAck%7CErrorResponse%7CNil%29%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L119" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1285,7 +1336,7 @@ NATS server to delay sending it for the given time span.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L29" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L29" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1306,7 +1357,7 @@ NATS server to delay sending it for the given time span.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L168" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L222" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1327,7 +1378,7 @@ NATS server to delay sending it for the given time span.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L175" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L229" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1348,7 +1399,7 @@ NATS server to delay sending it for the given time span.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L183" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L237" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1370,7 +1421,7 @@ API for streams.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L19" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L19" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1401,7 +1452,7 @@ js.subscribe consumer <span class="k">do</span> <span class="o">|</span>msg<span
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L133" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L187" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1432,7 +1483,7 @@ js.subscribe <span class="s">&quot;orders.*&quot;</span>, queue_group: <span cla
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/client.cr#L159" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/client.cr#L213" target="_blank">View source</a>]
         
       </div>
     </div>

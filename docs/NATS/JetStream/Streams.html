@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.7.0">
+<meta name="crystal_docs.project_version" content="1.7.1">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::Streams - nats 1.7.0</title>
+  <title>NATS::JetStream::Streams - nats 1.7.1</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.7.0
+        1.7.1
       </span>
     </div>
   </div>
@@ -74,6 +74,11 @@
   
   <li class=" " data-id="nats/NATS/Client/Data" data-name="nats::client::data">
       <a href="../../NATS/Client/Data.html">Data</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Client/ReconnectBufferExceeded" data-name="nats::client::reconnectbufferexceeded">
+      <a href="../../NATS/Client/ReconnectBufferExceeded.html">ReconnectBufferExceeded</a>
       
     </li>
   
@@ -412,8 +417,18 @@
       
     </li>
   
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/ConsumerLimits" data-name="nats::jetstream::streamconfig::consumerlimits">
+      <a href="../../NATS/JetStream/StreamConfig/ConsumerLimits.html">ConsumerLimits</a>
+      
+    </li>
+  
   <li class=" " data-id="nats/NATS/JetStream/StreamConfig/DiscardPolicy" data-name="nats::jetstream::streamconfig::discardpolicy">
       <a href="../../NATS/JetStream/StreamConfig/DiscardPolicy.html">DiscardPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/PersistMode" data-name="nats::jetstream::streamconfig::persistmode">
+      <a href="../../NATS/JetStream/StreamConfig/PersistMode.html">PersistMode</a>
       
     </li>
   
@@ -492,8 +507,18 @@
       
     </li>
   
-  <li class=" " data-id="nats/NATS/JetStream/StreamSource" data-name="nats::jetstream::streamsource">
+  <li class="parent " data-id="nats/NATS/JetStream/StreamSource" data-name="nats::jetstream::streamsource">
       <a href="../../NATS/JetStream/StreamSource.html">StreamSource</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamSource/Consumer" data-name="nats::jetstream::streamsource::consumer">
+      <a href="../../NATS/JetStream/StreamSource/Consumer.html">Consumer</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -504,6 +529,11 @@
   
   <li class=" " data-id="nats/NATS/JetStream/StreamState" data-name="nats::jetstream::streamstate">
       <a href="../../NATS/JetStream/StreamState.html">StreamState</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/SubjectTransform" data-name="nats::jetstream::subjecttransform">
+      <a href="../../NATS/JetStream/SubjectTransform.html">SubjectTransform</a>
       
     </li>
   
@@ -792,7 +822,7 @@ history in the order it was published.</p>
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/streams.cr#L15" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/streams.cr#L15" target="_blank">
         jetstream/streams.cr
       </a>
     
@@ -843,7 +873,7 @@ history in the order it was published.</p>
       </li>
     
       <li class="entry-summary">
-        <a href="#create%28storage%3AStreamConfig%3A%3AStorage%2Cretention%3AStreamConfig%3A%3ARetentionPolicy%7CNil%3Dnil%2Cdiscard%3AStreamConfig%3A%3ADiscardPolicy%7CNil%3Dnil%2Ccompression%3AStreamConfig%3A%3ACompression%3D%3Anone%2C%2A%2Akwargs%29%3AStream-instance-method" class="signature"><strong>#create</strong>(storage : StreamConfig::Storage, retention : StreamConfig::RetentionPolicy | Nil = <span class="n">nil</span>, discard : StreamConfig::DiscardPolicy | Nil = <span class="n">nil</span>, compression : StreamConfig::Compression = <span class="n">:none</span>, **kwargs) : Stream</a>
+        <a href="#create%28storage%3AStreamConfig%3A%3AStorage%2Cretention%3AStreamConfig%3A%3ARetentionPolicy%7CNil%3Dnil%2Cdiscard%3AStreamConfig%3A%3ADiscardPolicy%7CNil%3Dnil%2Ccompression%3AStreamConfig%3A%3ACompression%3D%3Anone%2Cpersist_mode%3AStreamConfig%3A%3APersistMode%7CNil%3Dnil%2C%2A%2Akwargs%29%3AStream-instance-method" class="signature"><strong>#create</strong>(storage : StreamConfig::Storage, retention : StreamConfig::RetentionPolicy | Nil = <span class="n">nil</span>, discard : StreamConfig::DiscardPolicy | Nil = <span class="n">nil</span>, compression : StreamConfig::Compression = <span class="n">:none</span>, persist_mode : StreamConfig::PersistMode | Nil = <span class="n">nil</span>, **kwargs) : Stream</a>
         
           <div class="summary"><p>Create a stream of the given storage type and with the given properties, which are passed unmodified to <code><a href="../../NATS/JetStream/StreamConfig.html#new%28pull%3AJSON%3A%3APullParser%29-class-method">NATS::JetStream::StreamConfig.new</a></code>.</p></div>
         
@@ -903,6 +933,20 @@ history in the order it was published.</p>
     
       <li class="entry-summary">
         <a href="#purge%28stream%3AString%2Csubject%3AString%29%3AInt64-instance-method" class="signature"><strong>#purge</strong>(stream : String, subject : String) : Int64</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#update%28config%3AStreamConfig%29%3AStream-instance-method" class="signature"><strong>#update</strong>(config : StreamConfig) : Stream</a>
+        
+          <div class="summary"><p>Update an existing stream with the given config.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#update%28name%3AString%2C%2A%2Achanges%29%3AStream-instance-method" class="signature"><strong>#update</strong>(name : String, **changes) : Stream</a>
+        
+          <div class="summary"><p>Change the given settings on the stream with the given <code>name</code>, leaving all of its other settings as they are.</p></div>
         
       </li>
     
@@ -974,7 +1018,7 @@ history in the order it was published.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/streams.cr#L16" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/streams.cr#L16" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1006,17 +1050,17 @@ history in the order it was published.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/streams.cr#L38" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/streams.cr#L40" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="create(storage:StreamConfig::Storage,retention:StreamConfig::RetentionPolicy|Nil=nil,discard:StreamConfig::DiscardPolicy|Nil=nil,compression:StreamConfig::Compression=:none,**kwargs):Stream-instance-method">
+    <div class="entry-detail" id="create(storage:StreamConfig::Storage,retention:StreamConfig::RetentionPolicy|Nil=nil,discard:StreamConfig::DiscardPolicy|Nil=nil,compression:StreamConfig::Compression=:none,persist_mode:StreamConfig::PersistMode|Nil=nil,**kwargs):Stream-instance-method">
       <div class="signature">
         
-        def <strong>create</strong>(storage : <a href="../../NATS/JetStream/StreamConfig/Storage.html">StreamConfig::Storage</a>, retention : <a href="../../NATS/JetStream/StreamConfig/RetentionPolicy.html">StreamConfig::RetentionPolicy</a> | Nil = <span class="n">nil</span>, discard : <a href="../../NATS/JetStream/StreamConfig/DiscardPolicy.html">StreamConfig::DiscardPolicy</a> | Nil = <span class="n">nil</span>, compression : <a href="../../NATS/JetStream/StreamConfig/Compression.html">StreamConfig::Compression</a> = <span class="n">:none</span>, **kwargs) : <a href="../../NATS/JetStream/Stream.html">Stream</a>
+        def <strong>create</strong>(storage : <a href="../../NATS/JetStream/StreamConfig/Storage.html">StreamConfig::Storage</a>, retention : <a href="../../NATS/JetStream/StreamConfig/RetentionPolicy.html">StreamConfig::RetentionPolicy</a> | Nil = <span class="n">nil</span>, discard : <a href="../../NATS/JetStream/StreamConfig/DiscardPolicy.html">StreamConfig::DiscardPolicy</a> | Nil = <span class="n">nil</span>, compression : <a href="../../NATS/JetStream/StreamConfig/Compression.html">StreamConfig::Compression</a> = <span class="n">:none</span>, persist_mode : <a href="../../NATS/JetStream/StreamConfig/PersistMode.html">StreamConfig::PersistMode</a> | Nil = <span class="n">nil</span>, **kwargs) : <a href="../../NATS/JetStream/Stream.html">Stream</a>
 
-        <a class="method-permalink" href="#create%28storage%3AStreamConfig%3A%3AStorage%2Cretention%3AStreamConfig%3A%3ARetentionPolicy%7CNil%3Dnil%2Cdiscard%3AStreamConfig%3A%3ADiscardPolicy%7CNil%3Dnil%2Ccompression%3AStreamConfig%3A%3ACompression%3D%3Anone%2C%2A%2Akwargs%29%3AStream-instance-method">#</a>
+        <a class="method-permalink" href="#create%28storage%3AStreamConfig%3A%3AStorage%2Cretention%3AStreamConfig%3A%3ARetentionPolicy%7CNil%3Dnil%2Cdiscard%3AStreamConfig%3A%3ADiscardPolicy%7CNil%3Dnil%2Ccompression%3AStreamConfig%3A%3ACompression%3D%3Anone%2Cpersist_mode%3AStreamConfig%3A%3APersistMode%7CNil%3Dnil%2C%2A%2Akwargs%29%3AStream-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1029,7 +1073,7 @@ properties, which are passed unmodified to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/streams.cr#L22" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/streams.cr#L22" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1050,7 +1094,7 @@ properties, which are passed unmodified to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/streams.cr#L99" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/streams.cr#L133" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1071,7 +1115,7 @@ properties, which are passed unmodified to
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/streams.cr#L104" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/streams.cr#L138" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1102,7 +1146,7 @@ check.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/streams.cr#L145" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/streams.cr#L179" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1133,7 +1177,7 @@ check.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/streams.cr#L161" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/streams.cr#L195" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1149,7 +1193,7 @@ check.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/streams.cr#L108" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/streams.cr#L142" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1165,7 +1209,7 @@ check.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/streams.cr#L112" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/streams.cr#L146" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1186,7 +1230,7 @@ check.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/streams.cr#L81" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/streams.cr#L115" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1207,7 +1251,7 @@ check.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/streams.cr#L56" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/streams.cr#L90" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1223,7 +1267,55 @@ check.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/streams.cr#L197" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/streams.cr#L231" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="update(config:StreamConfig):Stream-instance-method">
+      <div class="signature">
+        
+        def <strong>update</strong>(config : <a href="../../NATS/JetStream/StreamConfig.html">StreamConfig</a>) : <a href="../../NATS/JetStream/Stream.html">Stream</a>
+
+        <a class="method-permalink" href="#update%28config%3AStreamConfig%29%3AStream-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Update an existing stream with the given config. The server replaces the
+stream's entire config, so any settings not in <code>config</code> are reset to
+their defaults. To change only some settings, use the
+<code>update(name, **changes)</code> overload instead.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/streams.cr#L76" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="update(name:String,**changes):Stream-instance-method">
+      <div class="signature">
+        
+        def <strong>update</strong>(name : String, **changes) : <a href="../../NATS/JetStream/Stream.html">Stream</a>
+
+        <a class="method-permalink" href="#update%28name%3AString%2C%2A%2Achanges%29%3AStream-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Change the given settings on the stream with the given <code>name</code>, leaving
+all of its other settings as they are. The setting names are the same
+as the properties on <code><a href="../../NATS/JetStream/StreamConfig.html">NATS::JetStream::StreamConfig</a></code>.</p>
+<pre><code class="language-crystal">jetstream.stream.update <span class="s">&quot;orders&quot;</span>, max_age: <span class="n">7</span>.days</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/streams.cr#L64" target="_blank">View source</a>]
         
       </div>
     </div>

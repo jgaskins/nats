@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.7.0">
+<meta name="crystal_docs.project_version" content="1.7.1">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::StreamConfig - nats 1.7.0</title>
+  <title>NATS::JetStream::StreamConfig - nats 1.7.1</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.7.0
+        1.7.1
       </span>
     </div>
   </div>
@@ -74,6 +74,11 @@
   
   <li class=" " data-id="nats/NATS/Client/Data" data-name="nats::client::data">
       <a href="../../NATS/Client/Data.html">Data</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Client/ReconnectBufferExceeded" data-name="nats::client::reconnectbufferexceeded">
+      <a href="../../NATS/Client/ReconnectBufferExceeded.html">ReconnectBufferExceeded</a>
       
     </li>
   
@@ -412,8 +417,18 @@
       
     </li>
   
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/ConsumerLimits" data-name="nats::jetstream::streamconfig::consumerlimits">
+      <a href="../../NATS/JetStream/StreamConfig/ConsumerLimits.html">ConsumerLimits</a>
+      
+    </li>
+  
   <li class=" " data-id="nats/NATS/JetStream/StreamConfig/DiscardPolicy" data-name="nats::jetstream::streamconfig::discardpolicy">
       <a href="../../NATS/JetStream/StreamConfig/DiscardPolicy.html">DiscardPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/PersistMode" data-name="nats::jetstream::streamconfig::persistmode">
+      <a href="../../NATS/JetStream/StreamConfig/PersistMode.html">PersistMode</a>
       
     </li>
   
@@ -492,8 +507,18 @@
       
     </li>
   
-  <li class=" " data-id="nats/NATS/JetStream/StreamSource" data-name="nats::jetstream::streamsource">
+  <li class="parent " data-id="nats/NATS/JetStream/StreamSource" data-name="nats::jetstream::streamsource">
       <a href="../../NATS/JetStream/StreamSource.html">StreamSource</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamSource/Consumer" data-name="nats::jetstream::streamsource::consumer">
+      <a href="../../NATS/JetStream/StreamSource/Consumer.html">Consumer</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -504,6 +529,11 @@
   
   <li class=" " data-id="nats/NATS/JetStream/StreamState" data-name="nats::jetstream::streamstate">
       <a href="../../NATS/JetStream/StreamState.html">StreamState</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/SubjectTransform" data-name="nats::jetstream::subjecttransform">
+      <a href="../../NATS/JetStream/SubjectTransform.html">SubjectTransform</a>
       
     </li>
   
@@ -778,7 +808,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L5" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L6" target="_blank">
         jetstream/stream_config.cr
       </a>
     
@@ -806,7 +836,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#new%28name%3AString%2Csubjects%3ANil%7CArray%28String%29%3Dnil%2Cdescription%3ANil%7CString%3Dnil%2Cmax_age%3ATime%3A%3ASpan%7CNil%3Dnil%2Cmax_bytes%3AInt64%7CNil%3Dnil%2Cmax_msg_size%3AInt32%7CNil%3Dnil%2Cmax_msgs%3AInt64%7CNil%3Dnil%2Cmax_msgs_per_subject%3AInt64%7CNil%3Dnil%2Cmax_consumers%3AInt32%7CNil%3Dnil%2Cno_ack%3ABool%7CNil%3Dfalse%2Creplicas%3AInt32%3D1%2Cretention%3ARetentionPolicy%7CNil%3Dnil%2Callow_rollup_headers%3ABool%7CNil%3Dnil%2Cdeny_delete%3ABool%7CNil%3Dnil%2Callow_direct%3ABool%7CNil%3Dnil%2Cmirror_direct%3ABool%7CNil%3Dnil%2Crepublish%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3ARepublish%7CNil%3Dnil%2Cplacement%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3APlacement%7CNil%3Dnil%2Cmirror%3ANATS%3A%3AJetStream%3A%3AStreamSource%7CNil%3Dnil%2Csources%3ANil%7CArray%28NATS%3A%3AJetStream%3A%3AStreamSource%29%3Dnil%2Cdiscard_new_per_subject%3ABool%7CNil%3Dnil%2Cdiscard%3ADiscardPolicy%7CNil%3Dnil%2Callow_msg_ttl%3ABool%7CNil%3Dfalse%2Callow_msg_counter%3ABool%7CNil%3Dfalse%2Callow_msg_schedules%3ABool%7CNil%3Dfalse%2Cstorage%3AStorage%3D%3Afile%2Ccompression%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3ACompression%3D%3Anone%29-class-method" class="signature"><strong>.new</strong>(name : String, subjects : Nil | Array(String) = <span class="n">nil</span>, description : Nil | String = <span class="n">nil</span>, max_age : Time::Span | Nil = <span class="n">nil</span>, max_bytes : Int64 | Nil = <span class="n">nil</span>, max_msg_size : Int32 | Nil = <span class="n">nil</span>, max_msgs : Int64 | Nil = <span class="n">nil</span>, max_msgs_per_subject : Int64 | Nil = <span class="n">nil</span>, max_consumers : Int32 | Nil = <span class="n">nil</span>, no_ack : Bool | Nil = <span class="n">false</span>, replicas : Int32 = <span class="n">1</span>, retention : RetentionPolicy | Nil = <span class="n">nil</span>, allow_rollup_headers : Bool | Nil = <span class="n">nil</span>, deny_delete : Bool | Nil = <span class="n">nil</span>, allow_direct : Bool | Nil = <span class="n">nil</span>, mirror_direct : Bool | Nil = <span class="n">nil</span>, republish : NATS::JetStream::StreamConfig::Republish | Nil = <span class="n">nil</span>, placement : NATS::JetStream::StreamConfig::Placement | Nil = <span class="n">nil</span>, mirror : NATS::JetStream::StreamSource | Nil = <span class="n">nil</span>, sources : Nil | Array(NATS::JetStream::StreamSource) = <span class="n">nil</span>, discard_new_per_subject : Bool | Nil = <span class="n">nil</span>, discard : DiscardPolicy | Nil = <span class="n">nil</span>, allow_msg_ttl : Bool | Nil = <span class="n">false</span>, allow_msg_counter : Bool | Nil = <span class="n">false</span>, allow_msg_schedules : Bool | Nil = <span class="n">false</span>, storage : Storage = <span class="n">:file</span>, compression : NATS::JetStream::StreamConfig::Compression = <span class="n">:none</span>)</a>
+        <a href="#new%28name%3AString%2Csubjects%3ANil%7CArray%28String%29%3Dnil%2Cdescription%3ANil%7CString%3Dnil%2Cmax_age%3ATime%3A%3ASpan%7CNil%3Dnil%2Cmax_bytes%3AInt64%7CNil%3Dnil%2Cmax_msg_size%3AInt32%7CNil%3Dnil%2Cmax_msgs%3AInt64%7CNil%3Dnil%2Cmax_msgs_per_subject%3AInt64%7CNil%3Dnil%2Cmax_consumers%3AInt32%7CNil%3Dnil%2Cno_ack%3ABool%7CNil%3Dfalse%2Creplicas%3AInt32%3D1%2Cretention%3ARetentionPolicy%7CNil%3Dnil%2Callow_rollup_headers%3ABool%7CNil%3Dnil%2Cdeny_delete%3ABool%7CNil%3Dnil%2Callow_direct%3ABool%7CNil%3Dnil%2Cmirror_direct%3ABool%7CNil%3Dnil%2Crepublish%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3ARepublish%7CNil%3Dnil%2Cplacement%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3APlacement%7CNil%3Dnil%2Cmirror%3ANATS%3A%3AJetStream%3A%3AStreamSource%7CNil%3Dnil%2Csources%3ANil%7CArray%28NATS%3A%3AJetStream%3A%3AStreamSource%29%3Dnil%2Cdiscard_new_per_subject%3ABool%7CNil%3Dnil%2Cdiscard%3ADiscardPolicy%7CNil%3Dnil%2Callow_msg_ttl%3ABool%7CNil%3Dfalse%2Callow_msg_counter%3ABool%7CNil%3Dfalse%2Callow_msg_schedules%3ABool%7CNil%3Dfalse%2Cfirst_seq%3AUInt64%7CNil%3Dnil%2Csubject_transform%3ANATS%3A%3AJetStream%3A%3ASubjectTransform%7CNil%3Dnil%2Cconsumer_limits%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3AConsumerLimits%7CNil%3Dnil%2Csubject_delete_marker_ttl%3ATime%3A%3ASpan%7CNil%3Dnil%2Callow_atomic_publish%3ABool%7CNil%3Dnil%2Callow_batch_publish%3ABool%7CNil%3Dnil%2Cpersist_mode%3APersistMode%7CNil%3Dnil%2Cmetadata%3ANil%7CHash%28String%2CString%29%3Dnil%2Cstorage%3AStorage%3D%3Afile%2Ccompression%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3ACompression%3D%3Anone%29-class-method" class="signature"><strong>.new</strong>(name : String, subjects : Nil | Array(String) = <span class="n">nil</span>, description : Nil | String = <span class="n">nil</span>, max_age : Time::Span | Nil = <span class="n">nil</span>, max_bytes : Int64 | Nil = <span class="n">nil</span>, max_msg_size : Int32 | Nil = <span class="n">nil</span>, max_msgs : Int64 | Nil = <span class="n">nil</span>, max_msgs_per_subject : Int64 | Nil = <span class="n">nil</span>, max_consumers : Int32 | Nil = <span class="n">nil</span>, no_ack : Bool | Nil = <span class="n">false</span>, replicas : Int32 = <span class="n">1</span>, retention : RetentionPolicy | Nil = <span class="n">nil</span>, allow_rollup_headers : Bool | Nil = <span class="n">nil</span>, deny_delete : Bool | Nil = <span class="n">nil</span>, allow_direct : Bool | Nil = <span class="n">nil</span>, mirror_direct : Bool | Nil = <span class="n">nil</span>, republish : NATS::JetStream::StreamConfig::Republish | Nil = <span class="n">nil</span>, placement : NATS::JetStream::StreamConfig::Placement | Nil = <span class="n">nil</span>, mirror : NATS::JetStream::StreamSource | Nil = <span class="n">nil</span>, sources : Nil | Array(NATS::JetStream::StreamSource) = <span class="n">nil</span>, discard_new_per_subject : Bool | Nil = <span class="n">nil</span>, discard : DiscardPolicy | Nil = <span class="n">nil</span>, allow_msg_ttl : Bool | Nil = <span class="n">false</span>, allow_msg_counter : Bool | Nil = <span class="n">false</span>, allow_msg_schedules : Bool | Nil = <span class="n">false</span>, first_seq : UInt64 | Nil = <span class="n">nil</span>, subject_transform : NATS::JetStream::SubjectTransform | Nil = <span class="n">nil</span>, consumer_limits : NATS::JetStream::StreamConfig::ConsumerLimits | Nil = <span class="n">nil</span>, subject_delete_marker_ttl : Time::Span | Nil = <span class="n">nil</span>, allow_atomic_publish : Bool | Nil = <span class="n">nil</span>, allow_batch_publish : Bool | Nil = <span class="n">nil</span>, persist_mode : PersistMode | Nil = <span class="n">nil</span>, metadata : Nil | Hash(String, String) = <span class="n">nil</span>, storage : Storage = <span class="n">:file</span>, compression : NATS::JetStream::StreamConfig::Compression = <span class="n">:none</span>)</a>
         
       </li>
     
@@ -827,6 +857,16 @@
     Instance Method Summary
   </h2>
   <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#allow_atomic_publish%3F%3ABool%7CNil-instance-method" class="signature"><strong>#allow_atomic_publish?</strong> : Bool | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#allow_batch_publish%3F%3ABool%7CNil-instance-method" class="signature"><strong>#allow_batch_publish?</strong> : Bool | Nil</a>
+        
+      </li>
     
       <li class="entry-summary">
         <a href="#allow_direct%3F%3ABool%7CNil-instance-method" class="signature"><strong>#allow_direct?</strong> : Bool | Nil</a>
@@ -855,6 +895,18 @@
     
       <li class="entry-summary">
         <a href="#compression%3ACompression-instance-method" class="signature"><strong>#compression</strong> : Compression</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#consumer_limits%3AConsumerLimits%7CNil-instance-method" class="signature"><strong>#consumer_limits</strong> : ConsumerLimits | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#copy_with%28%2A%2Achanges%3A%2A%2AT%29%3AselfforallT-instance-method" class="signature"><strong>#copy_with</strong>(**changes : **T) : <span class="k">self</span> forall T</a>
+        
+          <div class="summary"><p>Returns a copy of this config with the given settings changed, leaving this one untouched.</p></div>
         
       </li>
     
@@ -889,6 +941,11 @@
       </li>
     
       <li class="entry-summary">
+        <a href="#first_seq%3AUInt64%7CNil-instance-method" class="signature"><strong>#first_seq</strong> : UInt64 | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#max_age%3ATime%3A%3ASpan%7CNil-instance-method" class="signature"><strong>#max_age</strong> : Time::Span | Nil</a>
         
       </li>
@@ -919,6 +976,11 @@
       </li>
     
       <li class="entry-summary">
+        <a href="#metadata%3AHash%28String%2CString%29-instance-method" class="signature"><strong>#metadata</strong> : Hash(String, String)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#mirror%3AStreamSource%7CNil-instance-method" class="signature"><strong>#mirror</strong> : StreamSource | Nil</a>
         
       </li>
@@ -937,6 +999,11 @@
     
       <li class="entry-summary">
         <a href="#no_ack%3F%3ABool%7CNil-instance-method" class="signature"><strong>#no_ack?</strong> : Bool | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#persist_mode%3APersistMode%7CNil-instance-method" class="signature"><strong>#persist_mode</strong> : PersistMode | Nil</a>
         
       </li>
     
@@ -972,6 +1039,16 @@
     
       <li class="entry-summary">
         <a href="#storage%3AStorage-instance-method" class="signature"><strong>#storage</strong> : Storage</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#subject_delete_marker_ttl%3ATime%3A%3ASpan%7CNil-instance-method" class="signature"><strong>#subject_delete_marker_ttl</strong> : Time::Span | Nil</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#subject_transform%3ASubjectTransform%7CNil-instance-method" class="signature"><strong>#subject_transform</strong> : SubjectTransform | Nil</a>
         
       </li>
     
@@ -1085,23 +1162,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L5" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L6" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="new(name:String,subjects:Nil|Array(String)=nil,description:Nil|String=nil,max_age:Time::Span|Nil=nil,max_bytes:Int64|Nil=nil,max_msg_size:Int32|Nil=nil,max_msgs:Int64|Nil=nil,max_msgs_per_subject:Int64|Nil=nil,max_consumers:Int32|Nil=nil,no_ack:Bool|Nil=false,replicas:Int32=1,retention:RetentionPolicy|Nil=nil,allow_rollup_headers:Bool|Nil=nil,deny_delete:Bool|Nil=nil,allow_direct:Bool|Nil=nil,mirror_direct:Bool|Nil=nil,republish:NATS::JetStream::StreamConfig::Republish|Nil=nil,placement:NATS::JetStream::StreamConfig::Placement|Nil=nil,mirror:NATS::JetStream::StreamSource|Nil=nil,sources:Nil|Array(NATS::JetStream::StreamSource)=nil,discard_new_per_subject:Bool|Nil=nil,discard:DiscardPolicy|Nil=nil,allow_msg_ttl:Bool|Nil=false,allow_msg_counter:Bool|Nil=false,allow_msg_schedules:Bool|Nil=false,storage:Storage=:file,compression:NATS::JetStream::StreamConfig::Compression=:none)-class-method">
+    <div class="entry-detail" id="new(name:String,subjects:Nil|Array(String)=nil,description:Nil|String=nil,max_age:Time::Span|Nil=nil,max_bytes:Int64|Nil=nil,max_msg_size:Int32|Nil=nil,max_msgs:Int64|Nil=nil,max_msgs_per_subject:Int64|Nil=nil,max_consumers:Int32|Nil=nil,no_ack:Bool|Nil=false,replicas:Int32=1,retention:RetentionPolicy|Nil=nil,allow_rollup_headers:Bool|Nil=nil,deny_delete:Bool|Nil=nil,allow_direct:Bool|Nil=nil,mirror_direct:Bool|Nil=nil,republish:NATS::JetStream::StreamConfig::Republish|Nil=nil,placement:NATS::JetStream::StreamConfig::Placement|Nil=nil,mirror:NATS::JetStream::StreamSource|Nil=nil,sources:Nil|Array(NATS::JetStream::StreamSource)=nil,discard_new_per_subject:Bool|Nil=nil,discard:DiscardPolicy|Nil=nil,allow_msg_ttl:Bool|Nil=false,allow_msg_counter:Bool|Nil=false,allow_msg_schedules:Bool|Nil=false,first_seq:UInt64|Nil=nil,subject_transform:NATS::JetStream::SubjectTransform|Nil=nil,consumer_limits:NATS::JetStream::StreamConfig::ConsumerLimits|Nil=nil,subject_delete_marker_ttl:Time::Span|Nil=nil,allow_atomic_publish:Bool|Nil=nil,allow_batch_publish:Bool|Nil=nil,persist_mode:PersistMode|Nil=nil,metadata:Nil|Hash(String,String)=nil,storage:Storage=:file,compression:NATS::JetStream::StreamConfig::Compression=:none)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(name : String, subjects : Nil | Array(String) = <span class="n">nil</span>, description : Nil | String = <span class="n">nil</span>, max_age : Time::Span | Nil = <span class="n">nil</span>, max_bytes : Int64 | Nil = <span class="n">nil</span>, max_msg_size : Int32 | Nil = <span class="n">nil</span>, max_msgs : Int64 | Nil = <span class="n">nil</span>, max_msgs_per_subject : Int64 | Nil = <span class="n">nil</span>, max_consumers : Int32 | Nil = <span class="n">nil</span>, no_ack : Bool | Nil = <span class="n">false</span>, replicas : Int32 = <span class="n">1</span>, retention : <a href="../../NATS/JetStream/StreamConfig/RetentionPolicy.html">RetentionPolicy</a> | Nil = <span class="n">nil</span>, allow_rollup_headers : Bool | Nil = <span class="n">nil</span>, deny_delete : Bool | Nil = <span class="n">nil</span>, allow_direct : Bool | Nil = <span class="n">nil</span>, mirror_direct : Bool | Nil = <span class="n">nil</span>, republish : <a href="../../NATS/JetStream/StreamConfig/Republish.html">NATS::JetStream::StreamConfig::Republish</a> | Nil = <span class="n">nil</span>, placement : <a href="../../NATS/JetStream/StreamConfig/Placement.html">NATS::JetStream::StreamConfig::Placement</a> | Nil = <span class="n">nil</span>, mirror : <a href="../../NATS/JetStream/StreamSource.html">NATS::JetStream::StreamSource</a> | Nil = <span class="n">nil</span>, sources : Nil | Array(<a href="../../NATS/JetStream/StreamSource.html">NATS::JetStream::StreamSource</a>) = <span class="n">nil</span>, discard_new_per_subject : Bool | Nil = <span class="n">nil</span>, discard : <a href="../../NATS/JetStream/StreamConfig/DiscardPolicy.html">DiscardPolicy</a> | Nil = <span class="n">nil</span>, allow_msg_ttl : Bool | Nil = <span class="n">false</span>, allow_msg_counter : Bool | Nil = <span class="n">false</span>, allow_msg_schedules : Bool | Nil = <span class="n">false</span>, storage : <a href="../../NATS/JetStream/StreamConfig/Storage.html">Storage</a> = <span class="n">:file</span>, compression : <a href="../../NATS/JetStream/StreamConfig/Compression.html">NATS::JetStream::StreamConfig::Compression</a> = <span class="n">:none</span>)
+        def self.<strong>new</strong>(name : String, subjects : Nil | Array(String) = <span class="n">nil</span>, description : Nil | String = <span class="n">nil</span>, max_age : Time::Span | Nil = <span class="n">nil</span>, max_bytes : Int64 | Nil = <span class="n">nil</span>, max_msg_size : Int32 | Nil = <span class="n">nil</span>, max_msgs : Int64 | Nil = <span class="n">nil</span>, max_msgs_per_subject : Int64 | Nil = <span class="n">nil</span>, max_consumers : Int32 | Nil = <span class="n">nil</span>, no_ack : Bool | Nil = <span class="n">false</span>, replicas : Int32 = <span class="n">1</span>, retention : <a href="../../NATS/JetStream/StreamConfig/RetentionPolicy.html">RetentionPolicy</a> | Nil = <span class="n">nil</span>, allow_rollup_headers : Bool | Nil = <span class="n">nil</span>, deny_delete : Bool | Nil = <span class="n">nil</span>, allow_direct : Bool | Nil = <span class="n">nil</span>, mirror_direct : Bool | Nil = <span class="n">nil</span>, republish : <a href="../../NATS/JetStream/StreamConfig/Republish.html">NATS::JetStream::StreamConfig::Republish</a> | Nil = <span class="n">nil</span>, placement : <a href="../../NATS/JetStream/StreamConfig/Placement.html">NATS::JetStream::StreamConfig::Placement</a> | Nil = <span class="n">nil</span>, mirror : <a href="../../NATS/JetStream/StreamSource.html">NATS::JetStream::StreamSource</a> | Nil = <span class="n">nil</span>, sources : Nil | Array(<a href="../../NATS/JetStream/StreamSource.html">NATS::JetStream::StreamSource</a>) = <span class="n">nil</span>, discard_new_per_subject : Bool | Nil = <span class="n">nil</span>, discard : <a href="../../NATS/JetStream/StreamConfig/DiscardPolicy.html">DiscardPolicy</a> | Nil = <span class="n">nil</span>, allow_msg_ttl : Bool | Nil = <span class="n">false</span>, allow_msg_counter : Bool | Nil = <span class="n">false</span>, allow_msg_schedules : Bool | Nil = <span class="n">false</span>, first_seq : UInt64 | Nil = <span class="n">nil</span>, subject_transform : <a href="../../NATS/JetStream/SubjectTransform.html">NATS::JetStream::SubjectTransform</a> | Nil = <span class="n">nil</span>, consumer_limits : <a href="../../NATS/JetStream/StreamConfig/ConsumerLimits.html">NATS::JetStream::StreamConfig::ConsumerLimits</a> | Nil = <span class="n">nil</span>, subject_delete_marker_ttl : Time::Span | Nil = <span class="n">nil</span>, allow_atomic_publish : Bool | Nil = <span class="n">nil</span>, allow_batch_publish : Bool | Nil = <span class="n">nil</span>, persist_mode : <a href="../../NATS/JetStream/StreamConfig/PersistMode.html">PersistMode</a> | Nil = <span class="n">nil</span>, metadata : Nil | Hash(String, String) = <span class="n">nil</span>, storage : <a href="../../NATS/JetStream/StreamConfig/Storage.html">Storage</a> = <span class="n">:file</span>, compression : <a href="../../NATS/JetStream/StreamConfig/Compression.html">NATS::JetStream::StreamConfig::Compression</a> = <span class="n">:none</span>)
 
-        <a class="method-permalink" href="#new%28name%3AString%2Csubjects%3ANil%7CArray%28String%29%3Dnil%2Cdescription%3ANil%7CString%3Dnil%2Cmax_age%3ATime%3A%3ASpan%7CNil%3Dnil%2Cmax_bytes%3AInt64%7CNil%3Dnil%2Cmax_msg_size%3AInt32%7CNil%3Dnil%2Cmax_msgs%3AInt64%7CNil%3Dnil%2Cmax_msgs_per_subject%3AInt64%7CNil%3Dnil%2Cmax_consumers%3AInt32%7CNil%3Dnil%2Cno_ack%3ABool%7CNil%3Dfalse%2Creplicas%3AInt32%3D1%2Cretention%3ARetentionPolicy%7CNil%3Dnil%2Callow_rollup_headers%3ABool%7CNil%3Dnil%2Cdeny_delete%3ABool%7CNil%3Dnil%2Callow_direct%3ABool%7CNil%3Dnil%2Cmirror_direct%3ABool%7CNil%3Dnil%2Crepublish%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3ARepublish%7CNil%3Dnil%2Cplacement%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3APlacement%7CNil%3Dnil%2Cmirror%3ANATS%3A%3AJetStream%3A%3AStreamSource%7CNil%3Dnil%2Csources%3ANil%7CArray%28NATS%3A%3AJetStream%3A%3AStreamSource%29%3Dnil%2Cdiscard_new_per_subject%3ABool%7CNil%3Dnil%2Cdiscard%3ADiscardPolicy%7CNil%3Dnil%2Callow_msg_ttl%3ABool%7CNil%3Dfalse%2Callow_msg_counter%3ABool%7CNil%3Dfalse%2Callow_msg_schedules%3ABool%7CNil%3Dfalse%2Cstorage%3AStorage%3D%3Afile%2Ccompression%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3ACompression%3D%3Anone%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28name%3AString%2Csubjects%3ANil%7CArray%28String%29%3Dnil%2Cdescription%3ANil%7CString%3Dnil%2Cmax_age%3ATime%3A%3ASpan%7CNil%3Dnil%2Cmax_bytes%3AInt64%7CNil%3Dnil%2Cmax_msg_size%3AInt32%7CNil%3Dnil%2Cmax_msgs%3AInt64%7CNil%3Dnil%2Cmax_msgs_per_subject%3AInt64%7CNil%3Dnil%2Cmax_consumers%3AInt32%7CNil%3Dnil%2Cno_ack%3ABool%7CNil%3Dfalse%2Creplicas%3AInt32%3D1%2Cretention%3ARetentionPolicy%7CNil%3Dnil%2Callow_rollup_headers%3ABool%7CNil%3Dnil%2Cdeny_delete%3ABool%7CNil%3Dnil%2Callow_direct%3ABool%7CNil%3Dnil%2Cmirror_direct%3ABool%7CNil%3Dnil%2Crepublish%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3ARepublish%7CNil%3Dnil%2Cplacement%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3APlacement%7CNil%3Dnil%2Cmirror%3ANATS%3A%3AJetStream%3A%3AStreamSource%7CNil%3Dnil%2Csources%3ANil%7CArray%28NATS%3A%3AJetStream%3A%3AStreamSource%29%3Dnil%2Cdiscard_new_per_subject%3ABool%7CNil%3Dnil%2Cdiscard%3ADiscardPolicy%7CNil%3Dnil%2Callow_msg_ttl%3ABool%7CNil%3Dfalse%2Callow_msg_counter%3ABool%7CNil%3Dfalse%2Callow_msg_schedules%3ABool%7CNil%3Dfalse%2Cfirst_seq%3AUInt64%7CNil%3Dnil%2Csubject_transform%3ANATS%3A%3AJetStream%3A%3ASubjectTransform%7CNil%3Dnil%2Cconsumer_limits%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3AConsumerLimits%7CNil%3Dnil%2Csubject_delete_marker_ttl%3ATime%3A%3ASpan%7CNil%3Dnil%2Callow_atomic_publish%3ABool%7CNil%3Dnil%2Callow_batch_publish%3ABool%7CNil%3Dnil%2Cpersist_mode%3APersistMode%7CNil%3Dnil%2Cmetadata%3ANil%7CHash%28String%2CString%29%3Dnil%2Cstorage%3AStorage%3D%3Afile%2Ccompression%3ANATS%3A%3AJetStream%3A%3AStreamConfig%3A%3ACompression%3D%3Anone%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L116" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L150" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1122,6 +1199,38 @@
     Instance Method Detail
   </h2>
   
+    <div class="entry-detail" id="allow_atomic_publish?:Bool|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>allow_atomic_publish?</strong> : Bool | Nil
+
+        <a class="method-permalink" href="#allow_atomic_publish%3F%3ABool%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L144" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="allow_batch_publish?:Bool|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>allow_batch_publish?</strong> : Bool | Nil
+
+        <a class="method-permalink" href="#allow_batch_publish%3F%3ABool%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L146" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
     <div class="entry-detail" id="allow_direct?:Bool|Nil-instance-method">
       <div class="signature">
         
@@ -1133,7 +1242,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L107" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L130" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1149,7 +1258,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L111" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L134" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1165,7 +1274,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L112" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L135" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1181,7 +1290,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L110" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L133" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1197,7 +1306,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L103" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L126" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1213,7 +1322,46 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L114" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L137" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="consumer_limits:ConsumerLimits|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>consumer_limits</strong> : <a href="../../NATS/JetStream/StreamConfig/ConsumerLimits.html">ConsumerLimits</a> | Nil
+
+        <a class="method-permalink" href="#consumer_limits%3AConsumerLimits%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L140" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="copy_with(**changes:**T):selfforallT-instance-method">
+      <div class="signature">
+        
+        def <strong>copy_with</strong>(**changes : **T) : <span class="k">self</span> forall T
+
+        <a class="method-permalink" href="#copy_with%28%2A%2Achanges%3A%2A%2AT%29%3AselfforallT-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns a copy of this config with the given settings changed, leaving
+this one untouched.</p>
+<pre><code class="language-crystal">config.copy_with(max_age: <span class="n">7</span>.days, max_msgs: <span class="n">1_000_000_i64</span>)</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L195" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1229,7 +1377,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L105" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L128" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1245,7 +1393,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L104" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L127" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1261,7 +1409,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L80" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L103" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1277,7 +1425,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L96" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L119" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1293,7 +1441,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L109" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L132" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1309,7 +1457,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L101" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L124" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="first_seq:UInt64|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>first_seq</strong> : UInt64 | Nil
+
+        <a class="method-permalink" href="#first_seq%3AUInt64%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L138" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1325,7 +1489,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L86" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L109" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1341,7 +1505,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L87" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L110" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1357,7 +1521,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L91" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L114" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1373,7 +1537,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L88" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L111" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1389,7 +1553,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L89" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L112" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1405,7 +1569,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L90" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L113" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="metadata:Hash(String,String)-instance-method">
+      <div class="signature">
+        
+        def <strong>metadata</strong> : Hash(String, String)
+
+        <a class="method-permalink" href="#metadata%3AHash%28String%2CString%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L148" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1421,7 +1601,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L98" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L121" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1437,7 +1617,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L108" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L131" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1458,7 +1638,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L79" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L102" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1474,7 +1654,23 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L92" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L115" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="persist_mode:PersistMode|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>persist_mode</strong> : <a href="../../NATS/JetStream/StreamConfig/PersistMode.html">PersistMode</a> | Nil
+
+        <a class="method-permalink" href="#persist_mode%3APersistMode%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L147" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1490,7 +1686,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L97" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L120" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1506,7 +1702,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L94" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L117" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1522,7 +1718,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L113" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L136" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1538,7 +1734,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L95" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L118" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1554,7 +1750,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L106" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L129" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1570,7 +1766,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L99" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L122" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1586,7 +1782,39 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L84" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L107" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="subject_delete_marker_ttl:Time::Span|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>subject_delete_marker_ttl</strong> : Time::Span | Nil
+
+        <a class="method-permalink" href="#subject_delete_marker_ttl%3ATime%3A%3ASpan%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L142" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="subject_transform:SubjectTransform|Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>subject_transform</strong> : <a href="../../NATS/JetStream/SubjectTransform.html">SubjectTransform</a> | Nil
+
+        <a class="method-permalink" href="#subject_transform%3ASubjectTransform%7CNil-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L139" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1607,7 +1835,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/stream_config.cr#L83" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/stream_config.cr#L106" target="_blank">View source</a>]
         
       </div>
     </div>

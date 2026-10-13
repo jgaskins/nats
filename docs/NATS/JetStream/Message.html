@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.7.0">
+<meta name="crystal_docs.project_version" content="1.7.1">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::Message - nats 1.7.0</title>
+  <title>NATS::JetStream::Message - nats 1.7.1</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.7.0
+        1.7.1
       </span>
     </div>
   </div>
@@ -74,6 +74,11 @@
   
   <li class=" " data-id="nats/NATS/Client/Data" data-name="nats::client::data">
       <a href="../../NATS/Client/Data.html">Data</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Client/ReconnectBufferExceeded" data-name="nats::client::reconnectbufferexceeded">
+      <a href="../../NATS/Client/ReconnectBufferExceeded.html">ReconnectBufferExceeded</a>
       
     </li>
   
@@ -412,8 +417,18 @@
       
     </li>
   
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/ConsumerLimits" data-name="nats::jetstream::streamconfig::consumerlimits">
+      <a href="../../NATS/JetStream/StreamConfig/ConsumerLimits.html">ConsumerLimits</a>
+      
+    </li>
+  
   <li class=" " data-id="nats/NATS/JetStream/StreamConfig/DiscardPolicy" data-name="nats::jetstream::streamconfig::discardpolicy">
       <a href="../../NATS/JetStream/StreamConfig/DiscardPolicy.html">DiscardPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/PersistMode" data-name="nats::jetstream::streamconfig::persistmode">
+      <a href="../../NATS/JetStream/StreamConfig/PersistMode.html">PersistMode</a>
       
     </li>
   
@@ -492,8 +507,18 @@
       
     </li>
   
-  <li class=" " data-id="nats/NATS/JetStream/StreamSource" data-name="nats::jetstream::streamsource">
+  <li class="parent " data-id="nats/NATS/JetStream/StreamSource" data-name="nats::jetstream::streamsource">
       <a href="../../NATS/JetStream/StreamSource.html">StreamSource</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamSource/Consumer" data-name="nats::jetstream::streamsource::consumer">
+      <a href="../../NATS/JetStream/StreamSource/Consumer.html">Consumer</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -504,6 +529,11 @@
   
   <li class=" " data-id="nats/NATS/JetStream/StreamState" data-name="nats::jetstream::streamstate">
       <a href="../../NATS/JetStream/StreamState.html">StreamState</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/SubjectTransform" data-name="nats::jetstream::subjecttransform">
+      <a href="../../NATS/JetStream/SubjectTransform.html">SubjectTransform</a>
       
     </li>
   
@@ -793,7 +823,7 @@ it came from, how many times it's been delivered, etc.</p>
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/message.cr#L9" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/message.cr#L9" target="_blank">
         jetstream/message.cr
       </a>
     
@@ -1004,7 +1034,7 @@ it came from, how many times it's been delivered, etc.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/message.cr#L91" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/message.cr#L91" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1027,7 +1057,7 @@ instances, since JetStream is a layer on top of core NATS.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/message.cr#L67" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/message.cr#L67" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1068,7 +1098,7 @@ use <code><a href="../../NATS/JetStream/Message.html#data_string%3AString-instan
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/message.cr#L45" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/message.cr#L45" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1089,7 +1119,7 @@ use <code><a href="../../NATS/JetStream/Message.html#data_string%3AString-instan
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/message.cr#L14" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/message.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1110,7 +1140,7 @@ use <code><a href="../../NATS/JetStream/Message.html#data_string%3AString-instan
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/message.cr#L24" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/message.cr#L24" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1135,7 +1165,7 @@ use <code><a href="../../NATS/JetStream/Message.html#data_string%3AString-instan
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/message.cr#L40" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/message.cr#L40" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1156,7 +1186,7 @@ use <code><a href="../../NATS/JetStream/Message.html#data_string%3AString-instan
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/message.cr#L50" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/message.cr#L50" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1178,7 +1208,7 @@ consumer, starting at 1</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/message.cr#L18" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/message.cr#L18" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1201,7 +1231,7 @@ deduplication.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/message.cr#L62" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/message.cr#L62" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1222,7 +1252,7 @@ deduplication.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/message.cr#L30" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/message.cr#L30" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1243,7 +1273,7 @@ deduplication.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/message.cr#L57" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/message.cr#L57" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1264,7 +1294,7 @@ deduplication.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/message.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/message.cr#L11" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1285,7 +1315,7 @@ deduplication.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/message.cr#L21" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/message.cr#L21" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1307,7 +1337,7 @@ most likely is) different from the subject it was delivered to</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/message.cr#L54" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/message.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1328,7 +1358,7 @@ most likely is) different from the subject it was delivered to</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream/message.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/message.cr#L27" target="_blank">View source</a>]
         
       </div>
     </div>

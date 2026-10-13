@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.7.0">
+<meta name="crystal_docs.project_version" content="1.7.1">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::Client - nats 1.7.0</title>
+  <title>NATS::Client - nats 1.7.1</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.7.0
+        1.7.1
       </span>
     </div>
   </div>
@@ -74,6 +74,11 @@
   
   <li class=" " data-id="nats/NATS/Client/Data" data-name="nats::client::data">
       <a href="../NATS/Client/Data.html">Data</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Client/ReconnectBufferExceeded" data-name="nats::client::reconnectbufferexceeded">
+      <a href="../NATS/Client/ReconnectBufferExceeded.html">ReconnectBufferExceeded</a>
       
     </li>
   
@@ -412,8 +417,18 @@
       
     </li>
   
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/ConsumerLimits" data-name="nats::jetstream::streamconfig::consumerlimits">
+      <a href="../NATS/JetStream/StreamConfig/ConsumerLimits.html">ConsumerLimits</a>
+      
+    </li>
+  
   <li class=" " data-id="nats/NATS/JetStream/StreamConfig/DiscardPolicy" data-name="nats::jetstream::streamconfig::discardpolicy">
       <a href="../NATS/JetStream/StreamConfig/DiscardPolicy.html">DiscardPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/PersistMode" data-name="nats::jetstream::streamconfig::persistmode">
+      <a href="../NATS/JetStream/StreamConfig/PersistMode.html">PersistMode</a>
       
     </li>
   
@@ -492,8 +507,18 @@
       
     </li>
   
-  <li class=" " data-id="nats/NATS/JetStream/StreamSource" data-name="nats::jetstream::streamsource">
+  <li class="parent " data-id="nats/NATS/JetStream/StreamSource" data-name="nats::jetstream::streamsource">
       <a href="../NATS/JetStream/StreamSource.html">StreamSource</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamSource/Consumer" data-name="nats::jetstream::streamsource::consumer">
+      <a href="../NATS/JetStream/StreamSource/Consumer.html">Consumer</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -504,6 +529,11 @@
   
   <li class=" " data-id="nats/NATS/JetStream/StreamState" data-name="nats::jetstream::streamstate">
       <a href="../NATS/JetStream/StreamState.html">StreamState</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/SubjectTransform" data-name="nats::jetstream::subjecttransform">
+      <a href="../NATS/JetStream/SubjectTransform.html">SubjectTransform</a>
       
     </li>
   
@@ -790,42 +820,42 @@ servers.</p>
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/counter.cr#L107" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/counter.cr#L107" target="_blank">
         counter.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream.cr#L13" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream.cr#L13" target="_blank">
         jetstream.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L790" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L814" target="_blank">
         kv.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L88" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L56" target="_blank">
         nats.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/objects.cr#L437" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/objects.cr#L437" target="_blank">
         objects.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/services.cr#L375" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/services.cr#L375" target="_blank">
         services.cr
       </a>
     
@@ -856,6 +886,17 @@ servers.</p>
       </dt>
       
     
+      <dt class="entry-const" id="DEFAULT_RECONNECT_BUFFER_SIZE">
+        <strong>DEFAULT_RECONNECT_BUFFER_SIZE</strong> = <code>(<span class="n">8</span> <span class="o">*</span> <span class="t">KILOBYTE</span>) <span class="o">*</span> <span class="t">KILOBYTE</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>How much outgoing data we will hold in memory while disconnected from the
+server. Once this is exceeded, publishing raises <code><a href="../NATS/Client/ReconnectBufferExceeded.html">ReconnectBufferExceeded</a></code>
+until the connection is re-established.</p>
+      </dd>
+      
+    
   </dl>
 
 
@@ -872,21 +913,21 @@ servers.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28uri%3AURI%2Cping_interval%3DDEFAULT_PING_INTERVAL%2Cmax_pings_out%3DDEFAULT_PING_THRESHOLD%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(uri : URI, ping_interval = <span class="t">DEFAULT_PING_INTERVAL</span>, max_pings_out = <span class="t">DEFAULT_PING_THRESHOLD</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>)</a>
+        <a href="#new%28uri%3AURI%2Cping_interval%3DDEFAULT_PING_INTERVAL%2Cmax_pings_out%3DDEFAULT_PING_THRESHOLD%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%2Creconnect_buffer_size%3AInt%3DDEFAULT_RECONNECT_BUFFER_SIZE%29-class-method" class="signature"><strong>.new</strong>(uri : URI, ping_interval = <span class="t">DEFAULT_PING_INTERVAL</span>, max_pings_out = <span class="t">DEFAULT_PING_THRESHOLD</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>, reconnect_buffer_size : Int = <span class="t">DEFAULT_RECONNECT_BUFFER_SIZE</span>)</a>
         
           <div class="summary"><p>Connect to a single NATS server at the given URI</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#new%28servers%3AArray%28URI%29%2Cping_interval%3ATime%3A%3ASpan%3DDEFAULT_PING_INTERVAL%2Cmax_pings_out%3AInt32%3DDEFAULT_PING_THRESHOLD%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(servers : Array(URI), ping_interval : Time::Span = <span class="t">DEFAULT_PING_INTERVAL</span>, max_pings_out : Int32 = <span class="t">DEFAULT_PING_THRESHOLD</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>)</a>
+        <a href="#new%28servers%3AArray%28URI%29%2Cping_interval%3ATime%3A%3ASpan%3DDEFAULT_PING_INTERVAL%2Cmax_pings_out%3AInt32%3DDEFAULT_PING_THRESHOLD%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%2Creconnect_buffer_size%3AInt%3DDEFAULT_RECONNECT_BUFFER_SIZE%29-class-method" class="signature"><strong>.new</strong>(servers : Array(URI), ping_interval : Time::Span = <span class="t">DEFAULT_PING_INTERVAL</span>, max_pings_out : Int32 = <span class="t">DEFAULT_PING_THRESHOLD</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>, reconnect_buffer_size : Int = <span class="t">DEFAULT_RECONNECT_BUFFER_SIZE</span>)</a>
         
           <div class="summary"><p>Connect to a NATS cluster at the given URIs</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#new%28%2A%2Cping_interval%3DDEFAULT_PING_INTERVAL%2Cmax_pings_out%3DDEFAULT_PING_THRESHOLD%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(*, ping_interval = <span class="t">DEFAULT_PING_INTERVAL</span>, max_pings_out = <span class="t">DEFAULT_PING_THRESHOLD</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>)</a>
+        <a href="#new%28%2A%2Cping_interval%3DDEFAULT_PING_INTERVAL%2Cmax_pings_out%3DDEFAULT_PING_THRESHOLD%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%2Creconnect_buffer_size%3AInt%3DDEFAULT_RECONNECT_BUFFER_SIZE%29-class-method" class="signature"><strong>.new</strong>(*, ping_interval = <span class="t">DEFAULT_PING_INTERVAL</span>, max_pings_out = <span class="t">DEFAULT_PING_THRESHOLD</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>, reconnect_buffer_size : Int = <span class="t">DEFAULT_RECONNECT_BUFFER_SIZE</span>)</a>
         
       </li>
     
@@ -928,12 +969,14 @@ servers.</p>
       <li class="entry-summary">
         <a href="#flush%28timeout%3D2.seconds%29-instance-method" class="signature"><strong>#flush</strong>(timeout = <span class="n">2</span>.seconds)</a>
         
-          <div class="summary"><p>Flush the client's output buffer over the wire</p></div>
+          <div class="summary"><p>Flush the client's output buffer over the wire and wait for the server to acknowledge it.</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#flush%21-instance-method" class="signature"><strong>#flush!</strong></a>
+        
+          <div class="summary"><p>Flush the client's output buffer over the wire without waiting for the server to acknowledge it.</p></div>
         
       </li>
     
@@ -977,6 +1020,13 @@ servers.</p>
       </li>
     
       <li class="entry-summary">
+        <a href="#on_lame_duck_mode%28%26on_lame_duck_mode%29-instance-method" class="signature"><strong>#on_lame_duck_mode</strong>(&on_lame_duck_mode)</a>
+        
+          <div class="summary"><p>Execute the given block when the NATS server this client is connected to enters lame-duck mode, meaning it is shutting down and will close this connection at some point within its lame-duck duration.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#on_ping%28%26on_ping%29-instance-method" class="signature"><strong>#on_ping</strong>(&on_ping)</a>
         
           <div class="summary"><p>Execute the given block whenever this client pings the server.</p></div>
@@ -1003,9 +1053,17 @@ servers.</p>
       </li>
     
       <li class="entry-summary">
-        <a href="#publish%28subject%3AString%2Cmessage%3AData%3DBytes.empty%2Creply_to%3AString%7CNil%3Dnil%2Cheaders%3AMessage%3A%3AHeaders%7CNil%3Dnil%29%3ANil-instance-method" class="signature"><strong>#publish</strong>(subject : String, message : Data = <span class="t">Bytes</span>.empty, reply_to : String | Nil = <span class="n">nil</span>, headers : Message::Headers | Nil = <span class="n">nil</span>) : Nil</a>
+        <a href="#publish%28subject%3AString%2Cdata%3AData%3DBytes.empty%2Creply_to%3AString%7CNil%3Dnil%2Cheaders%3AMessage%3A%3AHeaders%7CNil%3Dnil%29%3ANil-instance-method" class="signature"><strong>#publish</strong>(subject : String, data : Data = <span class="t">Bytes</span>.empty, reply_to : String | Nil = <span class="n">nil</span>, headers : Message::Headers | Nil = <span class="n">nil</span>) : Nil</a>
         
           <div class="summary"><p>Publish the given message body (either <code>Bytes</code> for binary data or <code>String</code> for text) on the given NATS subject, optionally supplying a <code>reply_to</code> subject (if expecting a reply or to notify the receiver where to send updates) and any <code>headers</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#publish%28subject%3AString%2C%2A%2Cmessage%3AData%3DBytes.empty%2Creply_to%3AString%7CNil%3Dnil%2Cheaders%3AMessage%3A%3AHeaders%7CNil%3Dnil%29%3ANil-instance-method" class="signature"><strong>#publish</strong>(subject : String, *, message : Data = <span class="t">Bytes</span>.empty, reply_to : String | Nil = <span class="n">nil</span>, headers : Message::Headers | Nil = <span class="n">nil</span>) : Nil</a>
+        
+          <div class="summary"><p>Publish the given message body (either <code>Bytes</code> for binary data or <code>String</code> for text) on the given NATS subject, optionally supplying a <code>reply_to</code> subject (if expecting a reply or to notify the receiver where to send updates) and any <code>headers</code>.</p>
+<p><span class="flag red">DEPRECATED</span>  Use the <code><a href="../NATS/Client.html#publish%28subject%3AString%2Cdata%3AData%3DBytes.empty%2Creply_to%3AString%7CNil%3Dnil%2Cheaders%3AMessage%3A%3AHeaders%7CNil%3Dnil%29%3ANil-instance-method">#publish</a></code> method where the payload is called <code>data</code>. This matches NATS clients in other languages.</p></div>
         
       </li>
     
@@ -1154,12 +1212,12 @@ servers.</p>
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(uri:URI,ping_interval=DEFAULT_PING_INTERVAL,max_pings_out=DEFAULT_PING_THRESHOLD,nkeys_file:String|Nil=nil,user_credentials:String|Nil=nil)-class-method">
+    <div class="entry-detail" id="new(uri:URI,ping_interval=DEFAULT_PING_INTERVAL,max_pings_out=DEFAULT_PING_THRESHOLD,nkeys_file:String|Nil=nil,user_credentials:String|Nil=nil,reconnect_buffer_size:Int=DEFAULT_RECONNECT_BUFFER_SIZE)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(uri : URI, ping_interval = <span class="t">DEFAULT_PING_INTERVAL</span>, max_pings_out = <span class="t">DEFAULT_PING_THRESHOLD</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>)
+        def self.<strong>new</strong>(uri : URI, ping_interval = <span class="t">DEFAULT_PING_INTERVAL</span>, max_pings_out = <span class="t">DEFAULT_PING_THRESHOLD</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>, reconnect_buffer_size : Int = <span class="t">DEFAULT_RECONNECT_BUFFER_SIZE</span>)
 
-        <a class="method-permalink" href="#new%28uri%3AURI%2Cping_interval%3DDEFAULT_PING_INTERVAL%2Cmax_pings_out%3DDEFAULT_PING_THRESHOLD%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28uri%3AURI%2Cping_interval%3DDEFAULT_PING_INTERVAL%2Cmax_pings_out%3DDEFAULT_PING_THRESHOLD%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%2Creconnect_buffer_size%3AInt%3DDEFAULT_RECONNECT_BUFFER_SIZE%29-class-method">#</a>
       </div>
       
         <div class="doc">
@@ -1171,17 +1229,17 @@ servers.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L162" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L164" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="new(servers:Array(URI),ping_interval:Time::Span=DEFAULT_PING_INTERVAL,max_pings_out:Int32=DEFAULT_PING_THRESHOLD,nkeys_file:String|Nil=nil,user_credentials:String|Nil=nil)-class-method">
+    <div class="entry-detail" id="new(servers:Array(URI),ping_interval:Time::Span=DEFAULT_PING_INTERVAL,max_pings_out:Int32=DEFAULT_PING_THRESHOLD,nkeys_file:String|Nil=nil,user_credentials:String|Nil=nil,reconnect_buffer_size:Int=DEFAULT_RECONNECT_BUFFER_SIZE)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(servers : Array(URI), ping_interval : Time::Span = <span class="t">DEFAULT_PING_INTERVAL</span>, max_pings_out : Int32 = <span class="t">DEFAULT_PING_THRESHOLD</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>)
+        def self.<strong>new</strong>(servers : Array(URI), ping_interval : Time::Span = <span class="t">DEFAULT_PING_INTERVAL</span>, max_pings_out : Int32 = <span class="t">DEFAULT_PING_THRESHOLD</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>, reconnect_buffer_size : Int = <span class="t">DEFAULT_RECONNECT_BUFFER_SIZE</span>)
 
-        <a class="method-permalink" href="#new%28servers%3AArray%28URI%29%2Cping_interval%3ATime%3A%3ASpan%3DDEFAULT_PING_INTERVAL%2Cmax_pings_out%3AInt32%3DDEFAULT_PING_THRESHOLD%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28servers%3AArray%28URI%29%2Cping_interval%3ATime%3A%3ASpan%3DDEFAULT_PING_INTERVAL%2Cmax_pings_out%3AInt32%3DDEFAULT_PING_THRESHOLD%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%2Creconnect_buffer_size%3AInt%3DDEFAULT_RECONNECT_BUFFER_SIZE%29-class-method">#</a>
       </div>
       
         <div class="doc">
@@ -1197,23 +1255,23 @@ servers.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L181" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L184" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="new(*,ping_interval=DEFAULT_PING_INTERVAL,max_pings_out=DEFAULT_PING_THRESHOLD,nkeys_file:String|Nil=nil,user_credentials:String|Nil=nil)-class-method">
+    <div class="entry-detail" id="new(*,ping_interval=DEFAULT_PING_INTERVAL,max_pings_out=DEFAULT_PING_THRESHOLD,nkeys_file:String|Nil=nil,user_credentials:String|Nil=nil,reconnect_buffer_size:Int=DEFAULT_RECONNECT_BUFFER_SIZE)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(*, ping_interval = <span class="t">DEFAULT_PING_INTERVAL</span>, max_pings_out = <span class="t">DEFAULT_PING_THRESHOLD</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>)
+        def self.<strong>new</strong>(*, ping_interval = <span class="t">DEFAULT_PING_INTERVAL</span>, max_pings_out = <span class="t">DEFAULT_PING_THRESHOLD</span>, nkeys_file : String | Nil = <span class="n">nil</span>, user_credentials : String | Nil = <span class="n">nil</span>, reconnect_buffer_size : Int = <span class="t">DEFAULT_RECONNECT_BUFFER_SIZE</span>)
 
-        <a class="method-permalink" href="#new%28%2A%2Cping_interval%3DDEFAULT_PING_INTERVAL%2Cmax_pings_out%3DDEFAULT_PING_THRESHOLD%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28%2A%2Cping_interval%3DDEFAULT_PING_INTERVAL%2Cmax_pings_out%3DDEFAULT_PING_THRESHOLD%2Cnkeys_file%3AString%7CNil%3Dnil%2Cuser_credentials%3AString%7CNil%3Dnil%2Creconnect_buffer_size%3AInt%3DDEFAULT_RECONNECT_BUFFER_SIZE%29-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L138" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L138" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1247,12 +1305,15 @@ servers.</p>
           <p>Close this NATS connection. This should be done explicitly before exiting
 the program so that the NATS server can remove any subscriptions that were
 associated with this client.</p>
+<p>If the client is currently connected, it drains its subscriptions before
+closing. If it is disconnected, any data buffered while waiting to
+reconnect is discarded and the client stops trying to reconnect.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L1010" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L1135" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1268,7 +1329,7 @@ associated with this client.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/counter.cr#L108" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/counter.cr#L108" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1284,7 +1345,7 @@ associated with this client.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L782" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L899" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1299,13 +1360,18 @@ associated with this client.</p>
       
         <div class="doc">
           
-          <p>Flush the client's output buffer over the wire</p>
+          <p>Flush the client's output buffer over the wire and wait for the server to
+acknowledge it. Raises <code><a href="../NATS/Error.html">NATS::Error</a></code> if the server does not acknowledge
+within <code>timeout</code> or if the connection is lost while waiting. If the client
+is disconnected when this is called, the flush completes once the client
+reconnects and the buffered data has been acknowledged, if that happens
+within the <code>timeout</code>.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L799" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L921" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1318,10 +1384,17 @@ associated with this client.</p>
         <a class="method-permalink" href="#flush%21-instance-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Flush the client's output buffer over the wire without waiting for the
+server to acknowledge it. This is a no-op while disconnected; the buffered
+data is sent as soon as the client reconnects.</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L814" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L941" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1343,7 +1416,7 @@ the NATS server.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/jetstream.cr#L16" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream.cr#L16" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1366,7 +1439,7 @@ the NATS server.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L794" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L818" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1382,7 +1455,7 @@ the NATS server.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L131" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L131" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1398,7 +1471,7 @@ the NATS server.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/objects.cr#L438" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/objects.cr#L438" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1422,7 +1495,7 @@ nats.on_disconnect { <span class="t">Datadog</span>.metrics.increment <span clas
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L1045" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L1180" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1446,7 +1519,34 @@ nats.on_error { <span class="o">|</span>error<span class="o">|</span> <span clas
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L1032" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L1167" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="on_lame_duck_mode(&amp;on_lame_duck_mode)-instance-method">
+      <div class="signature">
+        
+        def <strong>on_lame_duck_mode</strong>(&on_lame_duck_mode)
+
+        <a class="method-permalink" href="#on_lame_duck_mode%28%26on_lame_duck_mode%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Execute the given block when the NATS server this client is connected to
+enters lame-duck mode, meaning it is shutting down and will close this
+connection at some point within its lame-duck duration. The client will
+reconnect to another server automatically when that happens, but you can
+use this to stop taking on new work or to drain in-flight work first.</p>
+<pre><code class="language-crystal">nats <span class="o">=</span> <span class="t">NATS</span><span class="t">::</span><span class="t">Client</span>.new
+nats.on_lame_duck_mode { <span class="t">Log</span>.info { <span class="s">&quot;NATS server is shutting down&quot;</span> } }</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L1209" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1469,7 +1569,7 @@ nats.on_ping { <span class="t">Datadog</span>.metrics.increment <span class="s">
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L1070" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L1221" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1493,7 +1593,7 @@ nats.on_pong { <span class="t">Datadog</span>.metrics.increment <span class="s">
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L1083" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L1234" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1517,7 +1617,7 @@ nats.on_reconnect { <span class="t">Datadog</span>.metrics.increment <span class
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L1058" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L1193" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1533,17 +1633,17 @@ nats.on_reconnect { <span class="t">Datadog</span>.metrics.increment <span class
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L821" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L951" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="publish(subject:String,message:Data=Bytes.empty,reply_to:String|Nil=nil,headers:Message::Headers|Nil=nil):Nil-instance-method">
+    <div class="entry-detail" id="publish(subject:String,data:Data=Bytes.empty,reply_to:String|Nil=nil,headers:Message::Headers|Nil=nil):Nil-instance-method">
       <div class="signature">
         
-        def <strong>publish</strong>(subject : String, message : <a href="../NATS/Client/Data.html">Data</a> = <span class="t">Bytes</span>.empty, reply_to : String | Nil = <span class="n">nil</span>, headers : <a href="../NATS/Message/Headers.html">Message::Headers</a> | Nil = <span class="n">nil</span>) : Nil
+        def <strong>publish</strong>(subject : String, data : <a href="../NATS/Client/Data.html">Data</a> = <span class="t">Bytes</span>.empty, reply_to : String | Nil = <span class="n">nil</span>, headers : <a href="../NATS/Message/Headers.html">Message::Headers</a> | Nil = <span class="n">nil</span>) : Nil
 
-        <a class="method-permalink" href="#publish%28subject%3AString%2Cmessage%3AData%3DBytes.empty%2Creply_to%3AString%7CNil%3Dnil%2Cheaders%3AMessage%3A%3AHeaders%7CNil%3Dnil%29%3ANil-instance-method">#</a>
+        <a class="method-permalink" href="#publish%28subject%3AString%2Cdata%3AData%3DBytes.empty%2Creply_to%3AString%7CNil%3Dnil%2Cheaders%3AMessage%3A%3AHeaders%7CNil%3Dnil%29%3ANil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1583,7 +1683,58 @@ nats.publish orders_subject, order.to_json, headers: <span class="t">NATS</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L732" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L843" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="publish(subject:String,*,message:Data=Bytes.empty,reply_to:String|Nil=nil,headers:Message::Headers|Nil=nil):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>publish</strong>(subject : String, *, message : <a href="../NATS/Client/Data.html">Data</a> = <span class="t">Bytes</span>.empty, reply_to : String | Nil = <span class="n">nil</span>, headers : <a href="../NATS/Message/Headers.html">Message::Headers</a> | Nil = <span class="n">nil</span>) : Nil
+
+        <a class="method-permalink" href="#publish%28subject%3AString%2C%2A%2Cmessage%3AData%3DBytes.empty%2Creply_to%3AString%7CNil%3Dnil%2Cheaders%3AMessage%3A%3AHeaders%7CNil%3Dnil%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Publish the given message body (either <code>Bytes</code> for binary data or <code>String</code> for text) on the given NATS subject, optionally supplying a <code>reply_to</code> subject (if expecting a reply or to notify the receiver where to send updates) and any <code>headers</code>.</p>
+<pre><code class="language-crystal"><span class="c"># Send an empty message to a subject</span>
+nats.publish <span class="s">&quot;hello&quot;</span>
+
+<span class="c"># Serialize an object to a subject</span>
+nats.publish <span class="s">&quot;orders.</span><span class="i">#{</span>order.id<span class="i">}</span><span class="s">&quot;</span>, order.to_json
+
+<span class="c"># Tell a recipient where to send results. For example, to stream results</span>
+<span class="c"># to a given subject:</span>
+reply_subject <span class="o">=</span> <span class="s">&quot;replies.orders.list.customer.123&quot;</span>
+orders <span class="o">=</span> <span class="o">[]</span> <span class="k">of</span> <span class="t">Order</span>
+nats.subscribe reply_subject <span class="k">do</span> <span class="o">|</span>msg<span class="o">|</span>
+  <span class="k">case</span> result <span class="o">=</span> (<span class="t">Order</span> <span class="o">|</span> <span class="t">Complete</span>).from_json(<span class="t">String</span>.new(msg.body))
+  <span class="k">in</span> <span class="t">Order</span>
+    orders <span class="o">&lt;&lt;</span> result
+  <span class="k">in</span> <span class="t">Complete</span>
+    nats.unsubscribe reply_subject
+  <span class="k">end</span>
+<span class="k">end</span>
+nats.publish <span class="s">&quot;orders.list.customer.123&quot;</span>, reply_to: reply_subject
+
+<span class="c"># Publish a message to NATS JetStream with a message-deduplication header</span>
+<span class="c"># for idempotency:</span>
+nats.jetstream.subscribe consumer_subject, queue_group: <span class="s">&quot;my-service&quot;</span> <span class="k">do</span> <span class="o">|</span>msg<span class="o">|</span>
+  <span class="c"># ...</span>
+<span class="k">end</span>
+nats.publish orders_subject, order.to_json, headers: <span class="t">NATS</span><span class="t">::</span><span class="t">Message</span><span class="t">::</span><span class="t">Headers</span>{
+  <span class="c"># Deduplicate using the equivalent of a cache key</span>
+  <span class="s">&quot;Nats-Msg-Id&quot;</span> <span class="o">=&gt;</span> <span class="s">&quot;order-submitted-</span><span class="i">#{</span>order.id<span class="i">}</span><span class="s">-</span><span class="i">#{</span>order.updated_at.to_json<span class="i">}</span><span class="s">&quot;</span>,
+}</code></pre>
+<p><span class="flag red">DEPRECATED</span>  Use the <code><a href="../NATS/Client.html#publish%28subject%3AString%2Cdata%3AData%3DBytes.empty%2Creply_to%3AString%7CNil%3Dnil%2Cheaders%3AMessage%3A%3AHeaders%7CNil%3Dnil%29%3ANil-instance-method">#publish</a></code> method where the payload is called <code>data</code>. This matches NATS clients in other languages.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L806" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1614,7 +1765,7 @@ request/reply messaging model.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L686" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L726" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1643,7 +1794,7 @@ the <code>timeout</code> elapses, <code>nil</code> is returned.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L403" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L443" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1666,7 +1817,7 @@ the block.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L638" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L678" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1691,7 +1842,7 @@ a <code>nil</code> response.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L495" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L535" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1719,7 +1870,7 @@ received before the <code>timeout</code> elapses, only those will be returned.</
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L449" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L489" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1747,7 +1898,7 @@ without receiving any messages. If no replies are received before the
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L549" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L589" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1780,7 +1931,7 @@ send all of your replies and then send an <em>additional</em> sentinel message.<
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L599" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L639" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1796,7 +1947,7 @@ send all of your replies and then send an <em>additional</em> sentinel message.<
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L135" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L135" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1812,7 +1963,7 @@ send all of your replies and then send an <em>additional</em> sentinel message.<
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/services.cr#L376" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/services.cr#L376" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1833,7 +1984,7 @@ send all of your replies and then send an <em>additional</em> sentinel message.<
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L134" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L134" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1865,7 +2016,7 @@ nats.subscribe <span class="s">&quot;orders.created&quot;</span> <span class="k"
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L322" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L340" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1886,7 +2037,7 @@ nats.subscribe <span class="s">&quot;orders.created&quot;</span> <span class="k"
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L371" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L399" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1918,7 +2069,7 @@ spawn <span class="k">do</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L366" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L394" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1934,7 +2085,7 @@ spawn <span class="k">do</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L1109" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L1260" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1950,7 +2101,7 @@ spawn <span class="k">do</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/nats.cr#L1117" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/nats.cr#L1268" target="_blank">View source</a>]
         
       </div>
     </div>

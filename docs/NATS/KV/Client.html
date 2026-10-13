@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.7.0">
+<meta name="crystal_docs.project_version" content="1.7.1">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::KV::Client - nats 1.7.0</title>
+  <title>NATS::KV::Client - nats 1.7.1</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.7.0
+        1.7.1
       </span>
     </div>
   </div>
@@ -74,6 +74,11 @@
   
   <li class=" " data-id="nats/NATS/Client/Data" data-name="nats::client::data">
       <a href="../../NATS/Client/Data.html">Data</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/Client/ReconnectBufferExceeded" data-name="nats::client::reconnectbufferexceeded">
+      <a href="../../NATS/Client/ReconnectBufferExceeded.html">ReconnectBufferExceeded</a>
       
     </li>
   
@@ -412,8 +417,18 @@
       
     </li>
   
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/ConsumerLimits" data-name="nats::jetstream::streamconfig::consumerlimits">
+      <a href="../../NATS/JetStream/StreamConfig/ConsumerLimits.html">ConsumerLimits</a>
+      
+    </li>
+  
   <li class=" " data-id="nats/NATS/JetStream/StreamConfig/DiscardPolicy" data-name="nats::jetstream::streamconfig::discardpolicy">
       <a href="../../NATS/JetStream/StreamConfig/DiscardPolicy.html">DiscardPolicy</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamConfig/PersistMode" data-name="nats::jetstream::streamconfig::persistmode">
+      <a href="../../NATS/JetStream/StreamConfig/PersistMode.html">PersistMode</a>
       
     </li>
   
@@ -492,8 +507,18 @@
       
     </li>
   
-  <li class=" " data-id="nats/NATS/JetStream/StreamSource" data-name="nats::jetstream::streamsource">
+  <li class="parent " data-id="nats/NATS/JetStream/StreamSource" data-name="nats::jetstream::streamsource">
       <a href="../../NATS/JetStream/StreamSource.html">StreamSource</a>
+      
+        <ul>
+  
+  <li class=" " data-id="nats/NATS/JetStream/StreamSource/Consumer" data-name="nats::jetstream::streamsource::consumer">
+      <a href="../../NATS/JetStream/StreamSource/Consumer.html">Consumer</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -504,6 +529,11 @@
   
   <li class=" " data-id="nats/NATS/JetStream/StreamState" data-name="nats::jetstream::streamstate">
       <a href="../../NATS/JetStream/StreamState.html">StreamState</a>
+      
+    </li>
+  
+  <li class=" " data-id="nats/NATS/JetStream/SubjectTransform" data-name="nats::jetstream::subjecttransform">
+      <a href="../../NATS/JetStream/SubjectTransform.html">SubjectTransform</a>
       
     </li>
   
@@ -742,13 +772,13 @@
 <h1 class="type-name">
 
   <span class="kind">
-    class
+    struct
   </span> NATS::<wbr>KV::<wbr>Client
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../NATS/KV/Client.html">NATS::KV::Client</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../NATS/KV/Client.html">NATS::KV::Client</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
 
 
 
@@ -778,7 +808,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L273" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L292" target="_blank">
         kv.cr
       </a>
     
@@ -853,7 +883,7 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#each_key%28bucket%3AString%2Cpattern%3AString%3D%22%3E%22%2C%26%29%3ANil-instance-method" class="signature"><strong>#each_key</strong>(bucket : String, pattern : String = <span class="s">&quot;&gt;&quot;</span>, &) : Nil</a>
+        <a href="#each%28bucket%3AString%2Cpattern%3AString%3D%22%3E%22%2Cignore_deletes%3Dtrue%2Cinclude_history%3Dfalse%2C%26%29%3ANil-instance-method" class="signature"><strong>#each</strong>(bucket : String, pattern : String = <span class="s">&quot;&gt;&quot;</span>, ignore_deletes = <span class="n">true</span>, include_history = <span class="n">false</span>, &) : Nil</a>
         
       </li>
     
@@ -958,6 +988,19 @@
 
 
     
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
   </div>
 
   
@@ -981,7 +1024,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L274" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L293" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1025,7 +1068,7 @@ key already exists, the value will not be set and <code>nil</code> is returned.<
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L439" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L458" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1055,7 +1098,7 @@ specified <code>name</code>. Options are:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L286" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L305" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1071,7 +1114,7 @@ specified <code>name</code>. Options are:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L601" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L625" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1087,7 +1130,7 @@ specified <code>name</code>. Options are:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L634" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L658" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1103,23 +1146,23 @@ specified <code>name</code>. Options are:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L638" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L662" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="each_key(bucket:String,pattern:String=&quot;&gt;&quot;,&amp;):Nil-instance-method">
+    <div class="entry-detail" id="each(bucket:String,pattern:String=&quot;&gt;&quot;,ignore_deletes=true,include_history=false,&amp;):Nil-instance-method">
       <div class="signature">
         
-        def <strong>each_key</strong>(bucket : String, pattern : String = <span class="s">&quot;&gt;&quot;</span>, &) : Nil
+        def <strong>each</strong>(bucket : String, pattern : String = <span class="s">&quot;&gt;&quot;</span>, ignore_deletes = <span class="n">true</span>, include_history = <span class="n">false</span>, &) : Nil
 
-        <a class="method-permalink" href="#each_key%28bucket%3AString%2Cpattern%3AString%3D%22%3E%22%2C%26%29%3ANil-instance-method">#</a>
+        <a class="method-permalink" href="#each%28bucket%3AString%2Cpattern%3AString%3D%22%3E%22%2Cignore_deletes%3Dtrue%2Cinclude_history%3Dfalse%2C%26%29%3ANil-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L531" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L550" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1135,7 +1178,7 @@ specified <code>name</code>. Options are:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L374" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L393" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1157,7 +1200,7 @@ does not exist.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L394" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L413" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1178,7 +1221,7 @@ does not exist.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L333" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L352" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1201,7 +1244,7 @@ kv.history(<span class="s">&quot;config&quot;</span>, <span class="s">&quot;name
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L548" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L572" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1222,7 +1265,7 @@ kv.history(<span class="s">&quot;config&quot;</span>, <span class="s">&quot;name
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L505" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L524" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1238,7 +1281,7 @@ kv.history(<span class="s">&quot;config&quot;</span>, <span class="s">&quot;name
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L327" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L346" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1254,7 +1297,7 @@ kv.history(<span class="s">&quot;config&quot;</span>, <span class="s">&quot;name
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L616" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L640" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1277,7 +1320,7 @@ it is provided.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L344" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L363" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1299,7 +1342,7 @@ from the NATS server. The key will expire after <code>ttl</code> if it is provid
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L364" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L383" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1327,7 +1370,7 @@ not performed and this method returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L471" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L490" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1343,7 +1386,7 @@ not performed and this method returns <code>nil</code>.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.0/src/kv.cr#L565" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/kv.cr#L589" target="_blank">View source</a>]
         
       </div>
     </div>
