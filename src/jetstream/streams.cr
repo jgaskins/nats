@@ -52,6 +52,38 @@ module NATS::JetStream
       end
     end
 
+    # Change the given settings on the stream with the given `name`, leaving
+    # all of its other settings as they are. The setting names are the same
+    # as the properties on `NATS::JetStream::StreamConfig`.
+    #
+    # ```
+    # jetstream.stream.update "orders", max_age: 7.days
+    # ```
+    def update(name : String, **changes) : Stream
+      unless stream = info(name)
+        raise Error.new("Stream #{name.inspect} does not exist")
+      end
+
+      update stream.config.copy_with(**changes)
+    end
+
+    # Update an existing stream with the given config. The server replaces the
+    # stream's entire config, so any settings not in `config` are reset to
+    # their defaults. To change only some settings, use the
+    # `update(name, **changes)` overload instead.
+    def update(config : StreamConfig) : Stream
+      if response = @nats.request "$JS.API.STREAM.UPDATE.#{config.name}", config.to_json
+        case parsed = (Stream | ErrorResponse).from_json String.new(response.body)
+        in ErrorResponse
+          raise Error.new("#{parsed.error.description} (#{parsed.error.code})")
+        in Stream
+          parsed
+        end
+      else
+        raise Error.new("Did not receive a response from NATS JetStream")
+      end
+    end
+
     # List all available streams
     def list(subject : String? = nil, offset : Int? = nil, limit : Int? = nil)
       body = ListRequest.new(subject: subject, offset: offset, limit: limit).to_json

@@ -550,6 +550,118 @@ describe NATS::JetStream do
     end
   end
 
+  describe "updating a stream" do
+    test "updates only the given settings", stream_options: {max_age: 1.hour, max_msgs: 100_i64} do
+      name = stream.config.name
+
+      updated = js.stream.update name, max_age: 2.hours
+
+      updated.config.max_age.should eq 2.hours
+      config = js.stream.info(name).not_nil!.config
+      config.max_age.should eq 2.hours
+      config.subjects.should eq [write_subject]
+      config.max_msgs.should eq 100
+    end
+
+    test "updates the stream with the given config", stream_options: {max_age: 1.hour} do
+      updated = js.stream.update stream.config.copy_with(max_age: 2.hours)
+
+      updated.config.max_age.should eq 2.hours
+      js.stream.info(stream.config.name).not_nil!.config.max_age.should eq 2.hours
+    end
+
+    it "keeps settings that weren't changed" do
+      prefix = UUID.random.to_s
+      stream = create_stream(
+        subjects: ["#{prefix}.>"],
+        first_seq: 10_u64,
+        subject_transform: NATS::JetStream::SubjectTransform.new(
+          source: "#{prefix}.>",
+          destination: "transformed.#{prefix}.>",
+        ),
+        consumer_limits: NATS::JetStream::StreamConfig::ConsumerLimits.new(
+          inactive_threshold: 1.minute,
+          max_ack_pending: 10,
+        ),
+        allow_msg_ttl: true,
+        subject_delete_marker_ttl: 1.minute,
+        allow_atomic_publish: true,
+        allow_batch_publish: true,
+        metadata: {"owner" => "spec"},
+      )
+      name = stream.config.name
+
+      js.stream.update name, max_age: 2.hours
+
+      config = js.stream.info(name).not_nil!.config
+      config.max_age.should eq 2.hours
+      config.first_seq.should eq 10
+      config.subject_transform.should eq stream.config.subject_transform
+      config.consumer_limits.should eq stream.config.consumer_limits
+      config.subject_delete_marker_ttl.should eq 1.minute
+      config.allow_atomic_publish?.should eq true
+      config.allow_batch_publish?.should eq true
+      config.metadata["owner"].should eq "spec"
+    ensure
+      js.stream.delete stream if stream
+    end
+
+    it "keeps the persist mode" do
+      # Async persist mode is only supported on file storage
+      stream = js.stream.create(
+        name: "test-stream-#{UUID.random}",
+        subjects: [UUID.random.to_s],
+        storage: :file,
+        persist_mode: :async,
+      )
+      name = stream.config.name
+
+      js.stream.update name, max_age: 2.hours
+
+      config = js.stream.info(name).not_nil!.config
+      config.max_age.should eq 2.hours
+      config.persist_mode.should eq NATS::JetStream::StreamConfig::PersistMode::Async
+    ensure
+      js.stream.delete stream if stream
+    end
+
+    it "raises if the stream doesn't exist" do
+      name = "test-stream-#{UUID.random}"
+
+      expect_raises NATS::JetStream::Error do
+        js.stream.update name, max_age: 2.hours
+      end
+      expect_raises NATS::JetStream::Error do
+        js.stream.update NATS::JetStream::StreamConfig.new(
+          name: name,
+          subjects: [UUID.random.to_s],
+          storage: :memory,
+        )
+      end
+    end
+  end
+
+  describe NATS::JetStream::StreamConfig do
+    it "copies itself with changes without modifying the original" do
+      config = NATS::JetStream::StreamConfig.new(
+        name: "original",
+        subjects: ["foo"],
+        max_age: 1.hour,
+        storage: :memory,
+      )
+
+      copy = config.copy_with(max_age: 2.hours, max_msgs: 100_i64)
+
+      copy.max_age.should eq 2.hours
+      copy.max_msgs.should eq 100
+      copy.name.should eq "original"
+      copy.subjects.should eq ["foo"]
+      copy.storage.memory?.should eq true
+      config.max_age.should eq 1.hour
+      config.max_msgs.should eq nil
+    end
+  end
+
   describe "message schedules" do
     it "schedules a message on the stream" do
       prefix = UUID.v7.to_s

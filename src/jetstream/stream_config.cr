@@ -139,9 +139,38 @@ module NATS::JetStream
       @allow_msg_ttl = false,
       @allow_msg_counter = false,
       @allow_msg_schedules = false,
+      @first_seq = nil,
+      @subject_transform = nil,
+      @consumer_limits = nil,
+      @subject_delete_marker_ttl = nil,
+      @allow_atomic_publish = nil,
+      @allow_batch_publish = nil,
+      @persist_mode : PersistMode? = nil,
+      @metadata = nil,
       @storage : Storage = :file,
       @compression = :none,
     )
+    end
+
+    # Returns a copy of this config with the given settings changed, leaving
+    # this one untouched.
+    #
+    # ```
+    # config.copy_with(max_age: 7.days, max_msgs: 1_000_000_i64)
+    # ```
+    def copy_with(**changes : **T) : self forall T
+      copy = self
+      copy.apply_changes changes
+      copy
+    end
+
+    protected def apply_changes(changes : T) forall T
+      {% for key in T.keys %}
+        {% unless @type.instance_vars.any? { |ivar| ivar.name == key.stringify } %}
+          {% raise "#{@type} has no setting named #{key}" %}
+        {% end %}
+        @{{key.id}} = changes[{{key.symbolize}}]
+      {% end %}
     end
 
     enum Compression
