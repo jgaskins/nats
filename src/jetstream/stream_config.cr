@@ -1,5 +1,6 @@
 require "./entity"
 require "./stream_source"
+require "./subject_transform"
 
 module NATS::JetStream
   struct StreamConfig < Entity
@@ -56,11 +57,22 @@ module NATS::JetStream
       New
     end
 
+    # The `PersistMode` tells the NATS server when to flush messages to disk.
+    enum PersistMode
+      # Flush each message to disk before acknowledging it
+      Default
+
+      # Flush messages to disk asynchronously. The message may be acknowledged
+      # before it's flushed, so it can be lost if the server is killed.
+      Async
+    end
+
     struct Placement < Entity
       getter cluster : String?
       getter tags : Array(String) { %w[] }
+      getter preferred : String?
 
-      def initialize(@cluster = nil, @tags = nil)
+      def initialize(@cluster = nil, @tags = nil, @preferred = nil)
       end
     end
 
@@ -72,6 +84,17 @@ module NATS::JetStream
       getter? headers_only : Bool?
 
       def initialize(*, @source : String? = nil, @destination, @headers_only = nil)
+      end
+    end
+
+    # Defaults for consumers created on this stream, unless overridden in
+    # the consumer's config
+    struct ConsumerLimits < Entity
+      @[JSON::Field(converter: ::NATS::JetStream::NanosecondsConverter)]
+      getter inactive_threshold : Time::Span?
+      getter max_ack_pending : Int32?
+
+      def initialize(*, @inactive_threshold = nil, @max_ack_pending = nil)
       end
     end
 
@@ -112,6 +135,17 @@ module NATS::JetStream
     getter? allow_msg_schedules : Bool?
     getter republish : Republish?
     getter compression : Compression
+    getter first_seq : UInt64?
+    getter subject_transform : SubjectTransform?
+    getter consumer_limits : ConsumerLimits?
+    @[JSON::Field(converter: ::NATS::JetStream::NanosecondsConverter)]
+    getter subject_delete_marker_ttl : Time::Span?
+    @[JSON::Field(key: "allow_atomic")]
+    getter? allow_atomic_publish : Bool?
+    @[JSON::Field(key: "allow_batched")]
+    getter? allow_batch_publish : Bool?
+    getter persist_mode : PersistMode?
+    getter metadata : Hash(String, String) { {} of String => String }
 
     def initialize(
       @name,

@@ -24,6 +24,7 @@ module NATS::JetStream
       retention : StreamConfig::RetentionPolicy? = nil,
       discard : StreamConfig::DiscardPolicy? = nil,
       compression : StreamConfig::Compression = :none,
+      persist_mode : StreamConfig::PersistMode? = nil,
       **kwargs,
     ) : Stream
       create StreamConfig.new(
@@ -32,6 +33,7 @@ module NATS::JetStream
         retention: retention,
         discard: discard,
         compression: compression,
+        persist_mode: persist_mode,
       )
     end
 
