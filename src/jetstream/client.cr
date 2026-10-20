@@ -371,5 +371,23 @@ module NATS::JetStream
     def nack(msg : Message, *, delay : Time::Span)
       @nats.publish msg.reply_to, %(-NAK {"delay":#{delay.total_nanoseconds.to_i64}})
     end
+
+    # Tell the NATS server to stop delivering the given message to this
+    # consumer, typically because it can never be processed successfully. The
+    # message stays in the stream, but this consumer won't redeliver it.
+    #
+    # ```
+    # jetstream.subscribe consumer do |msg|
+    #   order = Order.from_json(msg.data_string)
+    #   # ...
+    #   jetstream.ack msg
+    # rescue ex : JSON::ParseException
+    #   # Retrying won't help
+    #   jetstream.term msg
+    # end
+    # ```
+    def term(msg : Message)
+      @nats.publish msg.reply_to, "+TERM"
+    end
   end
 end

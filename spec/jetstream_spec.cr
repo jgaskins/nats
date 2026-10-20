@@ -497,6 +497,70 @@ describe NATS::JetStream do
     end
   end
 
+  describe NATS::JetStream::PullSubscription do
+    test "returns as soon as the server says there are no more messages with no_wait" do
+      consumer = js.consumer.create(stream_name: stream.config.name)
+      pull = js.pull_subscribe(consumer)
+      2.times { |i| js.publish write_subject, i.to_s }
+
+      start = Time.instant
+      msgs = pull.fetch(10, timeout: 5.seconds, no_wait: true)
+
+      start.elapsed.should be < 1.second
+      msgs.map(&.data_string).should eq %w[0 1]
+      pull.fetch(10, timeout: 5.seconds, no_wait: true).should be_empty
+      start.elapsed.should be < 1.second
+    end
+
+    test "returns when the pull request expires" do
+      consumer = js.consumer.create(stream_name: stream.config.name)
+      pull = js.pull_subscribe(consumer)
+      js.publish write_subject, "hi"
+
+      msgs = pull.fetch(10, timeout: 500.milliseconds)
+
+      msgs.map(&.data_string).should eq %w[hi]
+    end
+
+    test "raises if the consumer doesn't exist" do
+      consumer = js.consumer.create(stream_name: stream.config.name, durable_name: "deleted")
+      pull = js.pull_subscribe(consumer)
+      js.consumer.delete consumer
+
+      expect_raises NATS::JetStream::Error do
+        pull.fetch(1, timeout: 500.milliseconds)
+      end
+    end
+  end
+
+  test "lists consumers across multiple pages" do
+    # The server returns up to 256 consumers per page
+    names = Array.new(260) { |i| "consumer-#{i}" }
+    WaitGroup.wait do |wg|
+      names.each do |name|
+        wg.spawn do
+          js.consumer.create(stream_name: stream.config.name, durable_name: name, memory_storage: true)
+        end
+      end
+    end
+
+    js.consumer.list(stream.config.name).map(&.name).sort.should eq names.sort
+  end
+
+  test "terminates delivery of a message" do
+    consumer = js.consumer.create(stream_name: stream.config.name, ack_wait: 100.milliseconds)
+    pull = js.pull_subscribe(consumer)
+    js.publish write_subject, "hi"
+
+    msg = pull.fetch(timeout: 500.milliseconds).not_nil!
+    js.term msg
+    nats.flush
+    sleep 200.milliseconds
+
+    pull.fetch(1, timeout: 200.milliseconds).should be_empty
+    js.consumer.info!(stream.config.name, consumer.name).num_ack_pending.should eq 0
+  end
+
   describe "counters" do
     test "increments and checks", stream_options: {allow_msg_counter: true} do
       # Incrementing returns the value

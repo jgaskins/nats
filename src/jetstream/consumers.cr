@@ -2,6 +2,7 @@ require "../nats"
 require "./consumer_config"
 require "./consumer"
 require "./consumer_list_response"
+require "./error_response"
 
 module NATS::JetStream
   # A NATS JetStream consumer is a message index sourced from a stream.
@@ -53,13 +54,22 @@ module NATS::JetStream
     end
 
     # Returns a paginated list of consumers for the stream with the
-    # specified name.
-    def list(stream_name : String)
-      if consumers_response = @nats.request "$JS.API.CONSUMER.LIST.#{stream_name}"
-        ConsumerListResponse.from_json(String.new(consumers_response.body))
-      else
-        raise "whoops"
+    # specified name, starting at `offset`. Iterating over it with `each`
+    # fetches the remaining pages from the server as needed.
+    def list(stream_name : String, offset : Int? = nil) : ConsumerListResponse
+      body = offset ? {offset: offset}.to_json : ""
+      unless response = @nats.request "$JS.API.CONSUMER.LIST.#{stream_name}", body
+        raise Error.new("Did not receive a response from NATS JetStream listing consumers for stream #{stream_name.inspect}")
       end
+
+      if response.data_string.includes? %{"error":}
+        error = ErrorResponse.from_json(response.data_string).error
+        raise Error.new("#{error.description} (#{error.code})")
+      end
+
+      ConsumerListResponse.new @nats.jetstream,
+        json: JSON::PullParser.new(response.data_string),
+        stream_name: stream_name
     end
 
     # Return the consumer with the specified `name` associated with the
