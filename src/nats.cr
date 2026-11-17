@@ -486,7 +486,15 @@ module NATS
     # end
     # ```
     @[Experimental]
-    def request_many(subject : String, message : Data = "", timeout : Time::Span = 2.seconds, headers : Headers? = nil, *, max_replies : Int32, flush = true) : Array(Message)
+    def request_many(
+      subject : String,
+      message : Data = "",
+      timeout : Time::Span = 2.seconds,
+      headers : Headers? = nil,
+      *,
+      max_replies : Int32,
+      flush = true,
+    ) : Array(Message)
       if max_replies.negative?
         raise ArgumentError.new("max_replies must not be negative")
       end
@@ -586,7 +594,14 @@ module NATS
     # end
     # ```
     @[Experimental]
-    def request_many(subject : String, message : Data = "", headers : Headers? = nil, *, stall_timeout : Time::Span = 2.seconds, flush = true) : Array(Message)
+    def request_many(
+      subject : String,
+      message : Data = "",
+      headers : Headers? = nil,
+      *,
+      stall_timeout : Time::Span = 2.seconds,
+      flush = true,
+    ) : Array(Message)
       if stall_timeout.negative?
         raise ArgumentError.new("stall_timeout must not be negative")
       end
