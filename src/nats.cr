@@ -507,10 +507,10 @@ module NATS
         channel.send msg unless channel.closed?
       end
       publish subject, message, reply_to: key, headers: headers
-      original_timeout = timeout
 
       flush! if flush
 
+      original_timeout = timeout
       start = Time.instant
       begin
         loop do
