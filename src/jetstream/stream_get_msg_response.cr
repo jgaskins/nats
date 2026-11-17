@@ -35,12 +35,12 @@ module NATS::JetStream
       end
 
       module Base64Data
-        def self.from_json(json : JSON::PullParser)
+        def self.from_json(json : JSON::PullParser) : String
           ::Base64.decode_string json.read_string
         end
 
-        def self.to_json(value : Bytes, json : JSON::Builder)
-          json.string ::Base64.encode(value)
+        def self.to_json(value : String | Bytes, json : JSON::Builder) : Nil
+          json.string ::Base64.strict_encode(value)
         end
       end
 
@@ -67,11 +67,17 @@ module NATS::JetStream
           end
         end
 
-        def self.to_json(headers : NATS::Headers, json : JSON::Builder)
-          json.object do
-            headers.each do |(key, value)|
-              json.field key, value
+        def self.to_json(headers : NATS::Headers, json : JSON::Builder) : Nil
+          # Encode in the same wire format we parse in `from_json`
+          json.string do |str|
+            str = str.as IO
+            str << "NATS/1.0\r\n"
+            headers.each do |key, values|
+              values.each do |value|
+                str << key << ": " << value << "\r\n"
+              end
             end
+            str << "\r\n"
           end
         end
       end

@@ -775,6 +775,28 @@ describe NATS::JetStream do
       end
     end
   end
+
+  describe NATS::JetStream::StreamGetMsgResponse do
+    it "serializes to JSON" do
+      response = NATS::JetStream::StreamGetMsgResponse.new(
+        message: NATS::JetStream::StreamGetMsgResponse::Message.new(
+          subject: "subject",
+          seq: 42,
+          data_string: "data",
+          headers: NATS::Headers{"Nats-Msg-Id" => "1"},
+          time: Time::UNIX_EPOCH,
+        ),
+      )
+
+      parsed = NATS::JetStream::StreamGetMsgResponse.from_json(response.to_json)
+
+      parsed.message.subject.should eq "subject"
+      parsed.message.seq.should eq 42
+      parsed.message.data_string.should eq "data"
+      parsed.message.headers["Nats-Msg-Id"].should eq "1"
+      parsed.message.time.should eq Time::UNIX_EPOCH
+    end
+  end
 end
 
 private def be_within(delta, of value)
