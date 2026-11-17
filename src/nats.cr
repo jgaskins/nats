@@ -626,9 +626,11 @@ module NATS
     # return all messages received up to that point.
     #
     # ```
-    # orders = nats.request_many("orders.info.#{order_id}") do |response|
+    # nats.request_many("orders.info.#{order_id}") do |response|
     #   # Our sentinel message will be empty
-    #   response.data.empty?
+    #   break if response.data.empty?
+    #
+    #   handle response
     # end
     # ```
     #
