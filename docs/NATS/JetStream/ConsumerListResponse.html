@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.7.1">
+<meta name="crystal_docs.project_version" content="1.7.2">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::ConsumerListResponse - nats 1.7.1</title>
+  <title>NATS::JetStream::ConsumerListResponse - nats 1.7.2</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.7.1
+        1.7.2
       </span>
     </div>
   </div>
@@ -822,7 +822,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumer_list_response.cr#L5" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumer_list_response.cr#L5" target="_blank">
         jetstream/consumer_list_response.cr
       </a>
     
@@ -843,6 +843,11 @@
     Constructors
   </h2>
   <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28js%3AJetStream%3A%3AClient%2Cjson%3AJSON%3A%3APullParser%2Cstream_name%3AString%29-class-method" class="signature"><strong>.new</strong>(js : JetStream::Client, json : JSON::PullParser, stream_name : String)</a>
+        
+      </li>
     
       <li class="entry-summary">
         <a href="#new%28pull%3AJSON%3A%3APullParser%29-class-method" class="signature"><strong>.new</strong>(pull : JSON::PullParser)</a>
@@ -873,9 +878,9 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#each%28%26%29-instance-method" class="signature"><strong>#each</strong>(&)</a>
+        <a href="#each%28%26block%3AConsumer-%3E%29%3ANil-instance-method" class="signature"><strong>#each</strong>(&block : Consumer -> ) : Nil</a>
         
-          <div class="summary"><p>Must yield this collection's elements to the block.</p></div>
+          <div class="summary"><p>Yields every consumer for the stream, requesting more pages from the server as needed.</p></div>
         
       </li>
     
@@ -999,6 +1004,22 @@
     Constructor Detail
   </h2>
   
+    <div class="entry-detail" id="new(js:JetStream::Client,json:JSON::PullParser,stream_name:String)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(js : <a href="../../NATS/JetStream/Client.html">JetStream::Client</a>, json : JSON::PullParser, stream_name : String)
+
+        <a class="method-permalink" href="#new%28js%3AJetStream%3A%3AClient%2Cjson%3AJSON%3A%3APullParser%2Cstream_name%3AString%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumer_list_response.cr#L17" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
     <div class="entry-detail" id="new(pull:JSON::PullParser)-class-method">
       <div class="signature">
         
@@ -1010,7 +1031,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumer_list_response.cr#L5" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumer_list_response.cr#L5" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1042,32 +1063,29 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumer_list_response.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumer_list_response.cr#L11" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="each(&amp;)-instance-method">
+    <div class="entry-detail" id="each(&amp;block:Consumer-&gt;):Nil-instance-method">
       <div class="signature">
         
-        def <strong>each</strong>(&)
+        def <strong>each</strong>(&block : <a href="../../NATS/JetStream/Consumer.html">Consumer</a> -> ) : Nil
 
-        <a class="method-permalink" href="#each%28%26%29-instance-method">#</a>
+        <a class="method-permalink" href="#each%28%26block%3AConsumer-%3E%29%3ANil-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-            <div class="doc-inherited">
-              Description copied from module Enumerable(<a href="../../NATS/JetStream/Consumer.html">NATS::JetStream::Consumer</a>)
-            </div>
-          
-          <p>Must yield this collection's elements to the block.</p>
+          <p>Yields every consumer for the stream, requesting more pages from the
+server as needed.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumer_list_response.cr#L13" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumer_list_response.cr#L26" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1083,7 +1101,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumer_list_response.cr#L10" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumer_list_response.cr#L10" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1099,7 +1117,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumer_list_response.cr#L9" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumer_list_response.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1115,7 +1133,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumer_list_response.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumer_list_response.cr#L8" target="_blank">View source</a>]
         
       </div>
     </div>

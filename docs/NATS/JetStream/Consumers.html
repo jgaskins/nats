@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.7.1">
+<meta name="crystal_docs.project_version" content="1.7.2">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::Consumers - nats 1.7.1</title>
+  <title>NATS::JetStream::Consumers - nats 1.7.2</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.7.1
+        1.7.2
       </span>
     </div>
   </div>
@@ -821,7 +821,7 @@ acknowledged, etc, at the consumer layer.</p>
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumers.cr#L10" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumers.cr#L11" target="_blank">
         jetstream/consumers.cr
       </a>
     
@@ -926,9 +926,9 @@ acknowledged, etc, at the consumer layer.</p>
       </li>
     
       <li class="entry-summary">
-        <a href="#list%28stream_name%3AString%29-instance-method" class="signature"><strong>#list</strong>(stream_name : String)</a>
+        <a href="#list%28stream_name%3AString%2Coffset%3AInt%7CNil%3Dnil%29%3AConsumerListResponse-instance-method" class="signature"><strong>#list</strong>(stream_name : String, offset : Int | Nil = <span class="n">nil</span>) : ConsumerListResponse</a>
         
-          <div class="summary"><p>Returns a paginated list of consumers for the stream with the specified name.</p></div>
+          <div class="summary"><p>Returns a paginated list of consumers for the stream with the specified name, starting at <code>offset</code>.</p></div>
         
       </li>
     
@@ -1000,7 +1000,7 @@ acknowledged, etc, at the consumer layer.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumers.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumers.cr#L12" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1032,7 +1032,7 @@ acknowledged, etc, at the consumer layer.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumers.cr#L29" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumers.cr#L30" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1054,7 +1054,7 @@ which are passed unmodified to <code><a href="../../NATS/JetStream/Consumer.html
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumers.cr#L16" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumers.cr#L17" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1075,7 +1075,7 @@ which are passed unmodified to <code><a href="../../NATS/JetStream/Consumer.html
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumers.cr#L102" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumers.cr#L112" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1097,7 +1097,7 @@ with the given name.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumers.cr#L108" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumers.cr#L118" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1118,7 +1118,7 @@ with the given name.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumers.cr#L97" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumers.cr#L107" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1134,7 +1134,7 @@ with the given name.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumers.cr#L73" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumers.cr#L83" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1156,7 +1156,7 @@ given stream, yielding to the block if the consumer does not exist</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumers.cr#L79" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumers.cr#L89" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1178,7 +1178,7 @@ given stream, yielding to the block if the consumer does not exist</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumers.cr#L67" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumers.cr#L77" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1199,29 +1199,30 @@ given stream, yielding to the block if the consumer does not exist</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumers.cr#L51" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumers.cr#L52" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="list(stream_name:String)-instance-method">
+    <div class="entry-detail" id="list(stream_name:String,offset:Int|Nil=nil):ConsumerListResponse-instance-method">
       <div class="signature">
         
-        def <strong>list</strong>(stream_name : String)
+        def <strong>list</strong>(stream_name : String, offset : Int | Nil = <span class="n">nil</span>) : <a href="../../NATS/JetStream/ConsumerListResponse.html">ConsumerListResponse</a>
 
-        <a class="method-permalink" href="#list%28stream_name%3AString%29-instance-method">#</a>
+        <a class="method-permalink" href="#list%28stream_name%3AString%2Coffset%3AInt%7CNil%3Dnil%29%3AConsumerListResponse-instance-method">#</a>
       </div>
       
         <div class="doc">
           
           <p>Returns a paginated list of consumers for the stream with the
-specified name.</p>
+specified name, starting at <code>offset</code>. Iterating over it with <code>each</code>
+fetches the remaining pages from the server as needed.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/consumers.cr#L57" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/consumers.cr#L59" target="_blank">View source</a>]
         
       </div>
     </div>

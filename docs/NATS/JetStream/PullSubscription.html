@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="1.7.1">
+<meta name="crystal_docs.project_version" content="1.7.2">
 <meta name="crystal_docs.project_name" content="nats">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="nats">
-  <title>NATS::JetStream::PullSubscription - nats 1.7.1</title>
+  <title>NATS::JetStream::PullSubscription - nats 1.7.2</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        1.7.1
+        1.7.2
       </span>
     </div>
   </div>
@@ -808,7 +808,7 @@
   </h2>
   
     
-      <a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/pull_subscription.cr#L6" target="_blank">
+      <a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/pull_subscription.cr#L6" target="_blank">
         jetstream/pull_subscription.cr
       </a>
     
@@ -890,6 +890,8 @@
       <li class="entry-summary">
         <a href="#fetch%28message_count%3AInt%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%2Cno_wait%3ABool%3Dfalse%2Cmax_bytes%3AInt%7CNil%3Dnil%29%3AEnumerable%28Message%29-instance-method" class="signature"><strong>#fetch</strong>(message_count : Int, timeout : Time::Span = <span class="n">2</span>.seconds, no_wait : Bool = <span class="n">false</span>, max_bytes : Int | Nil = <span class="n">nil</span>) : Enumerable(Message)</a>
         
+          <div class="summary"><p>Fetch up to <code>message_count</code> messages from the consumer, waiting up to <code>timeout</code> for them.</p></div>
+        
       </li>
     
   </ul>
@@ -947,7 +949,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/pull_subscription.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/pull_subscription.cr#L11" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -991,7 +993,7 @@ loop <span class="k">do</span>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/pull_subscription.cr#L80" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/pull_subscription.cr#L115" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1013,7 +1015,7 @@ a single round trip to the server to save latency.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/pull_subscription.cr#L105" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/pull_subscription.cr#L140" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1029,7 +1031,7 @@ a single round trip to the server to save latency.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/pull_subscription.cr#L111" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/pull_subscription.cr#L146" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1045,7 +1047,7 @@ a single round trip to the server to save latency.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/pull_subscription.cr#L9" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/pull_subscription.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1061,7 +1063,7 @@ a single round trip to the server to save latency.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/pull_subscription.cr#L7" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/pull_subscription.cr#L7" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1077,7 +1079,7 @@ a single round trip to the server to save latency.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/pull_subscription.cr#L14" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/pull_subscription.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1090,10 +1092,20 @@ a single round trip to the server to save latency.</p>
         <a class="method-permalink" href="#fetch%28message_count%3AInt%2Ctimeout%3ATime%3A%3ASpan%3D2.seconds%2Cno_wait%3ABool%3Dfalse%2Cmax_bytes%3AInt%7CNil%3Dnil%29%3AEnumerable%28Message%29-instance-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Fetch up to <code>message_count</code> messages from the consumer, waiting up to
+<code>timeout</code> for them. Returns early once we have <code>message_count</code> of them,
+when the server tells us the request has expired, or, if <code>no_wait</code> is
+<code>true</code>, as soon as the server tells us there aren't any more.</p>
+<p>Raises <code><a href="../../NATS/JetStream/Error.html">NATS::JetStream::Error</a></code> if the server rejects the request, such
+as when the consumer no longer exists.</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/jgaskins/nats/blob/v1.7.1/src/jetstream/pull_subscription.cr#L18" target="_blank">View source</a>]
+          [<a href="https://github.com/jgaskins/nats/blob/v1.7.2/src/jetstream/pull_subscription.cr#L25" target="_blank">View source</a>]
         
       </div>
     </div>
