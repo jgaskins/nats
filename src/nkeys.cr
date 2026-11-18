@@ -131,7 +131,8 @@ module NATS
               LibCrypto.evp_md_ctx_free md_context
             end
 
-            result = LibCrypto.evp_pkey_get_raw_public_key(key, bytes.to_unsafe, out len)
+            len = LibC::SizeT.new(PUBLIC_KEY_SIZE)
+            result = LibCrypto.evp_pkey_get_raw_public_key(key, bytes.to_unsafe, pointerof(len))
             handle_error if result == 0
             if len != PUBLIC_KEY_SIZE
               raise Error.new("Invalid public key size. Expected: #{PUBLIC_KEY_SIZE}, got: #{len}")
