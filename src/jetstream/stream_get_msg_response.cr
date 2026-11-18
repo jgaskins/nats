@@ -68,9 +68,7 @@ module NATS::JetStream
         end
 
         def self.to_json(headers : NATS::Headers, json : JSON::Builder) : Nil
-          # Encode in the same wire format we parse in `from_json`
-          json.string do |str|
-            str = str.as IO
+          raw = String.build do |str|
             str << "NATS/1.0\r\n"
             headers.each do |key, values|
               values.each do |value|
@@ -79,6 +77,7 @@ module NATS::JetStream
             end
             str << "\r\n"
           end
+          json.string ::Base64.strict_encode(raw)
         end
       end
     end
